@@ -5,13 +5,6 @@ module.exports = function (config, instanceClasses, jobs) {
 
     var { BuildInstance, ComponentInstance } = instanceClasses;
 
-    var dummyFeatVariables = {
-        'scheme': 'http',
-        'domain': 'localhost',
-        'npm_cache': path.join(__dirname, '../../../cache/npm'), // TODO Move this to config.
-        'composer_cache': path.join(__dirname, '/../../../cache/composer') // TODO Move this to config.
-    };
-
     function createBuildInstance(buildInstanceId, buildDefinition) {
         var buildInstance = new BuildInstance(
             buildInstanceId,
@@ -19,15 +12,23 @@ module.exports = function (config, instanceClasses, jobs) {
             path.join('/home/mariusz/Development/Feat/buildInstances', buildInstanceId.toString())
         );
 
-        buildInstance.log('About to set up.');
-
         var componentIds = _.keys(buildDefinition.config.components);
 
         buildInstance.log('Setting dummy Feat variables.');
 
+        var dummyFeatVariables = {
+            'scheme': 'http',
+            'domain': 'localhost',
+            'build_instance_id': buildInstance.id,
+            'npm_cache': path.join(__dirname, '../../../cache/npm'), // TODO Move this to config.
+            'composer_cache': path.join(__dirname, '/../../../cache/composer') // TODO Move this to config.
+        };
+
         _.each(dummyFeatVariables, (value, name) => {
             buildInstance.addFeatVariable(name, value);
         });
+
+        buildInstance.log('About to set up.');
 
         _.map(componentIds, (componentId) => {
             var componentInstance = new ComponentInstance(
