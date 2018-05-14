@@ -487,7 +487,7 @@ module.exports = function (config, portProvider, interpolationHelper, buildInsta
                     {
                         FEAT__COMPONENT_ID: componentInstance.id,
                     }
-                )
+                );
 
                 componentInstance.log(`Running ${scriptPath}.`);
 
@@ -684,6 +684,7 @@ module.exports = function (config, portProvider, interpolationHelper, buildInsta
                 var { featVariables, externalPorts } = componentInstance.buildInstance;
 
                 componentInstance.log(`Interpolating Feat variables in ${job.relativePath}.`);
+
                 interpolationHelper.interpolateFile(fullPath, featVariables, externalPorts);
 
                 resolve();
