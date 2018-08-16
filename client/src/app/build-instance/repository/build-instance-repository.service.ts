@@ -5,7 +5,7 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
 
-import { BuildInstance } from '../build-instance.model';
+import {BuildInstance, MappedBuildInstance} from '../build-instance.model';
 import { BuildInstanceAddForm } from '../build-instance-add-form.model';
 
 @Injectable()
@@ -33,6 +33,13 @@ export class BuildInstanceRepositoryService {
         return this.http
             .post(this.itemsUrl, addForm)
             .map((res) : string => res.json().data.id)
+            .catch(this.handleError);
+    }
+
+    removeItem(item : MappedBuildInstance) : Observable<string> {
+        return this.http
+            .delete(`${this.itemsUrl}/${item._id}`)
+            .map((res) : string => res.json().data.removed)
             .catch(this.handleError);
     }
 

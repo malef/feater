@@ -96,6 +96,46 @@ module.exports = function (buildInstanceRepository, buildDefinitionRepository, p
             ]
         },
         {
+            method: 'delete',
+            path: '/api/build-instance/:buildInstanceId',
+            middlewares: [
+                function (req, res) {
+                    var scope = {};
+
+                    function findDocument() {
+                        return buildInstanceRepository
+                            .get(req.params.buildInstanceId)
+                            .then(function (document) {
+                                if (null === document) {
+                                    res.status(404).send();
+
+                                    return;
+                                }
+
+                                scope.document = document;
+                            });
+                    }
+
+                    function respondWithData() {
+                        var data = {removed: true};
+                        buildInstanceRepository.remove(req.params.buildInstanceId);
+
+                        res.json({ data });
+                    }
+
+                    function respondWithErrors(errors) {
+                        console.log('ERRORS', errors);
+                        res.status(400).send();
+                    }
+
+                    findDocument()
+                        .then(findDocument)
+                        .then(respondWithData)
+                        .catch(respondWithErrors);
+                }
+            ]
+        },
+        {
             method: 'post',
             path: '/api/build-instance',
             middlewares: [

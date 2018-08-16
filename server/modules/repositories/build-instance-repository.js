@@ -1,6 +1,8 @@
 var Promise = require('bluebird');
 var mongodb = require('mongodb');
+var path = require('path');
 var ObjectID = mongodb.ObjectID;
+var { execSync } = require('child_process');
 
 module.exports = function (mongodbHelper) {
 
@@ -73,6 +75,11 @@ module.exports = function (mongodbHelper) {
                         });
                 });
             });
+    }
+
+    function remove(buildInstanceId) {
+        const bashScript = path.join(path.__dirname, '../../bash/remove-instance.sh');
+        execSync(`${bashScript} ${buildInstanceId}`);
     }
 
     function updateExternalPorts(buildInstance) {

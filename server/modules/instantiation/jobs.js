@@ -6,7 +6,7 @@ var { exec, spawn } = require('child_process');
 
 module.exports = function (config, portProvider, interpolationHelper, buildInstanceRepository, githubApiClient) {
 
-    const BUFFER_SIZE = 64 * 1024 * 1024;
+    const BUFFER_SIZE = 512 * 1024 * 1024; // 512 MB
 
     var { PortRange, PortProvider } = portProvider;
 

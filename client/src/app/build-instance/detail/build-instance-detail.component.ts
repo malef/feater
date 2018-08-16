@@ -66,8 +66,15 @@ import { BuildInstance, MappedBuildInstance } from '../build-instance.model';
                                 </div>
                             </div>
                         </div>
+
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12" style="text-align: right;">
+                <a class="btn btn-danger" (click)="removeBuildInstance()">Remove build instance</a>
             </div>
         </div>
     `,
@@ -99,6 +106,14 @@ export class BuildInstanceDetailComponent implements OnInit {
 
     goToBuildDefinitionDetails() {
         this.router.navigate(['/build-definition', this.item.buildDefinition._id]);
+    }
+
+    removeBuildInstance() {
+        this.repository
+            .removeItem(this.item)
+            .subscribe(
+                () => { this.goToBuildDefinitionDetails(); }
+            );
     }
 
     private getItem() {
