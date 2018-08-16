@@ -78,8 +78,13 @@ module.exports = function (mongodbHelper) {
     }
 
     function remove(buildInstanceId) {
-        const bashScript = path.join(path.__dirname, '../../bash/remove-instance.sh');
-        execSync(`${bashScript} ${buildInstanceId}`);
+        const bashScript = path.join(__dirname, '../../bash/remove-instance.sh');
+
+        return new Promise(function (resolve, reject) {
+            execSync(`${bashScript} ${buildInstanceId}`);
+
+            resolve();
+        });
     }
 
     function updateExternalPorts(buildInstance) {
@@ -133,6 +138,7 @@ module.exports = function (mongodbHelper) {
         get,
         getOrFail,
         add,
+        remove,
         updateExternalPorts,
         updateEnvironmentalVariables,
         updateSummaryItems

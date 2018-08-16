@@ -118,9 +118,11 @@ module.exports = function (buildInstanceRepository, buildDefinitionRepository, p
 
                     function respondWithData() {
                         var data = {removed: true};
-                        buildInstanceRepository.remove(req.params.buildInstanceId);
-
-                        res.json({ data });
+                        buildInstanceRepository
+                            .remove(req.params.buildInstanceId)
+                            .then(function () {
+                                res.json({ data });
+                            });
                     }
 
                     function respondWithErrors(errors) {
