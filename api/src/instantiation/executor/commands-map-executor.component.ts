@@ -23,20 +23,26 @@ export class CommandsMapExecutorComponent {
             (commandMapItem: CommandsMapItem) => commandMapItem.symbol,
         );
 
-        return new Promise(resolve => {
-            this.executeNextBatch(
-                commandsMap.items,
-                resolve,
-                completedCommandIds,
-                executingCommandSymbols,
-                pendingCommandSymbols,
-            );
+        return new Promise((resolve, reject) => {
+            try {
+                this.executeNextBatch(
+                    commandsMap.items,
+                    resolve,
+                    reject,
+                    completedCommandIds,
+                    executingCommandSymbols,
+                    pendingCommandSymbols,
+                );
+            } catch (error) {
+                reject(error);
+            }
         });
     }
 
     protected executeNextBatch(
         commandsMapItems: CommandsMapItem[],
-        resolve: () => void,
+        resolve: (value?: void | PromiseLike<void>) => void,
+        reject: (reason?: any) => void,
         completedCommandIds: string[],
         executingCommandSymbols: symbol[],
         pendingCommandSymbols: symbol[],
@@ -65,21 +71,27 @@ export class CommandsMapExecutorComponent {
 
             this.commandExecutorComponent
                 .execute(commandMapItem.nestedCommand as SimpleCommand)
-                .then(() => {
-                    _.pull(executingCommandSymbols, commandMapItem.symbol);
-                    if (commandMapItem.id) {
-                        completedCommandIds.push(commandMapItem.id);
-                    }
-                    process.nextTick(() => {
-                        this.executeNextBatch(
-                            commandsMapItems,
-                            resolve,
-                            completedCommandIds,
-                            executingCommandSymbols,
-                            pendingCommandSymbols,
-                        );
-                    });
-                });
+                .then(
+                    () => {
+                        _.pull(executingCommandSymbols, commandMapItem.symbol);
+                        if (commandMapItem.id) {
+                            completedCommandIds.push(commandMapItem.id);
+                        }
+                        process.nextTick(() => {
+                            this.executeNextBatch(
+                                commandsMapItems,
+                                resolve,
+                                reject,
+                                completedCommandIds,
+                                executingCommandSymbols,
+                                pendingCommandSymbols,
+                            );
+                        });
+                    },
+                    (error) => {
+                        reject(error);
+                    },
+                );
         }
 
         if (
