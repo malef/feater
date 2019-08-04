@@ -7,12 +7,10 @@ import {ProjectRepository} from './repository/project.repository';
 import {DefinitionRepository} from './repository/definition.repository';
 import {InstanceRepository} from './repository/instance.repository';
 import {environment} from '../environments/environment';
-import {LogRepository} from './repository/log.repository';
 import {AssetSchema} from './schema/asset.schema';
 import {AssetRepository} from './repository/asset.repository';
 import {DeployKeySchema} from './schema/deploy-key.schema';
 import {DeployKeyRepository} from './repository/deploy-key.repository';
-import {LogSchema} from './schema/log.schema';
 import {CommandLogSchema} from './schema/command-log.schema';
 import {CommandLogRepository} from './repository/command-log.repository';
 
@@ -43,10 +41,6 @@ import {CommandLogRepository} from './repository/command-log.repository';
           name: 'CommandLog',
           schema: CommandLogSchema },
       ]),
-      MongooseModule.forFeature([{
-          name: 'Log',
-          schema: LogSchema },
-      ]),
   ],
   controllers: [],
   providers: [
@@ -56,7 +50,6 @@ import {CommandLogRepository} from './repository/command-log.repository';
       AssetRepository,
       DeployKeyRepository,
       CommandLogRepository,
-      LogRepository,
   ],
   exports: [
       ProjectRepository,
@@ -65,7 +58,6 @@ import {CommandLogRepository} from './repository/command-log.repository';
       AssetRepository,
       DeployKeyRepository,
       CommandLogRepository,
-      LogRepository,
   ],
 })
 export class PersistenceModule {}

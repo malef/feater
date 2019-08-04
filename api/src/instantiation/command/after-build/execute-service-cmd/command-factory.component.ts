@@ -29,6 +29,7 @@ export class ExecuteServiceCmdCommandFactoryComponent implements AfterBuildTaskC
         return new ContextAwareCommand(
             taskId,
             instanceContext.id,
+            instanceContext.hash,
             `Execute service command for service \`${typedAfterBuildTask.serviceId}\``,
             () => {
                 const service = instanceContext.findService(typedAfterBuildTask.serviceId);

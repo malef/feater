@@ -4,12 +4,16 @@ import {ResolverPaginationArgumentsHelper} from './pagination-argument/resolver-
 import {ResolverPaginationArgumentsInterface} from './pagination-argument/resolver-pagination-arguments.interface';
 import {ResolverCommandLogEntryFilterArgumentsInterface} from './filter-argument/resolver-command-log-entry-filter-arguments.interface';
 import {CommandLogRepository} from '../../persistence/repository/command-log.repository';
+import * as os from 'os';
+import * as fs from 'fs';
+import {PathHelper} from '../../instantiation/helper/path-helper.component';
 
 @Injectable()
 export class CommandLogsResolverFactory {
     constructor(
         private readonly resolveListOptionsHelper: ResolverPaginationArgumentsHelper,
         private readonly commandLogRepository: CommandLogRepository,
+        private readonly pathHelper: PathHelper,
     ) { }
 
     public getListResolver(queryExtractor?: (object: any) => any): (object: any, args: any) => Promise<CommandLogTypeInterface[]> {
@@ -27,12 +31,27 @@ export class CommandLogsResolverFactory {
             );
             const data: CommandLogTypeInterface[] = [];
             for (const commandLog of commandLogs) {
+                const commandLogPath = this.pathHelper.getCommandLogPaths(commandLog.instanceHash, commandLog._id.toString());
+                const commandLogEntries = fs.readFileSync(commandLogPath.absolute.guest).toString();
                 data.push({
                     id: commandLog._id.toString(),
                     description: commandLog.description,
                     createdAt: commandLog.createdAt,
                     completedAt: commandLog.completedAt,
                     failedAt: commandLog.failedAt,
+                    entries: commandLogEntries
+                        .split(os.EOL)
+                        .filter((entry: string) => {
+                            return ('' !== entry);
+                        })
+                        .map((entry: string) => {
+                            const parsedEntry = JSON.parse(entry);
+
+                            return {
+                                level: parsedEntry.level,
+                                message: parsedEntry.message,
+                            };
+                        }),
                 } as CommandLogTypeInterface);
             }
 

@@ -25,17 +25,18 @@ export class InterpolateFileCommandFactoryComponent implements BeforeBuildTaskCo
         beforeBuildTask: InstanceContextBeforeBuildTaskInterface,
         source: InstanceContextSourceInterface,
         taskId: string,
-        instance: InstanceContext,
+        instanceContext: InstanceContext,
         updateInstanceFromInstanceContext: () => Promise<void>,
     ): CommandType {
         const typedBeforeBuildTask = beforeBuildTask as InstanceContextInterpolateFileInterface;
 
         return new ContextAwareCommand(
             taskId,
-            instance.id,
+            instanceContext.id,
+            instanceContext.hash,
             `Interpolate file for source \`${source.id}\``,
             () => new InterpolateFileCommand(
-                instance.featerVariables,
+                instanceContext.featerVariables,
                 path.join(source.paths.dir.absolute.guest, typedBeforeBuildTask.relativePath),
             ),
             async (result: InterpolateFileCommandResultInterface): Promise<void> => {

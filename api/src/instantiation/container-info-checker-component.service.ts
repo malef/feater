@@ -3,7 +3,7 @@ import * as got from 'got';
 import * as querystring from 'querystring';
 import {environment} from '../environments/environment';
 import * as _ from 'lodash';
-import {setInterval} from 'timers';
+import {setTimeout} from 'timers';
 
 export interface CachedContainerInfo {
     readonly namePrefix: string;
@@ -23,11 +23,21 @@ export class ContainerInfoCheckerComponent {
     private containerInfos: CachedContainerInfo[] = [];
 
     constructor() {
-        setInterval(() => { this.updateCache(); }, 2000);
+        this.setupTimeout();
     }
 
-    updateCache(): void {
-        got(
+    setupTimeout() {
+        setTimeout(
+            async () => {
+                await this.updateCache();
+                this.setupTimeout();
+            },
+            5000, // 5 seconds
+        );
+    }
+
+    updateCache(): Promise<void> {
+        return got(
             'unix:/var/run/docker.sock:/containers/json',
             {
                 json: true,

@@ -28,6 +28,7 @@ export class CopyAssetIntoContainerCommandFactoryComponent implements AfterBuild
         return new ContextAwareCommand(
             taskId,
             instanceContext.id,
+            instanceContext.hash,
             `Copy asset \`${typedAfterBuildTask.assetId}\` for service \`${typedAfterBuildTask.serviceId}\``,
             () => {
                 const service = instanceContext.findService(typedAfterBuildTask.serviceId);

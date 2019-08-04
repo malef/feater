@@ -177,6 +177,8 @@ export class InstanceResolverFactory {
                 },
             );
 
+            // TODO Remove command logs.
+
             return await this.instanceRepository.remove(removeInstanceInput.id);
         };
     }

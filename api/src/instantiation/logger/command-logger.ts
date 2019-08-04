@@ -1,12 +1,25 @@
 import {CommandLogInterface} from '../../persistence/interface/command-log.interface';
-import {BaseLogger} from '../../logger/base-logger';
+import {environment} from '../../environments/environment';
+import * as winston from 'winston';
 
 export class CommandLogger {
 
+    private readonly logger: winston.Logger;
+
     constructor(
         private readonly commandLog: CommandLogInterface,
-        private readonly logger: BaseLogger,
-    ) {}
+        absoluteGuestCommandLogPath: string,
+    ) {
+        this.logger = winston.createLogger({
+            exitOnError: false,
+            transports: [
+                new winston.transports.File({
+                    level: environment.logger.mongoDb.logLevel,
+                    filename: absoluteGuestCommandLogPath,
+                }),
+            ],
+        });
+    }
 
     emerg(message: string, meta: object = {}) {
         this.logger.emerg(message, this.getMeta());
@@ -53,7 +66,7 @@ export class CommandLogger {
     }
 
     private getMeta(): any {
-        return {commandLogId: this.commandLog.id.toString()};
+        return {};
     }
 
 }

@@ -4,4 +4,8 @@ export interface CommandLogTypeInterface {
     readonly createdAt: Date;
     readonly completedAt: Date;
     readonly failedAt: Date;
+    readonly entries: {
+        level: string;
+        message: string;
+    }[];
 }

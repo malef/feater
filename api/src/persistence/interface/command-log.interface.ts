@@ -6,6 +6,7 @@ export interface CommandLogDetailItemInterface {
 }
 
 export interface CommandLogInterface extends Document {
+    readonly _id: string;
     readonly taskId: string;
     readonly instanceId: string;
     readonly instanceHash: string;

@@ -52,4 +52,16 @@ export class PathHelper {
         };
     }
 
+    getCommandLogPaths(instanceHash: string, commandLogId: string): AbsolutePathsInterface {
+        const instancePaths = this.getInstancePaths(instanceHash);
+        const relative = path.join('commandlog', commandLogId);
+
+        return {
+            absolute: {
+                guest: path.join(instancePaths.absolute.guest, relative),
+                host: path.join(instancePaths.absolute.host, relative),
+            },
+        };
+    }
+
 }

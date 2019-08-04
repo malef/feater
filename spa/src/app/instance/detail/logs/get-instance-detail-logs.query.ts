@@ -12,8 +12,7 @@ export const getInstanceDetailLogsQueryGql = gql`
                 completedAt
                 failedAt
                 entries {
-                    id
-                    timestamp
+                    level
                     message
                 }
             }
@@ -31,9 +30,7 @@ export interface GetInstanceDetailLogsQueryInstanceFieldInterface {
         completedAt: string;
         failedAt: string;
         entries: {
-            id: string;
-            timestamp: string;
-            formattedTimestamp: string;
+            level: string;
             message: string;
         }[];
     }[];

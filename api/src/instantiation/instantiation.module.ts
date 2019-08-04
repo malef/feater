@@ -90,6 +90,7 @@ import {IpAddressCheckerComponent} from './ip-address-checker.component';
         IpAddressCheckerComponent,
         AssetHelper,
         VariablesPredictor,
+        PathHelper,
     ],
 })
 export class InstantiationModule {}

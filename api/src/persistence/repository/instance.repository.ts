@@ -3,7 +3,6 @@ import {Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
 import {InstanceInterface} from '../interface/instance.interface';
 import {CreateInstanceInputTypeInterface} from '../../graphql/input-type/create-instance-input-type.interface';
-import {InstanceContext} from '../../instantiation/instance-context/instance-context';
 
 @Injectable()
 export class InstanceRepository {

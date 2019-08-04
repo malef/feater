@@ -138,6 +138,7 @@ export class InstanceCreatorComponent {
         createInstanceCommand.addCommand(new ContextAwareCommand(
             taskId,
             instanceContext.id,
+            instanceContext.hash,
             `Create instance build directory`,
             () => new CreateDirectoryCommand(
                 instanceContext.paths.dir.absolute.guest,
@@ -155,6 +156,7 @@ export class InstanceCreatorComponent {
             volume => new ContextAwareCommand(
                 taskId,
                 instanceContext.id,
+                instanceContext.hash,
                 `Create asset volume \`${volume.id}\``,
                 () => {
                     return new CreateVolumeFromAssetCommand(
@@ -178,6 +180,7 @@ export class InstanceCreatorComponent {
             source => new ContextAwareCommand(
                 taskId,
                 instanceContext.id,
+                instanceContext.hash,
                 `Clone repository for source \`${source.id}\``,
                 () => new CloneSourceCommand(
                     source.cloneUrl,
@@ -210,6 +213,7 @@ export class InstanceCreatorComponent {
             new ContextAwareCommand(
                 taskId,
                 instanceContext.id,
+                instanceContext.hash,
                 `Parse docker-compose configuration`,
                 () => {
                     const source = instanceContext.findSource(instanceContext.composeFiles[0].sourceId);
@@ -252,6 +256,7 @@ export class InstanceCreatorComponent {
                     proxiedPort => new ContextAwareCommand(
                         taskId,
                         instanceContext.id,
+                        instanceContext.hash,
                         `Prepare domain for proxied port \`${proxiedPort.id}\``,
                         () => new PrepareProxyDomainCommand(
                             instanceContext.hash,
@@ -285,6 +290,7 @@ export class InstanceCreatorComponent {
                     source => new ContextAwareCommand(
                         taskId,
                         instanceContext.id,
+                        instanceContext.hash,
                         `Prepare environment variables for source \`${source.id}\``,
                         () => new PrepareSourceEnvVarsCommand(
                             source.id,
@@ -313,6 +319,7 @@ export class InstanceCreatorComponent {
             new ContextAwareCommand(
                 taskId,
                 instanceContext.id,
+                instanceContext.hash,
                 `Prepare summary items`,
                 () => new PrepareSummaryItemsCommand(
                     instanceContext.featerVariables,
@@ -363,6 +370,7 @@ export class InstanceCreatorComponent {
             new ContextAwareCommand(
                 taskId,
                 instanceContext.id,
+                instanceContext.hash,
                 `Run docker-compose`,
                 () => {
                     const composeFile = instanceContext.composeFiles[0]; // TODO Handle multiple compose files.
@@ -398,6 +406,7 @@ export class InstanceCreatorComponent {
             new ContextAwareCommand(
                 taskId,
                 instanceContext.id,
+                instanceContext.hash,
                 `Get container ids`,
                 () => new GetContainerIdsCommand(
                     instanceContext.composeProjectName,
@@ -437,6 +446,7 @@ export class InstanceCreatorComponent {
                     proxiedPort => new ContextAwareCommand(
                         taskId,
                         instanceContext.id,
+                        instanceContext.hash,
                         `Connect service \`${proxiedPort.serviceId}\` to proxy network`,
                         () => {
                             const service = instanceContext.findService(proxiedPort.serviceId);
@@ -469,6 +479,7 @@ export class InstanceCreatorComponent {
                     proxiedPort => new ContextAwareCommand(
                         taskId,
                         instanceContext.id,
+                        instanceContext.hash,
                         `Prepare configuration for proxied port \`${proxiedPort.id}\``,
                         () => {
                             const service = instanceContext.findService(proxiedPort.serviceId);
@@ -528,6 +539,7 @@ export class InstanceCreatorComponent {
             new ContextAwareCommand(
                 taskId,
                 instanceContext.id,
+                instanceContext.hash,
                 `Enable configuration for proxied ports`,
                 () => new EnableProxyDomainsCommand(
                     instanceContext.hash,

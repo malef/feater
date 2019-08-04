@@ -5,6 +5,7 @@ import {CommandLogger} from '../logger/command-logger';
 import {BaseLogger} from '../../logger/base-logger';
 import {CommandExecutorComponent} from './command-executor.component';
 import {CommandType} from './command.type';
+import {PathHelper} from "../helper/path-helper.component";
 
 @Injectable()
 export class ContextAwareCommandExecutorComponent {
@@ -14,6 +15,7 @@ export class ContextAwareCommandExecutorComponent {
     constructor(
         private readonly commandLogRepository: CommandLogRepository,
         private readonly baseLogger: BaseLogger,
+        private readonly pathHelper: PathHelper,
     ) {}
 
     setCommandExecutorComponent(commandExecutorComponent: CommandExecutorComponent): void {
@@ -42,7 +44,10 @@ export class ContextAwareCommandExecutorComponent {
     protected async createCommandLogger(command: ContextAwareCommand): Promise<CommandLogger> {
         const commandLog = await command.createCommandLog(this.commandLogRepository);
 
-        return new CommandLogger(commandLog, this.baseLogger);
+        return new CommandLogger(
+            commandLog,
+            this.pathHelper.getCommandLogPaths(commandLog.instanceHash, commandLog.id.toString()).absolute.guest,
+        );
     }
 
     protected createCommand(command: ContextAwareCommand, commandLogger: CommandLogger): CommandType {

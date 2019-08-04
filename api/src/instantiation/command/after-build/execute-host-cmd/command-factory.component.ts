@@ -29,6 +29,7 @@ export class ExecuteHostCmdCommandFactoryComponent implements AfterBuildTaskComm
         return new ContextAwareCommand(
             taskId,
             instanceContext.id,
+            instanceContext.hash,
             `Execute host command`,
             () => new ExecuteHostCmdCommand(
                 instanceContext.envVariables,
