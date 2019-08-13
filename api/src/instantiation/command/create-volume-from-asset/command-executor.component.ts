@@ -32,10 +32,10 @@ export class CreateVolumeFromAssetCommandExecutorComponent implements SimpleComm
 
         const asset = await this.assetHelper.findUploadedById(typedCommand.assetId);
 
-        if (!asset.volumeName || asset.volumeStatus !== AssetVolumeStatus.created) {
-            logger.error('Asset source volume not created.');
+        if (!asset.volumeName || asset.volumeStatus !== AssetVolumeStatus.ready) {
+            logger.error('Asset source volume not ready.');
 
-            throw new Error('Asset source volume not created.');
+            throw new Error('Asset source volume not ready.');
         }
 
         const sourceVolumeName = asset.volumeName;

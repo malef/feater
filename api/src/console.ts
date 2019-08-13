@@ -34,20 +34,20 @@ async function bootstrap() {
                 console.log(`Invalid asset file, removing asset.`);
                 await assetRepository.getModel().findOneAndRemove({_id: asset._id}).exec();
                 console.log(`Asset removed.`);
+                console.log('');
+
                 continue;
             }
 
-            if (!asset.mimeType) {
-                console.log('Determining asset file MIME type.');
-                const assetFileType = fileType(
-                    readChunk.sync(
-                        uploadPaths.absolute.guest,
-                        0,
-                        fileType.minimumBytes,
-                    ),
-                );
-                asset.mimeType = assetFileType ? assetFileType.mime : null;
-            }
+            console.log('Determining asset file MIME type.');
+            const assetFileType = fileType(
+                readChunk.sync(
+                    uploadPaths.absolute.guest,
+                    0,
+                    fileType.minimumBytes,
+                ),
+            );
+            asset.mimeType = assetFileType ? assetFileType.mime : null;
 
             if (asset.volumeName) {
                 console.log(`Removing asset volume '${asset.volumeName}'.`);
@@ -80,6 +80,9 @@ async function bootstrap() {
             await asset.save();
 
             if ('application/gzip' !== asset.mimeType) {
+                console.log('No asset volume ready.');
+                console.log('');
+
                 continue;
             }
 
@@ -98,7 +101,7 @@ async function bootstrap() {
                 .then(
                     async () => {
                         asset.volumeName = volumeName;
-                        asset.volumeStatus = AssetVolumeStatus.created;
+                        asset.volumeStatus = AssetVolumeStatus.ready;
                         asset.updatedAt = new Date();
                         await asset.save();
                     },

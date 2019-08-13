@@ -3,7 +3,7 @@ import * as mongoose from 'mongoose';
 
 export enum AssetVolumeStatus {
     creating = 'creating',
-    created = 'created',
+    ready = 'ready',
     failed = 'failed',
 }
 

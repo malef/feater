@@ -95,7 +95,7 @@ export class AssetController {
                     )
                     .then(async () => {
                         asset.volumeName = volumeName;
-                        asset.volumeStatus = AssetVolumeStatus.created;
+                        asset.volumeStatus = AssetVolumeStatus.ready;
                         asset.updatedAt = new Date();
                         await asset.save();
                     })
