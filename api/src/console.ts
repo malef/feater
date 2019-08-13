@@ -39,13 +39,14 @@ async function bootstrap() {
 
             if (!asset.mimeType) {
                 console.log('Determining asset file MIME type.');
-                asset.mimeType = fileType(
+                const assetFileType = fileType(
                     readChunk.sync(
                         uploadPaths.absolute.guest,
                         0,
                         fileType.minimumBytes,
                     ),
-                ).mime;
+                );
+                asset.mimeType = assetFileType ? assetFileType.mime : null;
             }
 
             if (asset.volumeName) {

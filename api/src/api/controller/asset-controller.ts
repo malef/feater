@@ -8,9 +8,6 @@ import {Controller, Post, Request, Response, Next, Param} from '@nestjs/common';
 import {AssetRepository} from '../../persistence/repository/asset.repository';
 import {AssetHelper} from '../../instantiation/helper/asset-helper.component';
 import {environment} from '../../environments/environment';
-import {exec} from 'child_process';
-import {promisify} from 'util';
-import * as mongoose from 'mongoose';
 import {VolumeCreator} from '../../instantiation/volume-creator.service';
 import {PathHelper} from '../../instantiation/helper/path-helper.component';
 import {AssetVolumeStatus} from '../../persistence/interface/asset.interface';
@@ -44,9 +41,6 @@ export class AssetController {
         const busboy = new Busboy({ headers: req.headers });
         const uploadPaths = this.assetHelper.getUploadPaths(asset);
 
-        console.log(path.dirname(uploadPaths.absolute.guest));
-        console.log(uploadPaths.absolute.guest);
-
         busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
             if ('asset' !== fieldname) {
                 return;
@@ -73,7 +67,14 @@ export class AssetController {
 
             await assetFilePromise;
 
-            asset.mimeType = fileType(readChunk.sync(uploadPaths.absolute.guest, 0, fileType.minimumBytes)).mime;
+            const assetFileType = fileType(readChunk.sync(
+                uploadPaths.absolute.guest,
+                0,
+                fileType.minimumBytes,
+            ));
+
+            asset.mimeType = assetFileType ? assetFileType.mime : null;
+
             asset.uploaded = true;
             asset.updatedAt = new Date();
             await asset.save();
