@@ -38,6 +38,7 @@ import {CommandsListExecutorComponent} from './executor/commands-list-executor.c
 import {CommandExecutorComponent} from './executor/command-executor.component';
 import {VariablesPredictor} from './variable/variables-predictor';
 import {IpAddressCheckerComponent} from './ip-address-checker.component';
+import {VolumeCreator} from './volume-creator.service';
 
 @Module({
     imports: [
@@ -83,6 +84,7 @@ import {IpAddressCheckerComponent} from './ip-address-checker.component';
         ContextAwareCommandExecutorComponent,
         CompositeSimpleCommandExecutorComponent,
         VariablesPredictor,
+        VolumeCreator,
     ],
     exports: [
         InstanceCreatorComponent,
@@ -91,6 +93,7 @@ import {IpAddressCheckerComponent} from './ip-address-checker.component';
         AssetHelper,
         VariablesPredictor,
         PathHelper,
+        VolumeCreator,
     ],
 })
 export class InstantiationModule {}

@@ -5,6 +5,9 @@ export const AssetSchema = new Schema({
     id: String,
     description: String,
     uploaded: Boolean,
+    mimeType: String,
     createdAt: Date,
     updatedAt: Date,
+    volumeName: String,
+    volumeStatus: String,
 });

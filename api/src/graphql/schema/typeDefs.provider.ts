@@ -373,6 +373,9 @@ export const typeDefsProvider = {
         type Asset {
             id: String!
             description: String
+            mimeType: String
+            volumeName: String
+            volumeStatus: String
             project: Project!
             createdAt: String!
             updatedAt: String!

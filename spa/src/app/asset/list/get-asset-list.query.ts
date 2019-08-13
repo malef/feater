@@ -5,6 +5,9 @@ export const getAssetListQueryGql = gql`
     query {
         assets {
             id
+            mimeType
+            volumeName
+            volumeStatus
             createdAt
             updatedAt
         }
@@ -13,6 +16,9 @@ export const getAssetListQueryGql = gql`
 
 export interface GetAssetListQueryAssetsFieldItemInterface {
     id: number;
+    mimeType: string;
+    volumeName: string;
+    volumeStatus: string;
     createdAt: string;
     updatedAt: string;
 }

@@ -20,8 +20,12 @@ export interface EnvironmentInterface {
         readonly composeHttpTimeout: number;
         readonly dockerBinaryPath: string;
         readonly containerNamePrefix: string; // TODO Rename to composeProjectNamePrefix.
+        readonly assetVolumeNamePrefix: string;
         readonly proxyDomainPattern: string;
         readonly proxyDomainsNetworkName: string;
+        readonly gzipBinaryPath: string;
+        readonly tarBinaryPath: string;
+        readonly catBinaryPath: string;
     };
     readonly logger: {
         readonly console: {

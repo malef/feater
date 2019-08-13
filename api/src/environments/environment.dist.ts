@@ -22,8 +22,12 @@ export const environment: EnvironmentInterface = {
         composeHttpTimeout: 5000,
         dockerBinaryPath: '/usr/bin/docker',
         containerNamePrefix: 'featerinstance',
+        assetVolumeNamePrefix: 'featerasset',
         proxyDomainPattern: `{instance_hash}-{port_id}.my-feater-host`,
         proxyDomainsNetworkName: 'feater_proxy', // Value of COMPOSE_PROJECT_NAME is prepended by default.
+        gzipBinaryPath: '/bin/gzip',
+        tarBinaryPath: '/bin/tar',
+        catBinaryPath: '/bin/cat',
     },
     logger: {
         console: {

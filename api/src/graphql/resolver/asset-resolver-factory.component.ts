@@ -99,6 +99,9 @@ export class AssetResolverFactory {
             id: asset.id,
             projectId: asset.projectId,
             description: asset.description,
+            mimeType: asset.mimeType,
+            volumeName: asset.volumeName,
+            volumeStatus: asset.volumeStatus,
             createdAt: asset.createdAt,
             updatedAt: asset.updatedAt,
         } as AssetTypeInterface;

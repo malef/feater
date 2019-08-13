@@ -11,6 +11,10 @@ export class AssetRepository {
         @InjectModel('Asset') private readonly assetModel: Model<AssetInterface>,
     ) {}
 
+    getModel(): Model<AssetInterface> {
+        return this.assetModel;
+    }
+
     async find(criteria: object, offset: number, limit: number, sort?: object): Promise<AssetInterface[]> {
         const query = this.assetModel.find(criteria);
         query
@@ -38,6 +42,7 @@ export class AssetRepository {
 
     create(createAssetInputType: CreateAssetInputTypeInterface): Promise<AssetInterface> {
         const createdAsset = new this.assetModel(createAssetInputType);
+        createdAsset.uploaded = false;
         createdAsset.createdAt = new Date();
         createdAsset.updatedAt = new Date();
 

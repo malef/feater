@@ -21,6 +21,9 @@ export const getProjectDetailQueryGql = gql`
             }
             assets {
                 id
+                mimeType
+                volumeName
+                volumeStatus
                 description
                 project {
                     id
@@ -59,6 +62,9 @@ export interface GetProjectDetailQueryProjectFieldInterface {
         {
             id: string;
             description: string;
+            mimeType: string;
+            volumeName: string;
+            volumeStatus: string;
             project: {
                 id: string;
                 name: string;

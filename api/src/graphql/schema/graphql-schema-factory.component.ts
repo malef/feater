@@ -18,8 +18,6 @@ import {DeployKeyResolverFactory} from '../resolver/deploy-key-resolver-factory.
 import {DeployKeyTypeInterface} from '../type/deploy-key-type.interface';
 import {CommandLogInterface} from '../../persistence/interface/command-log.interface';
 import {CommandLogsResolverFactory} from '../resolver/command-logs-resolver-factory.component';
-import {CommandLogTypeInterface} from '../type/command-log-type.interface';
-import {LogInterface} from '../../persistence/interface/log.interface';
 
 @Injectable()
 export class GraphqlSchemaFactory {

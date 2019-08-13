@@ -1,11 +1,12 @@
 import {Injectable} from '@nestjs/common';
 import * as split from 'split';
 import {LoggerInterface} from '../../logger/logger-interface';
+import {ChildProcess} from "child_process";
 
 @Injectable()
 export class SpawnHelper {
     handleSpawned(
-        spawned,
+        spawned: ChildProcess,
         logger: LoggerInterface,
         resolve: (payload?: any) => void,
         reject: (error?: any) => void,
@@ -21,20 +22,44 @@ export class SpawnHelper {
             .pipe(split())
             .on('data', (line: string) => { logger.error(line.toString(), {}); });
 
+        this.handleSpawnedWithoutLogger(
+            spawned,
+            resolve,
+            reject,
+            successfulExitHandler,
+            failedExitHandler,
+            errorHandler,
+        );
+    }
+
+    handleSpawnedWithoutLogger(
+        spawned: ChildProcess,
+        resolve: (payload?: any) => void,
+        reject: (error?: any) => void,
+        successfulExitHandler?: () => void,
+        failedExitHandler?: (exitCode: number) => void,
+        errorHandler?: (error: Error) => void,
+    ): void {
         spawned.on('error', error => {
-            errorHandler(error);
+            if (errorHandler) {
+                errorHandler(error);
+            }
             reject(error);
         });
 
         const handleExit = exitCode => {
             if (0 !== exitCode) {
-                failedExitHandler(exitCode);
+                if (failedExitHandler) {
+                    failedExitHandler(exitCode);
+                }
                 reject(exitCode);
 
                 return;
             }
 
-            successfulExitHandler();
+            if (successfulExitHandler) {
+                successfulExitHandler();
+            }
             resolve();
         };
 

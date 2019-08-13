@@ -8,17 +8,23 @@
                 <thead>
                     <tr>
                         <th>ID</th>
+                        <th class="fit-column">MIME type</th>
+                        <th class="fit-column">Volume name</th>
+                        <th class="fit-column">Volume status</th>
                         <th class="fit-column">Created</th>
                         <th class="fit-column">Updated</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr *ngFor="let asset of assets">
-                        <td>
+                        <td class="fit-column">
                             <a routerLink="/asset/{{ asset.id }}">
                                 {{ asset.id }}
                             </a>
                         </td>
+                        <td class="fit-column">{{ asset.mimeType }}</td>
+                        <td class="fit-column">{{ asset.volumeName }}</td>
+                        <td>{{ asset.volumeStatus }}</td>
                         <td class="fit-column">
                             <small>{{ asset.createdAt | relativeDate }}</small>
                         </td>
