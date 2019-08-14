@@ -210,7 +210,7 @@ export class VolumeCreator {
                     'run', '--rm',
                     '-v', `${sourceVolumeName}:/source`,
                     '-v', `${destinationVolumeName}:/target`,
-                    'alpine', 'ash', '-c', 'cp -rT /source /target',
+                    'alpine', 'ash', '-c', 'cp -rvT /source /target',
                 ],
                 {cwd: workingDirectory},
             );

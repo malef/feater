@@ -164,8 +164,6 @@ export class InstanceCreatorComponent {
                         volume.assetId,
                         instanceContext.composeProjectName,
                         instanceContext.paths.dir.absolute.guest,
-                        volume.paths.extractDir.absolute.guest,
-                        volume.paths.extractDir.absolute.host,
                     );
                 },
                 async (result: CreateVolumeFromAssetCommandResultInterface): Promise<void> => {

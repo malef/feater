@@ -32,9 +32,6 @@ export class InstanceContextFactory {
             instanceContext.volumes.push({
                 id: volumeConfig.id,
                 assetId: volumeConfig.assetId,
-                paths: {
-                    extractDir: this.pathHelper.getAssetExtractPaths(hash, volumeConfig.assetId),
-                },
             });
         }
 
