@@ -194,7 +194,7 @@ export class InstanceCreatorComponent {
         createInstanceCommand.addCommand(
             new CommandsList(
                 createVolumeFromAssetCommands.concat(cloneSourceCommands),
-                true,
+                false,
             ),
         );
     }
@@ -270,7 +270,7 @@ export class InstanceCreatorComponent {
                         },
                     ),
                 ),
-                true,
+                false,
             ),
         );
     }
@@ -304,7 +304,7 @@ export class InstanceCreatorComponent {
                         },
                     ),
                 ),
-                true,
+                false,
             ),
         );
     }
@@ -355,7 +355,7 @@ export class InstanceCreatorComponent {
                         false,
                     ),
                 ),
-                true,
+                false,
             ),
         );
     }
@@ -462,7 +462,7 @@ export class InstanceCreatorComponent {
                         },
                     ),
                 ),
-                true,
+                false,
             ),
         );
     }
@@ -496,7 +496,7 @@ export class InstanceCreatorComponent {
                         },
                     ),
                 ),
-                true,
+                false,
             ),
         );
     }

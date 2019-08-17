@@ -92,6 +92,8 @@ export class CommandsMapExecutorComponent {
                         reject(error);
                     },
                 );
+
+            break;
         }
 
         if (

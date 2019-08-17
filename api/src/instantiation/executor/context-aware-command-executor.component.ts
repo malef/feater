@@ -5,7 +5,7 @@ import {CommandLogger} from '../logger/command-logger';
 import {BaseLogger} from '../../logger/base-logger';
 import {CommandExecutorComponent} from './command-executor.component';
 import {CommandType} from './command.type';
-import {PathHelper} from "../helper/path-helper.component";
+import {PathHelper} from '../helper/path-helper.component';
 
 @Injectable()
 export class ContextAwareCommandExecutorComponent {
