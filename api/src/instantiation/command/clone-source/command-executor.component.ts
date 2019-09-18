@@ -5,15 +5,15 @@ import {CloneSourceCommand} from './command';
 import {DeployKeyInterface} from '../../../persistence/interface/deploy-key.interface';
 import {SimpleCommand} from '../../executor/simple-command';
 import {BaseLogger} from '../../../logger/base-logger';
+import {CommandLogger} from '../../logger/command-logger';
 import * as nodegit from 'nodegit';
 import * as gitUrlParse from 'git-url-parse';
 import * as sshFingerprint from 'ssh-fingerprint';
-import {CommandLogger} from '../../logger/command-logger';
 
 @Injectable()
 export class CloneSourceCommandExecutorComponent implements SimpleCommandExecutorComponentInterface {
 
-    readonly PROGRESS_THROTTLE_PERIOD = 200;
+    private readonly PROGRESS_THROTTLE_PERIOD = 200;
 
     constructor(
         private readonly deployKeyRepository: DeployKeyRepository,
@@ -27,17 +27,9 @@ export class CloneSourceCommandExecutorComponent implements SimpleCommandExecuto
         const typedCommand = (command as CloneSourceCommand);
         const logger = typedCommand.commandLogger;
 
-        let deployKey;
+        logger.info(`Finding deploy key.`);
+        const deployKey = await this.findDeployKey(typedCommand, logger);
 
-        logger.info(`Clone URL: ${typedCommand.cloneUrl}`);
-        if ('ssh' === gitUrlParse(typedCommand.cloneUrl).protocol) {
-            logger.info(`Using deploy key to clone over SSH.`);
-            deployKey = await this.deployKeyRepository.findOneByCloneUrl(typedCommand.cloneUrl);
-            logger.info(`Deploy key fingerprint: ${sshFingerprint(deployKey.publicKey)}`);
-        } else {
-            deployKey = null;
-            logger.info(`Not using deploy key.`);
-        }
         const repository = await nodegit.Clone.clone(
             typedCommand.cloneUrl,
             typedCommand.absoluteGuestInstanceDirPath,
@@ -50,7 +42,23 @@ export class CloneSourceCommandExecutorComponent implements SimpleCommandExecuto
         return {};
     }
 
-    protected createCloneOptions(commandLogger: CommandLogger, deployKey?: DeployKeyInterface): any {
+    private async findDeployKey(command: CloneSourceCommand, logger: CommandLogger): Promise<DeployKeyInterface | null> {
+        logger.info(`Clone URL: ${command.cloneUrl}`);
+
+        if ('ssh' !== gitUrlParse(command.cloneUrl).protocol) {
+            logger.info(`Not using deploy key.`);
+
+            return null;
+        }
+
+        logger.info(`Using deploy key to clone over SSH.`);
+        const deployKey = await this.deployKeyRepository.findOneByCloneUrl(command.cloneUrl);
+        logger.info(`Deploy key fingerprint: ${sshFingerprint(deployKey.publicKey)}`);
+
+        return deployKey;
+    }
+
+    private createCloneOptions(commandLogger: CommandLogger, deployKey?: DeployKeyInterface): any {
         const logger = new BaseLogger(); // TODO Replace with real logger.
         let lastProgress: string;
 
@@ -87,7 +95,7 @@ export class CloneSourceCommandExecutorComponent implements SimpleCommandExecuto
         };
     }
 
-    protected async checkoutReference(command: CloneSourceCommand, repo: nodegit.Repository): Promise<void> {
+    private async checkoutReference(command: CloneSourceCommand, repo: nodegit.Repository): Promise<void> {
         if ('branch' === command.referenceType) {
             const reference = await repo.getBranch(`refs/remotes/origin/${command.referenceName}`);
             await repo.checkoutRef(reference);
@@ -96,16 +104,14 @@ export class CloneSourceCommandExecutorComponent implements SimpleCommandExecuto
             return;
         }
 
-        if ('tag' === command.referenceType) {
-            const reference = await repo.getReference(`refs/tags/${command.referenceName}`);
-            await repo.checkoutRef(reference);
-            command.commandLogger.info(`Checked out tag: ${command.referenceName}`);
-        }
-
         if ('commit' === command.referenceType) {
             const commit = await repo.getCommit(command.referenceName);
             await repo.setHeadDetached(commit.id());
             command.commandLogger.info(`Checked out commit: ${command.referenceName}`);
+
+            return;
         }
+
+        throw new Error('Unknown reference type, only branches and commits are supported.');
     }
 }

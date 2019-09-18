@@ -8,6 +8,7 @@ import {CreateDirectoryCommand} from './command/create-directory/command';
 import {CreateVolumeFromAssetCommand} from './command/create-volume-from-asset/command';
 import {CreateVolumeFromAssetCommandResultInterface} from './command/create-volume-from-asset/command-result.interface';
 import {CloneSourceCommand} from './command/clone-source/command';
+import {ResetSourceCommand} from './command/reset-source/command';
 import {ParseDockerComposeCommand} from './command/parse-docker-compose/command';
 import {ParseDockerComposeCommandResultInterface} from './command/parse-docker-compose/command-result.interface';
 import {PrepareProxyDomainCommand} from './command/prepare-port-domain/command';
@@ -106,6 +107,7 @@ export class InstanceCreatorComponent {
         this.addPrepareEnvVarsForSources(createInstanceCommand, taskId, instanceContext, updateInstance);
         this.addPrepareSummaryItems(createInstanceCommand, taskId, instanceContext, updateInstance);
         this.addBeforeBuildTasks(createInstanceCommand, taskId, instanceContext, updateInstance);
+        this.addResetSource(createInstanceCommand, taskId, instanceContext, updateInstance);
         this.addRunDockerCompose(createInstanceCommand, taskId, instanceContext, updateInstance);
         this.addGetContainerIds(createInstanceCommand, taskId, instanceContext, updateInstance);
         this.addConnectContainersToNetwork(createInstanceCommand, taskId, instanceContext, updateInstance);
@@ -194,6 +196,33 @@ export class InstanceCreatorComponent {
         createInstanceCommand.addCommand(
             new CommandsList(
                 createVolumeFromAssetCommands.concat(cloneSourceCommands),
+                false,
+            ),
+        );
+    }
+
+    protected addResetSource(
+        createInstanceCommand: CommandsList,
+        taskId: string,
+        instanceContext: InstanceContext,
+        updateInstanceFromInstanceContext: () => Promise<void>,
+    ): void {
+        createInstanceCommand.addCommand(
+            new CommandsList(
+                instanceContext.sources.map(
+                    source => new ContextAwareCommand(
+                        taskId,
+                        instanceContext.id,
+                        instanceContext.hash,
+                        `Reset repository for source \`${source.id}\``,
+                        () => new ResetSourceCommand(
+                            source.cloneUrl,
+                            source.reference.type,
+                            source.reference.name,
+                            source.paths.dir.absolute.guest,
+                        ),
+                    ),
+                ),
                 false,
             ),
         );
