@@ -22,14 +22,14 @@ export class CopyFileCommandFactoryComponent implements BeforeBuildTaskCommandFa
         type: string,
         beforeBuildTask: InstantiationContextBeforeBuildTaskInterface,
         source: InstantiationContextSourceInterface,
-        taskId: string,
+        actionLogId: string,
         instantiationContext: InstantiationContext,
         updateInstance: () => Promise<void>,
     ): CommandType {
         const typedBeforeBuildTask = beforeBuildTask as InstantiationContextCopyFileInterface;
 
         return new ContextAwareCommand(
-            taskId,
+            actionLogId,
             instantiationContext.id,
             instantiationContext.hash,
             `Copy file for source \`${source.id}\``,

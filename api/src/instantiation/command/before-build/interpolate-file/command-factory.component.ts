@@ -24,14 +24,14 @@ export class InterpolateFileCommandFactoryComponent implements BeforeBuildTaskCo
         type: string,
         beforeBuildTask: InstantiationContextBeforeBuildTaskInterface,
         source: InstantiationContextSourceInterface,
-        taskId: string,
+        actionLogId: string,
         instantiationContext: InstantiationContext,
         updateInstance: () => Promise<void>,
     ): CommandType {
         const typedBeforeBuildTask = beforeBuildTask as InstantiationContextInterpolateFileInterface;
 
         return new ContextAwareCommand(
-            taskId,
+            actionLogId,
             instantiationContext.id,
             instantiationContext.hash,
             `Interpolate file for source \`${source.id}\``,

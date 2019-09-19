@@ -205,7 +205,7 @@ export class InstanceResolverFactory {
                 },
             );
 
-            // TODO Remove command logs.
+            // TODO Remove action logs and command logs.
 
             return await this.instanceRepository.remove(removeInstanceInput.id);
         };
@@ -243,4 +243,5 @@ export class InstanceResolverFactory {
 
         return mapped;
     }
+
 }

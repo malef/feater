@@ -20,14 +20,14 @@ export class ExecuteServiceCmdCommandFactoryComponent implements AfterBuildTaskC
     createCommand(
         type: string,
         afterBuildTask: InstantiationContextAfterBuildTaskInterface,
-        taskId: string,
+        actionLogId: string,
         instantiationContext: InstantiationContext,
         updateInstance: () => Promise<void>,
     ): CommandType {
         const typedAfterBuildTask = afterBuildTask as InstantiationContextExecuteServiceCmdInterface;
 
         return new ContextAwareCommand(
-            taskId,
+            actionLogId,
             instantiationContext.id,
             instantiationContext.hash,
             `Execute service command for service \`${typedAfterBuildTask.serviceId}\``,

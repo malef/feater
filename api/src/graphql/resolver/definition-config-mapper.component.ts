@@ -12,13 +12,13 @@ import {
     InterpolateBeforeBuildTaskTypeInterface,
 } from '../type/nested/definition-config/before-build-task-type.interface';
 import {
-    AfterBuildTaskTypeInterface, AfterBuildTaskTypeInterfaces,
+    AfterBuildTaskTypeInterfaces,
     CopyAssetIntoContainerAfterBuildTaskTypeInterface,
     ExecuteHostCommandAfterBuildTaskTypeInterface,
     ExecuteServiceCommandAfterBuildTaskTypeInterface,
 } from '../type/nested/definition-config/after-build-task-type.interface';
 import {VolumeTypeInterface} from '../type/nested/definition-config/volume-type.interface';
-import {ActionTypeInterface} from "../type/nested/definition-config/action-type.interface";
+import {ActionTypeInterface} from '../type/nested/definition-config/action-type.interface';
 
 @Injectable()
 export class DefinitionConfigMapper {

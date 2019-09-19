@@ -10,8 +10,8 @@ export interface ConfigTypeInterface {
     volumes: VolumeTypeInterface[];
     sources: SourceTypeInterface[];
     proxiedPorts: ProxiedPortTypeInterface[];
-    summaryItems: SummaryItemTypeInterface[];
     envVariables: EnvVariableTypeInterface[];
     composeFiles: ComposeFileTypeInterface[];
     actions: ActionTypeInterface[];
+    summaryItems: SummaryItemTypeInterface[];
 }

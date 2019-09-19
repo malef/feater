@@ -4,7 +4,7 @@ import {SimpleCommand} from './simple-command';
 
 export class ContextAwareCommand {
     constructor(
-        readonly taskId: string,
+        readonly actionLogId: string,
         readonly instanceId: string,
         readonly instanceHash: string,
         readonly description: string,
@@ -14,7 +14,7 @@ export class ContextAwareCommand {
 
     createCommandLog(commandLogRepository: CommandLogRepository): Promise<CommandLogInterface> {
         return commandLogRepository.create(
-            this.taskId,
+            this.actionLogId,
             this.instanceId,
             this.instanceHash,
             this.description,

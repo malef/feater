@@ -19,14 +19,14 @@ export class CopyAssetIntoContainerCommandFactoryComponent implements AfterBuild
     createCommand(
         type: string,
         afterBuildTask: InstantiationContextAfterBuildTaskInterface,
-        taskId: string,
+        actionLogId: string,
         instantiationContext: InstantiationContext,
         updateInstance: () => Promise<void>,
     ): CommandType {
         const typedAfterBuildTask = afterBuildTask as InstantiationContextCopyAssetIntoContainerInterface;
 
         return new ContextAwareCommand(
-            taskId,
+            actionLogId,
             instantiationContext.id,
             instantiationContext.hash,
             `Copy asset \`${typedAfterBuildTask.assetId}\` for service \`${typedAfterBuildTask.serviceId}\``,

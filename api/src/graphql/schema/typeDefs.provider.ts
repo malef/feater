@@ -431,6 +431,16 @@ export const typeDefsProvider = {
             entries: [InstanceCommandLogEntry!]!
         }
 
+        type InstanceActionLog {
+            id: String!
+            actionId: String!
+            actionType: String!
+            createdAt: String!
+            completedAt: String
+            failedAt: String
+            commandLogs: [InstanceCommandLog!]!
+        }
+
         type Instance {
             id: String!
             hash: String
@@ -444,7 +454,7 @@ export const typeDefsProvider = {
             updatedAt: String
             completedAt: String
             failedAt: String
-            commandLogs: [InstanceCommandLog!]!
+            actionLogs: [InstanceActionLog!]!
         }
 
         type RemoveDeployKeyResult {

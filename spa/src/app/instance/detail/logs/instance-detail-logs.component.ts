@@ -17,14 +17,10 @@ import {
 })
 export class InstanceDetailLogsComponent implements OnInit {
 
-    readonly TIMESTAMP_FORMAT = 'YYYY-MM-DD HH:mm:ss';
-
     readonly COLLAPSED = 1;
     readonly EXPANDED = 2;
 
     instance: GetInstanceDetailLogsQueryInstanceFieldInterface;
-
-    lastCommandLogEntryId: string = null;
 
     expandToggles: {[commandLogId: string]: number} = {};
 
@@ -81,43 +77,36 @@ export class InstanceDetailLogsComponent implements OnInit {
             .valueChanges
             .subscribe(result => {
                 const resultData: GetInstanceDetailLogsQueryInterface = result.data;
-                this.updateLastCommandLogEntryId(resultData);
                 this.instance = {
                     id: resultData.instance.id,
                     name: resultData.instance.name,
-                    commandLogs: [],
+                    actionLogs: [],
                 };
-                for (const commandLogData of resultData.instance.commandLogs) {
-                    this.addCommandLog(commandLogData);
+                for (const actionLogData of resultData.instance.actionLogs) {
+                    this.addActionLog(actionLogData);
                 }
 
                 this.spinner.hide();
             });
     }
 
-    protected updateLastCommandLogEntryId(
-        resultData: GetInstanceDetailLogsQueryInterface,
-    ): void {
-        const entryIds = _.map(
-            _.flatten(
-                resultData.instance.commandLogs.map((commandLog) => {
-                    return commandLog.entries.length > 0
-                        ? commandLog.entries.slice(-1)
-                        : [];
-                })
-            ),
-            'id'
-        );
-        if (0 !== entryIds.length) {
-            this.lastCommandLogEntryId = _.max(entryIds);
+    protected addActionLog(actionLogData) {
+        const actionLog = {
+            id: actionLogData.id,
+            actionId: actionLogData.actionId,
+            actionType: actionLogData.actionType,
+            createdAt: actionLogData.createdAt,
+            completedAt: actionLogData.completedAt,
+            failedAt: actionLogData.failedAt,
+            commandLogs: [],
+        };
+        this.instance.actionLogs.push(actionLog);
+        for (const commandLogData of actionLogData.commandLogs) {
+            this.addCommandLog(actionLog, commandLogData);
         }
     }
 
-    protected findCommandLog(commandLogId) {
-        return _.find(this.instance.commandLogs, {id: commandLogId});
-    }
-
-    protected addCommandLog(commandLogData) {
+    protected addCommandLog(actionLog, commandLogData) {
         const commandLog = {
             id: commandLogData.id,
             description: commandLogData.description,
@@ -126,7 +115,7 @@ export class InstanceDetailLogsComponent implements OnInit {
             failedAt: commandLogData.failedAt,
             entries: [],
         };
-        this.instance.commandLogs.push(commandLog);
+        actionLog.commandLogs.push(commandLog);
         this.addCommandLogEntries(commandLog, commandLogData.entries);
     }
 

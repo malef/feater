@@ -4,11 +4,11 @@ import {DeployKeyRepository} from '../../../persistence/repository/deploy-key.re
 import {ResetSourceCommand} from './command';
 import {DeployKeyInterface} from '../../../persistence/interface/deploy-key.interface';
 import {SimpleCommand} from '../../executor/simple-command';
-import {Checkout, CheckoutOptions, Commit, FetchOptions, Repository, Reset} from 'nodegit';
+import {Checkout, Commit, FetchOptions, Repository, Reset} from 'nodegit';
+import {CommandLogger} from '../../logger/command-logger';
 import * as nodegit from 'nodegit';
 import * as gitUrlParse from 'git-url-parse';
 import * as sshFingerprint from 'ssh-fingerprint';
-import {CommandLogger} from "../../logger/command-logger";
 
 @Injectable()
 export class ResetSourceCommandExecutorComponent implements SimpleCommandExecutorComponentInterface {

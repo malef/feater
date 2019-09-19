@@ -1,4 +1,3 @@
-import * as GraphQLJSON from 'graphql-type-json';
 import {Inject, Injectable} from '@nestjs/common';
 import {GraphQLSchema} from 'graphql';
 import {makeExecutableSchema} from 'graphql-tools';
@@ -18,8 +17,9 @@ import {DeployKeyResolverFactory} from '../resolver/deploy-key-resolver-factory.
 import {DeployKeyTypeInterface} from '../type/deploy-key-type.interface';
 import {CommandLogInterface} from '../../persistence/interface/command-log.interface';
 import {CommandLogsResolverFactory} from '../resolver/command-logs-resolver-factory.component';
-import {CommandLogTypeInterface} from '../type/command-log-type.interface';
-import {LogInterface} from '../../persistence/interface/log.interface';
+import {ActionTypeInterface} from '../type/nested/definition-config/action-type.interface';
+import {ActionLogsResolverFactory} from '../resolver/action-logs-resolver-factory.component';
+import * as GraphQLJSON from 'graphql-type-json';
 
 @Injectable()
 export class GraphqlSchemaFactory {
@@ -30,6 +30,7 @@ export class GraphqlSchemaFactory {
         private readonly instanceResolverFactory: InstanceResolverFactory,
         private readonly assetResolverFactory: AssetResolverFactory,
         private readonly deployKeyResolverFactory: DeployKeyResolverFactory,
+        private readonly actionLogsResolverFactory: ActionLogsResolverFactory,
         private readonly commandLogsResolverFactory: CommandLogsResolverFactory,
         private readonly dateResolverFactory: DateResolverFactory,
         private readonly dockerDaemonResolverFactory: DockerDaemonResolverFactory,
@@ -141,7 +142,7 @@ export class GraphqlSchemaFactory {
                 failedAt: this.dateResolverFactory.getDateResolver(
                     (instance: InstanceTypeInterface) => instance.failedAt,
                 ),
-                commandLogs: this.commandLogsResolverFactory.getListResolver(
+                actionLogs: this.actionLogsResolverFactory.getListResolver(
                     (instance: InstanceTypeInterface) => ({instanceId: instance.id.toString()}),
                 ),
             },
@@ -152,6 +153,21 @@ export class GraphqlSchemaFactory {
                 ),
                 ipAddress: this.dockerDaemonResolverFactory.getIpAddressResolver(
                     (instanceService: any) => instanceService.containerNamePrefix,
+                ),
+            },
+
+            InstanceActionLog: {
+                commandLogs: this.commandLogsResolverFactory.getListResolver(
+                    (actionLog: ActionTypeInterface) => ({actionLogId: actionLog.id.toString()}),
+                ),
+                createdAt: this.dateResolverFactory.getDateResolver(
+                    (actionLog: ActionTypeInterface) => actionLog.createdAt,
+                ),
+                completedAt: this.dateResolverFactory.getDateResolver(
+                    (actionLog: ActionTypeInterface) => actionLog.completedAt,
+                ),
+                failedAt: this.dateResolverFactory.getDateResolver(
+                    (actionLog: ActionTypeInterface) => actionLog.failedAt,
                 ),
             },
 

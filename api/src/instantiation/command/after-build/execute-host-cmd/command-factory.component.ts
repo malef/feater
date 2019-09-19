@@ -20,14 +20,14 @@ export class ExecuteHostCmdCommandFactoryComponent implements AfterBuildTaskComm
     createCommand(
         type: string,
         afterBuildTask: InstantiationContextAfterBuildTaskInterface,
-        taskId: string,
+        actionLogId: string,
         instantiationContext: InstantiationContext,
         updateInstance: () => Promise<void>,
     ): CommandType {
         const typedAfterBuildTask = afterBuildTask as InstantiationContextExecuteHostCmdInterface;
 
         return new ContextAwareCommand(
-            taskId,
+            actionLogId,
             instantiationContext.id,
             instantiationContext.hash,
             `Execute host command`,

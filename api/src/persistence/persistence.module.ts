@@ -13,34 +13,40 @@ import {DeployKeySchema} from './schema/deploy-key.schema';
 import {DeployKeyRepository} from './repository/deploy-key.repository';
 import {CommandLogSchema} from './schema/command-log.schema';
 import {CommandLogRepository} from './repository/command-log.repository';
+import {ActionLogSchema} from './schema/action-log.schema';
+import {ActionLogRepository} from './repository/action-log.repository';
 
 @Module({
   imports: [
       MongooseModule.forRoot(environment.mongo.dsn),
       MongooseModule.forFeature([{
           name: 'Project',
-          schema: ProjectSchema },
-      ]),
+          schema: ProjectSchema,
+      }]),
       MongooseModule.forFeature([{
           name: 'Definition',
-          schema: DefinitionSchema },
-      ]),
+          schema: DefinitionSchema,
+      }]),
       MongooseModule.forFeature([{
           name: 'Instance',
-          schema: InstanceSchema },
-      ]),
+          schema: InstanceSchema,
+      }]),
       MongooseModule.forFeature([{
           name: 'Asset',
-          schema: AssetSchema },
-      ]),
+          schema: AssetSchema,
+      }]),
       MongooseModule.forFeature([{
           name: 'DeployKey',
-          schema: DeployKeySchema },
-      ]),
+          schema: DeployKeySchema,
+      }]),
+      MongooseModule.forFeature([{
+          name: 'ActionLog',
+          schema: ActionLogSchema,
+      }]),
       MongooseModule.forFeature([{
           name: 'CommandLog',
-          schema: CommandLogSchema },
-      ]),
+          schema: CommandLogSchema,
+      }]),
   ],
   controllers: [],
   providers: [
@@ -49,6 +55,7 @@ import {CommandLogRepository} from './repository/command-log.repository';
       InstanceRepository,
       AssetRepository,
       DeployKeyRepository,
+      ActionLogRepository,
       CommandLogRepository,
   ],
   exports: [
@@ -57,6 +64,7 @@ import {CommandLogRepository} from './repository/command-log.repository';
       InstanceRepository,
       AssetRepository,
       DeployKeyRepository,
+      ActionLogRepository,
       CommandLogRepository,
   ],
 })

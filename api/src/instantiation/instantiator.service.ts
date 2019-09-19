@@ -1,5 +1,3 @@
-import * as path from 'path';
-import * as _ from 'lodash';
 import {Injectable} from '@nestjs/common';
 import {BaseLogger} from '../logger/base-logger';
 import {CommandsList} from './executor/commands-list';
@@ -43,6 +41,9 @@ import {CommandsMap} from './executor/commands-map';
 import {CommandsMapItem} from './executor/commands-map-item';
 import {InstanceInterface} from '../persistence/interface/instance.interface';
 import {DefinitionInterface} from '../persistence/interface/definition.interface';
+import {ActionLogRepository} from '../persistence/repository/action-log.repository';
+import * as path from 'path';
+import * as _ from 'lodash';
 
 @Injectable()
 export class Instantiator {
@@ -52,6 +53,7 @@ export class Instantiator {
 
     constructor(
         protected readonly instanceRepository: InstanceRepository,
+        protected readonly actionLogRepository: ActionLogRepository,
         protected readonly instantiationContextFactory: InstantiationContextFactory,
         protected readonly logger: BaseLogger,
         protected readonly commandExecutorComponent: CommandExecutorComponent,
@@ -79,14 +81,21 @@ export class Instantiator {
         instantiationActionId: string,
         instance: InstanceInterface,
     ): Promise<any> {
-        // TODO Is this needed? It should be action id. Do we need a separate collection for it?
-        const taskId = 'instantiation';
+        const action = this.findAction(definition.config, instantiationActionId);
+
+        const actionLog = await this.actionLogRepository.create(
+            instance._id.toString(),
+            action.id,
+            action.type,
+        );
+
+        const actionLogId = actionLog._id.toString();
 
         const instantiationContext = this.instantiationContextFactory.create(
             definition.config,
-            instance.id,
+            instance._id.toString(),
             hash,
-            instantiationActionId,
+            action.id,
         );
 
         const createInstanceCommand = new CommandsList([], false);
@@ -105,19 +114,19 @@ export class Instantiator {
 
         await updateInstance();
 
-        this.addCreateDirectory(createInstanceCommand, taskId, instantiationContext, updateInstance);
-        this.addCreateVolumeFromAssetsAndCloneSource(createInstanceCommand, taskId, instantiationContext, updateInstance);
-        this.addParseDockerCompose(createInstanceCommand, taskId, instantiationContext, updateInstance);
-        this.addPrepareProxyDomains(createInstanceCommand, taskId, instantiationContext, updateInstance);
-        this.addPrepareEnvVarsForSources(createInstanceCommand, taskId, instantiationContext, updateInstance);
-        this.addPrepareSummaryItems(createInstanceCommand, taskId, instantiationContext, updateInstance);
-        this.addBeforeBuildTasks(createInstanceCommand, taskId, instantiationContext, updateInstance);
-        this.addRunDockerCompose(createInstanceCommand, taskId, instantiationContext, updateInstance);
-        this.addGetContainerIds(createInstanceCommand, taskId, instantiationContext, updateInstance);
-        this.addConnectContainersToNetwork(createInstanceCommand, taskId, instantiationContext, updateInstance);
-        this.addConfigureProxyDomains(createInstanceCommand, taskId, instantiationContext, updateInstance);
-        this.addAfterBuildTasks(createInstanceCommand, taskId, instantiationContext, updateInstance);
-        this.addEnableProxyDomains(createInstanceCommand, taskId, instantiationContext, updateInstance);
+        this.addCreateDirectory(createInstanceCommand, actionLogId, instantiationContext, updateInstance);
+        this.addCreateVolumeFromAssetsAndCloneSource(createInstanceCommand, actionLogId, instantiationContext, updateInstance);
+        this.addParseDockerCompose(createInstanceCommand, actionLogId, instantiationContext, updateInstance);
+        this.addPrepareProxyDomains(createInstanceCommand, actionLogId, instantiationContext, updateInstance);
+        this.addPrepareEnvVarsForSources(createInstanceCommand, actionLogId, instantiationContext, updateInstance);
+        this.addPrepareSummaryItems(createInstanceCommand, actionLogId, instantiationContext, updateInstance);
+        this.addBeforeBuildTasks(createInstanceCommand, actionLogId, instantiationContext, updateInstance);
+        this.addRunDockerCompose(createInstanceCommand, actionLogId, instantiationContext, updateInstance);
+        this.addGetContainerIds(createInstanceCommand, actionLogId, instantiationContext, updateInstance);
+        this.addConnectContainersToNetwork(createInstanceCommand, actionLogId, instantiationContext, updateInstance);
+        this.addConfigureProxyDomains(createInstanceCommand, actionLogId, instantiationContext, updateInstance);
+        this.addAfterBuildTasks(createInstanceCommand, actionLogId, instantiationContext, updateInstance);
+        this.addEnableProxyDomains(createInstanceCommand, actionLogId, instantiationContext, updateInstance);
 
         return this.commandExecutorComponent
             .execute(createInstanceCommand)
@@ -137,12 +146,12 @@ export class Instantiator {
 
     protected addCreateDirectory(
         createInstanceCommand: CommandsList,
-        taskId: string,
+        actionLogId: string,
         instantiationContext: InstantiationContext,
         updateInstance: () => Promise<void>,
     ): void {
         createInstanceCommand.addCommand(new ContextAwareCommand(
-            taskId,
+            actionLogId,
             instantiationContext.id,
             instantiationContext.hash,
             `Create instance build directory`,
@@ -154,13 +163,13 @@ export class Instantiator {
 
     protected addCreateVolumeFromAssetsAndCloneSource(
         createInstanceCommand: CommandsList,
-        taskId: string,
+        actionLogId: string,
         instantiationContext: InstantiationContext,
         updateInstance: () => Promise<void>,
     ): void {
         const createVolumeFromAssetCommands = instantiationContext.volumes.map(
             volume => new ContextAwareCommand(
-                taskId,
+                actionLogId,
                 instantiationContext.id,
                 instantiationContext.hash,
                 `Create asset volume \`${volume.id}\``,
@@ -184,7 +193,7 @@ export class Instantiator {
 
         const cloneSourceCommands = instantiationContext.sources.map(
             source => new ContextAwareCommand(
-                taskId,
+                actionLogId,
                 instantiationContext.id,
                 instantiationContext.hash,
                 `Clone repository for source \`${source.id}\``,
@@ -211,13 +220,13 @@ export class Instantiator {
      */
     protected addParseDockerCompose(
         createInstanceCommand: CommandsList,
-        taskId: string,
+        actionLogId: string,
         instantiationContext: InstantiationContext,
         updateInstance: () => Promise<void>,
     ): void {
         createInstanceCommand.addCommand(
             new ContextAwareCommand(
-                taskId,
+                actionLogId,
                 instantiationContext.id,
                 instantiationContext.hash,
                 `Parse docker-compose configuration`,
@@ -252,7 +261,7 @@ export class Instantiator {
      */
     protected addPrepareProxyDomains(
         createInstanceCommand: CommandsList,
-        taskId: string,
+        actionLogId: string,
         instantiationContext: InstantiationContext,
         updateInstance: () => Promise<void>,
     ): void {
@@ -260,7 +269,7 @@ export class Instantiator {
             new CommandsList(
                 instantiationContext.proxiedPorts.map(
                     proxiedPort => new ContextAwareCommand(
-                        taskId,
+                        actionLogId,
                         instantiationContext.id,
                         instantiationContext.hash,
                         `Prepare domain for proxied port \`${proxiedPort.id}\``,
@@ -286,7 +295,7 @@ export class Instantiator {
      */
     protected addPrepareEnvVarsForSources(
         createInstanceCommand: CommandsList,
-        taskId: string,
+        actionLogId: string,
         instantiationContext: InstantiationContext,
         updateInstance: () => Promise<void>,
     ): void {
@@ -294,7 +303,7 @@ export class Instantiator {
             new CommandsList(
                 instantiationContext.sources.map(
                     source => new ContextAwareCommand(
-                        taskId,
+                        actionLogId,
                         instantiationContext.id,
                         instantiationContext.hash,
                         `Prepare environment variables for source \`${source.id}\``,
@@ -317,13 +326,13 @@ export class Instantiator {
 
     protected addPrepareSummaryItems(
         createInstanceCommand: CommandsList,
-        taskId: string,
+        actionLogId: string,
         instantiationContext: InstantiationContext,
         updateInstance: () => Promise<void>,
     ): void {
         createInstanceCommand.addCommand(
             new ContextAwareCommand(
-                taskId,
+                actionLogId,
                 instantiationContext.id,
                 instantiationContext.hash,
                 `Prepare summary items`,
@@ -342,7 +351,7 @@ export class Instantiator {
     // TODO Extract to a separate service.
     protected addBeforeBuildTasks(
         createInstanceCommand: CommandsList,
-        taskId: string,
+        actionLogId: string,
         instantiationContext: InstantiationContext,
         updateInstance: () => Promise<void>,
     ): void {
@@ -354,7 +363,7 @@ export class Instantiator {
                             beforeBuildTask => this.createBeforeBuildTaskCommand(
                                 beforeBuildTask,
                                 source,
-                                taskId,
+                                actionLogId,
                                 instantiationContext,
                                 updateInstance,
                             ),
@@ -369,13 +378,13 @@ export class Instantiator {
 
     protected addRunDockerCompose(
         createInstanceCommand: CommandsList,
-        taskId: string,
+        actionLogId: string,
         instantiationContext: InstantiationContext,
         updateInstance: () => Promise<void>,
     ): void {
         createInstanceCommand.addCommand(
             new ContextAwareCommand(
-                taskId,
+                actionLogId,
                 instantiationContext.id,
                 instantiationContext.hash,
                 `Run docker-compose`,
@@ -405,13 +414,13 @@ export class Instantiator {
      */
     protected addGetContainerIds(
         createInstanceCommand: CommandsList,
-        taskId: string,
+        actionLogId: string,
         instantiationContext: InstantiationContext,
         updateInstance: () => Promise<void>,
     ): void {
         createInstanceCommand.addCommand(
             new ContextAwareCommand(
-                taskId,
+                actionLogId,
                 instantiationContext.id,
                 instantiationContext.hash,
                 `Get container ids`,
@@ -443,7 +452,7 @@ export class Instantiator {
      */
     protected addConnectContainersToNetwork(
         createInstanceCommand: CommandsList,
-        taskId: string,
+        actionLogId: string,
         instantiationContext: InstantiationContext,
         updateInstance: () => Promise<void>,
     ): void {
@@ -451,7 +460,7 @@ export class Instantiator {
             new CommandsList(
                 instantiationContext.proxiedPorts.map(
                     proxiedPort => new ContextAwareCommand(
-                        taskId,
+                        actionLogId,
                         instantiationContext.id,
                         instantiationContext.hash,
                         `Connect service \`${proxiedPort.serviceId}\` to proxy network`,
@@ -476,7 +485,7 @@ export class Instantiator {
 
     protected addConfigureProxyDomains(
         createInstanceCommand: CommandsList,
-        taskId: string,
+        actionLogId: string,
         instantiationContext: InstantiationContext,
         updateInstance: () => Promise<void>,
     ): void {
@@ -484,7 +493,7 @@ export class Instantiator {
             new CommandsList(
                 instantiationContext.proxiedPorts.map(
                     proxiedPort => new ContextAwareCommand(
-                        taskId,
+                        actionLogId,
                         instantiationContext.id,
                         instantiationContext.hash,
                         `Prepare configuration for proxied port \`${proxiedPort.id}\``,
@@ -511,7 +520,7 @@ export class Instantiator {
     // TODO Extract to a separate service.
     protected addAfterBuildTasks(
         createInstanceCommand: CommandsList,
-        taskId: string,
+        actionLogId: string,
         instantiationContext: InstantiationContext,
         updateInstance: () => Promise<void>,
     ): void {
@@ -519,7 +528,7 @@ export class Instantiator {
             (afterBuildTask): CommandsMapItem => {
                 const command = this.createAfterBuildTaskCommand(
                     afterBuildTask,
-                    taskId,
+                    actionLogId,
                     instantiationContext,
                     updateInstance,
                 );
@@ -539,13 +548,13 @@ export class Instantiator {
 
     protected addEnableProxyDomains(
         createInstanceCommand: CommandsList,
-        taskId: string,
+        actionLogId: string,
         instantiationContext: InstantiationContext,
         updateInstance: () => Promise<void>,
     ): void {
         createInstanceCommand.addCommand(
             new ContextAwareCommand(
-                taskId,
+                actionLogId,
                 instantiationContext.id,
                 instantiationContext.hash,
                 `Enable configuration for proxied ports`,
@@ -563,7 +572,7 @@ export class Instantiator {
     protected createBeforeBuildTaskCommand(
         beforeBuildTask: InstantiationContextBeforeBuildTaskInterface,
         source: InstantiationContextSourceInterface,
-        taskId: string,
+        actionLogId: string,
         instantiationContext: InstantiationContext,
         updateInstance: () => Promise<void>,
     ): CommandType {
@@ -573,7 +582,7 @@ export class Instantiator {
                     beforeBuildTask.type,
                     beforeBuildTask,
                     source,
-                    taskId,
+                    actionLogId,
                     instantiationContext,
                     updateInstance,
                 );
@@ -586,7 +595,7 @@ export class Instantiator {
     // TODO Extract to a separate service.
     protected createAfterBuildTaskCommand(
         afterBuildTask: InstantiationContextAfterBuildTaskInterface,
-        taskId: string,
+        actionLogId: string,
         instantiationContext: InstantiationContext,
         updateInstance: () => Promise<void>,
     ): CommandType {
@@ -595,7 +604,7 @@ export class Instantiator {
                 return factory.createCommand(
                     afterBuildTask.type,
                     afterBuildTask,
-                    taskId,
+                    actionLogId,
                     instantiationContext,
                     updateInstance,
                 );
@@ -603,6 +612,16 @@ export class Instantiator {
         }
 
         throw new Error(`Unknown type of after build task ${afterBuildTask.type}.`);
+    }
+
+    protected findAction(definitionConfig: any, actionId: string): any {
+        for (const action of definitionConfig.actions) {
+            if ('instantiation' === action.type && actionId === action.id) {
+                return action;
+            }
+        }
+
+        throw new Error(`Invalid instantiation action '${actionId}'.`);
     }
 
 }

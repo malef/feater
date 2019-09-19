@@ -1,4 +1,3 @@
-import * as _ from 'lodash';
 import {Injectable} from '@nestjs/common';
 import {BaseLogger} from '../logger/base-logger';
 import {CommandsList} from './executor/commands-list';
@@ -17,12 +16,14 @@ import {InstantiationContextAfterBuildTaskInterface} from './instantiation-conte
 import {InstantiationContextBeforeBuildTaskInterface} from './instantiation-context/before-build/instantiation-context-before-build-task.interface';
 import {InstantiationContext} from './instantiation-context/instantiation-context';
 import {InstantiationContextFactory} from './instantiation-context-factory.service';
-import {InstanceRepository} from '../persistence/repository/instance.repository';
 import {CommandType} from './executor/command.type';
 import {CommandsMap} from './executor/commands-map';
 import {CommandsMapItem} from './executor/commands-map-item';
 import {InstanceInterface} from '../persistence/interface/instance.interface';
 import {DefinitionInterface} from '../persistence/interface/definition.interface';
+import {InstanceRepository} from '../persistence/repository/instance.repository';
+import {ActionLogRepository} from '../persistence/repository/action-log.repository';
+import * as _ from 'lodash';
 
 @Injectable()
 export class Modificator {
@@ -32,6 +33,7 @@ export class Modificator {
 
     constructor(
         protected readonly instanceRepository: InstanceRepository,
+        protected readonly actionLogRepository: ActionLogRepository,
         protected readonly instantiationContextFactory: InstantiationContextFactory,
         protected readonly logger: BaseLogger,
         protected readonly commandExecutorComponent: CommandExecutorComponent,
@@ -58,28 +60,36 @@ export class Modificator {
         modificationActionId: string,
         instance: InstanceInterface,
     ): Promise<any> {
-        // TODO Is this needed? It should be action id. Do we need a separate collection for it?
-        const taskId = 'modification';
+        const action = this.findAction(definition.config, modificationActionId);
+
+        const actionLog = await this.actionLogRepository.create(
+            instance._id.toString(),
+            action.id,
+            action.type,
+        );
+
+        const actionLogId = actionLog._id.toString();
 
         const modificationContext = this.instantiationContextFactory.create(
             definition.config,
-            instance.id,
+            instance._id.toString(),
             instance.hash,
-            modificationActionId,
+            action.id,
         );
-        modificationContext.services = _.cloneDeep(instance.services); // TODO Move inside context factory.
+        // TODO Move adding services inside context factory.
+        modificationContext.services = _.cloneDeep(instance.services);
 
         const modifyInstanceCommand = new CommandsList([], false);
 
         const updateInstance = async (): Promise<void> => {
-            // Intentionally left empty.
+            await this.instanceRepository.save(instance);
         };
 
         await updateInstance();
 
-        this.addResetSource(modifyInstanceCommand, taskId, modificationContext, updateInstance);
-        this.addBeforeBuildTasks(modifyInstanceCommand, taskId, modificationContext, updateInstance);
-        this.addAfterBuildTasks(modifyInstanceCommand, taskId, modificationContext, updateInstance);
+        this.addResetSource(modifyInstanceCommand, actionLogId, modificationContext, updateInstance);
+        this.addBeforeBuildTasks(modifyInstanceCommand, actionLogId, modificationContext, updateInstance);
+        this.addAfterBuildTasks(modifyInstanceCommand, actionLogId, modificationContext, updateInstance);
 
         return this.commandExecutorComponent
             .execute(modifyInstanceCommand)
@@ -99,7 +109,7 @@ export class Modificator {
 
     protected addResetSource(
         createInstanceCommand: CommandsList,
-        taskId: string,
+        actionLogId: string,
         instantiationContext: InstantiationContext,
         updateInstance: () => Promise<void>,
     ): void {
@@ -107,7 +117,7 @@ export class Modificator {
             new CommandsList(
                 instantiationContext.sources.map(
                     source => new ContextAwareCommand(
-                        taskId,
+                        actionLogId,
                         instantiationContext.id,
                         instantiationContext.hash,
                         `Reset repository for source \`${source.id}\``,
@@ -127,7 +137,7 @@ export class Modificator {
     // TODO Extract to a separate service.
     protected addBeforeBuildTasks(
         createInstanceCommand: CommandsList,
-        taskId: string,
+        actionLogId: string,
         instantiationContext: InstantiationContext,
         updateInstance: () => Promise<void>,
     ): void {
@@ -139,7 +149,7 @@ export class Modificator {
                             beforeBuildTask => this.createBeforeBuildTaskCommand(
                                 beforeBuildTask,
                                 source,
-                                taskId,
+                                actionLogId,
                                 instantiationContext,
                                 updateInstance,
                             ),
@@ -155,7 +165,7 @@ export class Modificator {
     // TODO Extract to a separate service.
     protected addAfterBuildTasks(
         createInstanceCommand: CommandsList,
-        taskId: string,
+        actionLogId: string,
         instantiationContext: InstantiationContext,
         updateInstance: () => Promise<void>,
     ): void {
@@ -163,7 +173,7 @@ export class Modificator {
             (afterBuildTask): CommandsMapItem => {
                 const command = this.createAfterBuildTaskCommand(
                     afterBuildTask,
-                    taskId,
+                    actionLogId,
                     instantiationContext,
                     updateInstance,
                 );
@@ -185,7 +195,7 @@ export class Modificator {
     protected createBeforeBuildTaskCommand(
         beforeBuildTask: InstantiationContextBeforeBuildTaskInterface,
         source: InstantiationContextSourceInterface,
-        taskId: string,
+        actionLogId: string,
         instantiationContext: InstantiationContext,
         updateInstance: () => Promise<void>,
     ): CommandType {
@@ -195,7 +205,7 @@ export class Modificator {
                     beforeBuildTask.type,
                     beforeBuildTask,
                     source,
-                    taskId,
+                    actionLogId,
                     instantiationContext,
                     updateInstance,
                 );
@@ -208,7 +218,7 @@ export class Modificator {
     // TODO Extract to a separate service.
     protected createAfterBuildTaskCommand(
         afterBuildTask: InstantiationContextAfterBuildTaskInterface,
-        taskId: string,
+        actionLogId: string,
         instantiationContext: InstantiationContext,
         updateInstance: () => Promise<void>,
     ): CommandType {
@@ -217,7 +227,7 @@ export class Modificator {
                 return factory.createCommand(
                     afterBuildTask.type,
                     afterBuildTask,
-                    taskId,
+                    actionLogId,
                     instantiationContext,
                     updateInstance,
                 );
@@ -225,6 +235,17 @@ export class Modificator {
         }
 
         throw new Error(`Unknown type of after build task ${afterBuildTask.type}.`);
+    }
+
+
+    protected findAction(definitionConfig: any, actionId: string): any {
+        for (const action of definitionConfig.actions) {
+            if ('modification' === action.type && actionId === action.id) {
+                return action;
+            }
+        }
+
+        throw new Error(`Invalid modification action '${actionId}'.`);
     }
 
 }

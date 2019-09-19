@@ -4,9 +4,9 @@ import {ResolverPaginationArgumentsHelper} from './pagination-argument/resolver-
 import {ResolverPaginationArgumentsInterface} from './pagination-argument/resolver-pagination-arguments.interface';
 import {ResolverCommandLogEntryFilterArgumentsInterface} from './filter-argument/resolver-command-log-entry-filter-arguments.interface';
 import {CommandLogRepository} from '../../persistence/repository/command-log.repository';
+import {PathHelper} from '../../instantiation/helper/path-helper.component';
 import * as os from 'os';
 import * as fs from 'fs';
-import {PathHelper} from '../../instantiation/helper/path-helper.component';
 
 @Injectable()
 export class CommandLogsResolverFactory {
@@ -24,7 +24,7 @@ export class CommandLogsResolverFactory {
                 args as ResolverCommandLogEntryFilterArgumentsInterface,
             );
             const commandLogs = await this.commandLogRepository.find(
-                {instanceId: criteria.instanceId},
+                {actionLogId: criteria.actionLogId},
                 resolverListOptions.offset,
                 resolverListOptions.limit,
                 {_id: 1},

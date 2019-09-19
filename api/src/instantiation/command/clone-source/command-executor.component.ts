@@ -59,7 +59,6 @@ export class CloneSourceCommandExecutorComponent implements SimpleCommandExecuto
     }
 
     private createCloneOptions(commandLogger: CommandLogger, deployKey?: DeployKeyInterface): any {
-        const logger = new BaseLogger(); // TODO Replace with real logger.
         let lastProgress: string;
 
         const callbacks: any = {};
