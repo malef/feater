@@ -22,8 +22,8 @@ import {getDefinitionListQueryGql} from '../../definition/list/get-definition-li
 export class InstanceAddComponent implements OnInit {
 
     protected readonly mutation = gql`
-        mutation ($definitionId: String!, $name: String!) {
-            createInstance(definitionId: $definitionId, name: $name) {
+        mutation ($definitionId: String!, $instantiationActionId: String!, $name: String!) {
+            createInstance(definitionId: $definitionId, instantiationActionId: $instantiationActionId, name: $name) {
                 id
             }
         }
@@ -32,6 +32,8 @@ export class InstanceAddComponent implements OnInit {
     item: InstanceAddForm;
 
     definition: GetDefinitionQueryDefinitionFieldInterface;
+
+    instantiationActions: { id: string; name: string; type: string; }[] = [];
 
     constructor(
         protected route: ActivatedRoute,
@@ -48,12 +50,13 @@ export class InstanceAddComponent implements OnInit {
         this.getDefinition();
     }
 
-    addItem() {
+    addItem(instantiationActionId: string) {
         this.apollo.mutate({
             mutation: this.mutation,
             variables: {
                 definitionId: this.definition.id,
                 name: this.item.name,
+                instantiationActionId,
             },
         }).subscribe(
             ({data}) => {
@@ -78,6 +81,11 @@ export class InstanceAddComponent implements OnInit {
             .subscribe(result => {
                 const resultData: GetDefinitionQueryInterface = result.data;
                 this.definition = resultData.definition;
+                this.instantiationActions = this.definition.config.actions.filter(
+                    function (action) {
+                        return 'instantiation' === action.type;
+                    }
+                );
                 this.spinner.hide();
             });
     }

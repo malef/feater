@@ -12,12 +12,13 @@ import {
     InterpolateBeforeBuildTaskTypeInterface,
 } from '../type/nested/definition-config/before-build-task-type.interface';
 import {
-    AfterBuildTaskTypeInterface,
+    AfterBuildTaskTypeInterface, AfterBuildTaskTypeInterfaces,
     CopyAssetIntoContainerAfterBuildTaskTypeInterface,
     ExecuteHostCommandAfterBuildTaskTypeInterface,
     ExecuteServiceCommandAfterBuildTaskTypeInterface,
 } from '../type/nested/definition-config/after-build-task-type.interface';
 import {VolumeTypeInterface} from '../type/nested/definition-config/volume-type.interface';
+import {ActionTypeInterface} from "../type/nested/definition-config/action-type.interface";
 
 @Injectable()
 export class DefinitionConfigMapper {
@@ -57,9 +58,18 @@ export class DefinitionConfigMapper {
             mappedComposeFiles.push(this.mapComposeFile(config.composeFile));
         }
 
-        const mappedAfterBuildTasks: AfterBuildTaskTypeInterface[] = [];
-        for (const afterBuildTask of config.afterBuildTasks) {
-            mappedAfterBuildTasks.push(this.mapAfterBuildTask(afterBuildTask));
+        const mappedActions: ActionTypeInterface[] = [];
+        for (const action of config.instantiationActions) {
+            const mappedAfterBuildTasks: AfterBuildTaskTypeInterfaces[] = [];
+            for (const afterBuildTask of action.afterBuildTasks) {
+                mappedAfterBuildTasks.push(this.mapAfterBuildTask(afterBuildTask));
+            }
+            mappedActions.push({
+                id: action.id,
+                name: action.name,
+                type: action.type,
+                afterBuildTasks: mappedAfterBuildTasks,
+            })
         }
 
         const mappedSummaryItems: SummaryItemTypeInterface[] = [];
@@ -73,7 +83,7 @@ export class DefinitionConfigMapper {
             proxiedPorts: mappedProxiedPorts,
             envVariables: mappedEnvVariables,
             composeFiles: mappedComposeFiles,
-            afterBuildTasks: mappedAfterBuildTasks,
+            actions: mappedActions,
             summaryItems: mappedSummaryItems,
         } as ConfigTypeInterface;
     }
@@ -122,12 +132,11 @@ export class DefinitionConfigMapper {
         }
     }
 
-    protected mapAfterBuildTask(afterBuildTask: any): AfterBuildTaskTypeInterface {
-        let mapped: AfterBuildTaskTypeInterface;
+    protected mapAfterBuildTask(afterBuildTask: any): AfterBuildTaskTypeInterfaces {
+        let mapped: AfterBuildTaskTypeInterfaces;
+        const commonMapped: any = {};
 
-        const commonMapped: AfterBuildTaskTypeInterface = {
-            type: afterBuildTask.type,
-        };
+        commonMapped.type = afterBuildTask.type;
         if (afterBuildTask.id) {
             commonMapped.id = afterBuildTask.id;
         }
@@ -171,7 +180,7 @@ export class DefinitionConfigMapper {
                 throw new Error();
         }
 
-        return mapped;
+        return mapped as AfterBuildTaskTypeInterfaces;
     }
 
     protected mapSourceReference(reference: any): SourceReferenceTypeInterface {

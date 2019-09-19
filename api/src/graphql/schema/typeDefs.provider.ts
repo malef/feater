@@ -177,6 +177,7 @@ export const typeDefsProvider = {
 
             createInstance(
                 definitionId: String!
+                instantiationActionId: String!
                 name: String!
             ): Instance
 
@@ -279,8 +280,15 @@ export const typeDefsProvider = {
             proxiedPorts: [ProxiedPort!]!
             envVariables: [EnvVariable!]!
             composeFiles: [ComposeFile!]!
-            afterBuildTasks: [AfterBuildTask]!
+            actions: [Action!]!
             summaryItems: [SummaryItem!]!
+        }
+
+        type Action {
+            id: String!
+            name: String!
+            type: String!
+            afterBuildTasks: [AfterBuildTask]!
         }
 
         type Volume {

@@ -80,6 +80,9 @@ export class InstanceCreatorComponent {
         definition: DefinitionInterface,
     ): Promise<any> {
         const {config: definitionConfig} = definition;
+
+        definitionConfig.afterBuildTasks = definitionConfig.instantiationActions[0].afterBuildTasks; // TODO Handle instantiationAction id, remove this line.
+
         const id = instance.id;
         const taskId = 'instance_creation';
         const instanceContext = this.instanceContextFactory.create(id, hash, definitionConfig);

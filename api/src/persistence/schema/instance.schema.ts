@@ -44,8 +44,9 @@ const InstanceSummaryItemSchema = new Schema(
 
 export const InstanceSchema = new Schema({
     definitionId: String,
-    hash: String,
+    instantiationActionId: String,
     name: String,
+    hash: String,
     services: [InstanceServiceSchema],
     envVariables: [InstanceEnvVariableSchema],
     proxiedPorts: [InstanceProxiedPortSchema],

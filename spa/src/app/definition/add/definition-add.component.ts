@@ -333,7 +333,7 @@ export class DefinitionAddComponent implements OnInit {
             composeFileRelativePaths: camelCaseYamlConfig.composeFiles[0].composeFileRelativePaths,
         };
 
-        for (const afterBuildTask of camelCaseYamlConfig.afterBuildTasks) {
+        for (const afterBuildTask of camelCaseYamlConfig.instantiationActions[0].afterBuildTasks) { // TODO This needs to be improved.
             const mappedAfterBuildTask = afterBuildTask;
 
             if (!afterBuildTask.id) {

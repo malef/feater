@@ -2,9 +2,10 @@ import {Document} from 'mongoose';
 
 export interface InstanceInterface extends Document {
     readonly _id: string;
-    hash: string;
     definitionId: string;
+    instantiationActionId: string;
     name: string;
+    hash: string;
     services: {
         id: string;
         containerNamePrefix: string;

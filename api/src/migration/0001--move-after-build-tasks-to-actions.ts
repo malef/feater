@@ -15,14 +15,14 @@ async function bootstrap() {
 
     console.log(`${definitions.length} definition(s) to migrate.`);
     for (const definition of definitions) {
-        if (definition.config.actions) {
+        if (definition.config.instantiationActions) {
             console.log(`Skipping definition ${definition._id.toString()} named '${definition.name}'.`);
 
             continue;
         }
 
         console.log(`Migrating definition ${definition._id.toString()} named '${definition.name}'.`);
-        definition.config.actions = [
+        definition.config.instantiationActions = [
             {
                 id: 'create_instance',
                 name: 'Create instance',

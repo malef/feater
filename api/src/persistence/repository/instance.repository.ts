@@ -42,9 +42,15 @@ export class InstanceRepository {
     }
 
     async create(createInstanceInputType: CreateInstanceInputTypeInterface): Promise<InstanceInterface> {
-        const instance = new this.instanceModel(createInstanceInputType);
+        const instance = new this.instanceModel({
+            definitionId: createInstanceInputType.definitionId,
+            instantiationActionId: createInstanceInputType.instantiationActionId,
+            name: createInstanceInputType.name,
+        });
+
         instance.createdAt = new Date();
         instance.updatedAt = new Date();
+
         await instance.save();
 
         return instance;

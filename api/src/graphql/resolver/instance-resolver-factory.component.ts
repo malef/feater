@@ -84,6 +84,7 @@ export class InstanceResolverFactory {
     public getCreateItemResolver(): (obj: any, createInstanceInput: CreateInstanceInputTypeInterface) => Promise<InstanceTypeInterface> {
         return async (obj: any, createInstanceInput: CreateInstanceInputTypeInterface): Promise<InstanceTypeInterface> => {
             // TODO Add validation.
+
             const instance = await this.instanceRepository.create(createInstanceInput);
             const definition = await this.definitionRepository.findByIdOrFail(instance.definitionId);
             const hash = nanoidGenerate('0123456789abcdefghijklmnopqrstuvwxyz', 8);
