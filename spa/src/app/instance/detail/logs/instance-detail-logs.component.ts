@@ -22,7 +22,9 @@ export class InstanceDetailLogsComponent implements OnInit {
 
     instance: GetInstanceDetailLogsQueryInstanceFieldInterface;
 
-    expandToggles: {[commandLogId: string]: number} = {};
+    expandActionLogToggles: {[actionLogId: string]: number} = {};
+
+    expandCommandLogToggles: {[commandLogId: string]: number} = {};
 
     constructor(
         protected route: ActivatedRoute,
@@ -46,19 +48,38 @@ export class InstanceDetailLogsComponent implements OnInit {
         return obj.id;
     }
 
-    expand(commandLog: {id: string, completedAt?: Date}): void {
-        this.expandToggles[commandLog.id] = this.EXPANDED;
+    expandActionLog(actionLog: {id: string, completedAt?: Date}): void {
+        this.expandActionLogToggles[actionLog.id] = this.EXPANDED;
     }
 
-    collapse(commandLog: {id: string, completedAt?: Date}): void {
-        this.expandToggles[commandLog.id] = this.COLLAPSED;
+    collapseActionLog(actionLog: {id: string, completedAt?: Date}): void {
+        this.expandActionLogToggles[actionLog.id] = this.COLLAPSED;
     }
 
-    isExpanded(commandLog: {id: string, completedAt?: Date}): boolean {
-        if (this.EXPANDED === this.expandToggles[commandLog.id]) {
+    isActionLogExpanded(actionLog: {id: string, completedAt?: Date}): boolean {
+        if (this.EXPANDED === this.expandActionLogToggles[actionLog.id]) {
             return true;
         }
-        if (this.COLLAPSED === this.expandToggles[commandLog.id]) {
+        if (this.COLLAPSED === this.expandActionLogToggles[actionLog.id]) {
+            return false;
+        }
+
+        return !actionLog.completedAt;
+    }
+
+    expandCommandLog(commandLog: {id: string, completedAt?: Date}): void {
+        this.expandCommandLogToggles[commandLog.id] = this.EXPANDED;
+    }
+
+    collapseCommandLog(commandLog: {id: string, completedAt?: Date}): void {
+        this.expandCommandLogToggles[commandLog.id] = this.COLLAPSED;
+    }
+
+    isCommandLogExpanded(commandLog: {id: string, completedAt?: Date}): boolean {
+        if (this.EXPANDED === this.expandCommandLogToggles[commandLog.id]) {
+            return true;
+        }
+        if (this.COLLAPSED === this.expandCommandLogToggles[commandLog.id]) {
             return false;
         }
 
