@@ -90,7 +90,12 @@ export class InstanceResolverFactory {
             const hash = nanoidGenerate('0123456789abcdefghijklmnopqrstuvwxyz', 8);
 
             process.nextTick(() => {
-                this.instantiator.createInstance(instance, hash, definition);
+                this.instantiator.createInstance(
+                    definition,
+                    hash,
+                    createInstanceInput.instantiationActionId,
+                    instance,
+                );
             });
 
             return this.mapPersistentModelToTypeModel(instance);

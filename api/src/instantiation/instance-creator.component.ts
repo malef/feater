@@ -75,17 +75,16 @@ export class InstanceCreatorComponent {
     }
 
     async createInstance(
-        instance: InstanceInterface,
-        hash: string,
         definition: DefinitionInterface,
+        hash: string,
+        instantiationActionId: string,
+        instance: InstanceInterface,
     ): Promise<any> {
         const {config: definitionConfig} = definition;
 
-        definitionConfig.afterBuildTasks = definitionConfig.instantiationActions[0].afterBuildTasks; // TODO Handle instantiationAction id, remove this line.
-
         const id = instance.id;
-        const taskId = 'instance_creation';
-        const instanceContext = this.instanceContextFactory.create(id, hash, definitionConfig);
+        const taskId = 'instance_creation'; // TODO Is this needed? It should be action id. Do we need a separate collection for it?
+        const instanceContext = this.instanceContextFactory.create(definitionConfig, id, hash, instantiationActionId);
 
         const createInstanceCommand = new CommandsList([], false);
 

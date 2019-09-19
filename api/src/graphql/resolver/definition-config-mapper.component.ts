@@ -59,7 +59,7 @@ export class DefinitionConfigMapper {
         }
 
         const mappedActions: ActionTypeInterface[] = [];
-        for (const action of config.instantiationActions) {
+        for (const action of config.actions) {
             const mappedAfterBuildTasks: AfterBuildTaskTypeInterfaces[] = [];
             for (const afterBuildTask of action.afterBuildTasks) {
                 mappedAfterBuildTasks.push(this.mapAfterBuildTask(afterBuildTask));

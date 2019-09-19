@@ -16,9 +16,10 @@ export class InstanceContextFactory {
     ) {}
 
     create(
+        definitionConfig: any,
         id: string,
         hash: string,
-        definitionConfig: any, // TODO
+        instantiationActionId: string,
     ): InstanceContext {
         const instanceContext = new InstanceContext(id, hash);
 
@@ -69,7 +70,8 @@ export class InstanceContextFactory {
         instanceContext.services = [];
 
         instanceContext.afterBuildTasks = [];
-        for (const afterBuildTask of definitionConfig.afterBuildTasks) {
+        const instantiationAction = this.findInstantiationAction(definitionConfig, instantiationActionId);
+        for (const afterBuildTask of instantiationAction.afterBuildTasks) {
             instanceContext.afterBuildTasks.push(afterBuildTask as AfterBuildTaskTypeInterface);
         }
 
@@ -101,6 +103,16 @@ export class InstanceContextFactory {
         instanceContext.mergeFeaterVariablesSet(featerVariables);
 
         return instanceContext;
+    }
+
+    protected findInstantiationAction(definitionConfig: any, instantiationActionId: string): any {
+        for (const action of definitionConfig.actions) {
+            if ('instantiation' === action.type && instantiationActionId === action.id) {
+                return action;
+            }
+        }
+
+        throw new Error(`Invalid instantiation action '${instantiationActionId}'.`);
     }
 
 }

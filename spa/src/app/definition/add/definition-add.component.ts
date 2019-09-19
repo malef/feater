@@ -302,8 +302,8 @@ export class DefinitionAddComponent implements OnInit {
             proxiedPorts: [],
             envVariables: [],
             composeFile: null,
-            afterBuildTasks: [],
             summaryItems: [],
+            afterBuildTasks: [], // TODO Change to actions.
         };
 
         for (const source of camelCaseYamlConfig.sources) {
@@ -333,7 +333,7 @@ export class DefinitionAddComponent implements OnInit {
             composeFileRelativePaths: camelCaseYamlConfig.composeFiles[0].composeFileRelativePaths,
         };
 
-        for (const afterBuildTask of camelCaseYamlConfig.instantiationActions[0].afterBuildTasks) { // TODO This needs to be improved.
+        for (const afterBuildTask of camelCaseYamlConfig.actions[0].afterBuildTasks) { // TODO This needs to be improved.
             const mappedAfterBuildTask = afterBuildTask;
 
             if (!afterBuildTask.id) {
