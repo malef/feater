@@ -23,6 +23,8 @@ export class InstanceDetailSummaryComponent implements OnInit, OnDestroy {
 
     pollingSubscription: Subscription;
 
+    modificationActions: { id: string; name: string; type: string; }[] = [];
+
     protected readonly removeInstanceMutation = gql`
         mutation ($id: String!) {
             removeInstance(id: $id)
@@ -46,6 +48,10 @@ export class InstanceDetailSummaryComponent implements OnInit, OnDestroy {
 
     ngOnDestroy() {
         this.pollingSubscription.unsubscribe();
+    }
+
+    modifyInstance(modificationActionId: string) {
+        console.log(`TODO Modification action '${modificationActionId}' triggered.`); // TODO
     }
 
     removeInstance() {
@@ -76,6 +82,11 @@ export class InstanceDetailSummaryComponent implements OnInit, OnDestroy {
             .subscribe(result => {
                 const resultData: GetInstanceDetailSummaryQueryInterface = result.data;
                 this.instance = resultData.instance;
+                this.modificationActions = this.instance.definition.config.actions.filter(
+                    function (action) {
+                        return 'modification' === action.type;
+                    }
+                );
                 if (spinner) {
                     this.spinner.hide();
                 }

@@ -12,6 +12,13 @@ export const getInstanceDetailSummaryQueryGql = gql`
                     id
                     name
                 }
+                config {
+                    actions {
+                        id
+                        type
+                        name
+                    }
+                }
             }
             summaryItems {
                 name
@@ -34,6 +41,15 @@ export interface GetInstanceDetailSummaryQueryInstanceFieldInterface {
         project: {
             id: string;
             name: string;
+        };
+        config: {
+            actions: [
+                {
+                    id: string;
+                    type: string;
+                    name: string;
+                }
+            ];
         };
     };
     summaryItems: [
