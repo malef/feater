@@ -1,23 +1,25 @@
 import {execSync} from 'child_process';
-import * as nanoidGenerate from 'nanoid/generate';
-import * as escapeStringRegexp from 'escape-string-regexp';
-import * as path from 'path';
 import {Injectable} from '@nestjs/common';
 import {InstanceTypeInterface} from '../type/instance-type.interface';
 import {InstanceRepository} from '../../persistence/repository/instance.repository';
 import {InstanceInterface} from '../../persistence/interface/instance.interface';
-import {CreateInstanceInputTypeInterface} from '../input-type/create-instance-input-type.interface';
-import {RemoveInstanceInputTypeInterface} from '../input-type/remove-instance-input-type.interface';
 import {Instantiator} from '../../instantiation/instantiator.service';
+import {Modificator} from '../../instantiation/modificator.service';
+import {CreateInstanceInputTypeInterface} from '../input-type/create-instance-input-type.interface';
+import {ModifyInstanceInputTypeInterface} from '../input-type/modify-instance-input-type.interface';
+import {RemoveInstanceInputTypeInterface} from '../input-type/remove-instance-input-type.interface';
+import {StopServiceInputTypeInterface} from '../input-type/stop-service-input-type.interface';
+import {PauseServiceInputTypeInterface} from '../input-type/pause-service-input-type.interface';
+import {StartServiceInputTypeInterface} from '../input-type/start-service-input-type.interface';
+import {UnpauseServiceInputTypeInterface} from '../input-type/unpause-service-input-type.interface';
 import {DefinitionRepository} from '../../persistence/repository/definition.repository';
 import {ResolverPaginationArgumentsHelper} from './pagination-argument/resolver-pagination-arguments-helper.component';
 import {ResolverPaginationArgumentsInterface} from './pagination-argument/resolver-pagination-arguments.interface';
 import {ResolverInstanceFilterArgumentsInterface} from './filter-argument/resolver-instance-filter-arguments.interface';
-import {StopServiceInputTypeInterface} from '../input-type/stop-service-input-type.interface';
 import {environment} from '../../environments/environment';
-import {PauseServiceInputTypeInterface} from '../input-type/pause-service-input-type.interface';
-import {StartServiceInputTypeInterface} from '../input-type/start-service-input-type.interface';
-import {UnpauseServiceInputTypeInterface} from '../input-type/unpause-service-input-type.interface';
+import * as nanoidGenerate from 'nanoid/generate';
+import * as escapeStringRegexp from 'escape-string-regexp';
+import * as path from 'path';
 
 @Injectable()
 export class InstanceResolverFactory {
@@ -26,6 +28,7 @@ export class InstanceResolverFactory {
         private readonly instanceRepository: InstanceRepository,
         private readonly definitionRepository: DefinitionRepository,
         private readonly instantiator: Instantiator,
+        private readonly modificator: Modificator,
     ) { }
 
     protected readonly defaultSortKey = 'created_at_desc';
@@ -94,6 +97,25 @@ export class InstanceResolverFactory {
                     definition,
                     hash,
                     createInstanceInput.instantiationActionId,
+                    instance,
+                );
+            });
+
+            return this.mapPersistentModelToTypeModel(instance);
+        };
+    }
+
+    public getModifyItemResolver(): (obj: any, modifyInstanceInput: ModifyInstanceInputTypeInterface) => Promise<InstanceTypeInterface> {
+        return async (obj: any, modifyInstanceInput: ModifyInstanceInputTypeInterface): Promise<InstanceTypeInterface> => {
+            // TODO Add validation.
+
+            const instance = await this.instanceRepository.findByIdOrFail(modifyInstanceInput.instanceId);
+            const definition = await this.definitionRepository.findByIdOrFail(instance.definitionId);
+
+            process.nextTick(() => {
+                this.modificator.modifyInstance(
+                    definition,
+                    modifyInstanceInput.modificationActionId,
                     instance,
                 );
             });

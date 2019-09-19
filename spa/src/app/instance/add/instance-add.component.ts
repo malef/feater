@@ -21,7 +21,7 @@ import {getDefinitionListQueryGql} from '../../definition/list/get-definition-li
 })
 export class InstanceAddComponent implements OnInit {
 
-    protected readonly mutation = gql`
+    protected readonly createInstanceMutation = gql`
         mutation ($definitionId: String!, $instantiationActionId: String!, $name: String!) {
             createInstance(definitionId: $definitionId, instantiationActionId: $instantiationActionId, name: $name) {
                 id
@@ -52,7 +52,7 @@ export class InstanceAddComponent implements OnInit {
 
     addItem(instantiationActionId: string) {
         this.apollo.mutate({
-            mutation: this.mutation,
+            mutation: this.createInstanceMutation,
             variables: {
                 definitionId: this.definition.id,
                 name: this.item.name,

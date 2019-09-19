@@ -2,6 +2,7 @@ import {Module} from '@nestjs/common';
 import {LoggerModule} from '../logger/logger.module';
 import {PersistenceModule} from '../persistence/persistence.module';
 import {Instantiator} from './instantiator.service';
+import {Modificator} from './modificator.service';
 import {InterpolationHelper} from './helper/interpolation-helper.component';
 import {ContainerStateChecker} from './container-state-checker.service';
 import {ContainerInfoChecker} from './container-info-checker.service';
@@ -73,6 +74,7 @@ import {IpAddressChecker} from './ip-address-checker.service';
         SpawnHelper,
         PathHelper,
         Instantiator,
+        Modificator,
         InstantiationContextFactory,
         CopyFileCommandFactoryComponent,
         InterpolateFileCommandFactoryComponent,
@@ -88,6 +90,7 @@ import {IpAddressChecker} from './ip-address-checker.service';
     ],
     exports: [
         Instantiator,
+        Modificator,
         ContainerStateChecker,
         IpAddressChecker,
         AssetHelper,

@@ -25,6 +25,14 @@ export class InstanceDetailSummaryComponent implements OnInit, OnDestroy {
 
     modificationActions: { id: string; name: string; type: string; }[] = [];
 
+    protected readonly modifyInstanceMutation = gql`
+        mutation ($instanceId: String!, $modificationActionId: String!) {
+            modifyInstance(instanceId: $instanceId, modificationActionId: $modificationActionId) {
+                id
+            }
+        }
+    `;
+
     protected readonly removeInstanceMutation = gql`
         mutation ($id: String!) {
             removeInstance(id: $id)
@@ -51,7 +59,16 @@ export class InstanceDetailSummaryComponent implements OnInit, OnDestroy {
     }
 
     modifyInstance(modificationActionId: string) {
-        console.log(`TODO Modification action '${modificationActionId}' triggered.`); // TODO
+        this.apollo.mutate({
+            mutation: this.modifyInstanceMutation,
+            variables: {
+                instanceId: this.instance.id,
+                modificationActionId,
+            },
+        }).subscribe(
+            () => { this.getInstance(false); },
+            (error) => { console.log(error); }
+        );
     }
 
     removeInstance() {

@@ -181,6 +181,11 @@ export const typeDefsProvider = {
                 name: String!
             ): Instance
 
+            modifyInstance(
+                instanceId: String!
+                modificationActionId: String!
+            ): Instance
+
             removeInstance(
                 id: String!
             ): Boolean
