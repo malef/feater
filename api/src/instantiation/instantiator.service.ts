@@ -8,7 +8,6 @@ import {CreateDirectoryCommand} from './command/create-directory/command';
 import {CreateVolumeFromAssetCommand} from './command/create-volume-from-asset/command';
 import {CreateVolumeFromAssetCommandResultInterface} from './command/create-volume-from-asset/command-result.interface';
 import {CloneSourceCommand} from './command/clone-source/command';
-import {ResetSourceCommand} from './command/reset-source/command';
 import {ParseDockerComposeCommand} from './command/parse-docker-compose/command';
 import {ParseDockerComposeCommandResultInterface} from './command/parse-docker-compose/command-result.interface';
 import {PrepareProxyDomainCommand} from './command/prepare-port-domain/command';
@@ -80,11 +79,15 @@ export class Instantiator {
         instantiationActionId: string,
         instance: InstanceInterface,
     ): Promise<any> {
-        const taskId = 'instance_creation'; // TODO Is this needed? It should be action id. Do we need a separate collection for it?
+        // TODO Is this needed? It should be action id. Do we need a separate collection for it?
+        const taskId = 'instantiation';
 
-        const {config: definitionConfig} = definition;
-        const id = instance.id;
-        const instantiationContext = this.instantiationContextFactory.create(definitionConfig, id, hash, instantiationActionId);
+        const instantiationContext = this.instantiationContextFactory.create(
+            definition.config,
+            instance.id,
+            hash,
+            instantiationActionId,
+        );
 
         const createInstanceCommand = new CommandsList([], false);
 
@@ -109,7 +112,6 @@ export class Instantiator {
         this.addPrepareEnvVarsForSources(createInstanceCommand, taskId, instantiationContext, updateInstance);
         this.addPrepareSummaryItems(createInstanceCommand, taskId, instantiationContext, updateInstance);
         this.addBeforeBuildTasks(createInstanceCommand, taskId, instantiationContext, updateInstance);
-        this.addResetSource(createInstanceCommand, taskId, instantiationContext, updateInstance);
         this.addRunDockerCompose(createInstanceCommand, taskId, instantiationContext, updateInstance);
         this.addGetContainerIds(createInstanceCommand, taskId, instantiationContext, updateInstance);
         this.addConnectContainersToNetwork(createInstanceCommand, taskId, instantiationContext, updateInstance);
@@ -121,12 +123,12 @@ export class Instantiator {
             .execute(createInstanceCommand)
             .then(
                 async (): Promise<void> => {
-                    this.logger.info('Build instantiated and started.');
+                    this.logger.info('Instantiation started.');
                     instance.completedAt = new Date();
                     await updateInstance();
                 },
                 async (error: Error): Promise<void> => {
-                    this.logger.error('Failed to instantiate and start build.');
+                    this.logger.error('Instantiation failed.');
                     instance.failedAt = new Date();
                     await updateInstance();
                 },
@@ -198,33 +200,6 @@ export class Instantiator {
         createInstanceCommand.addCommand(
             new CommandsList(
                 createVolumeFromAssetCommands.concat(cloneSourceCommands),
-                false,
-            ),
-        );
-    }
-
-    protected addResetSource(
-        createInstanceCommand: CommandsList,
-        taskId: string,
-        instantiationContext: InstantiationContext,
-        updateInstance: () => Promise<void>,
-    ): void {
-        createInstanceCommand.addCommand(
-            new CommandsList(
-                instantiationContext.sources.map(
-                    source => new ContextAwareCommand(
-                        taskId,
-                        instantiationContext.id,
-                        instantiationContext.hash,
-                        `Reset repository for source \`${source.id}\``,
-                        () => new ResetSourceCommand(
-                            source.cloneUrl,
-                            source.reference.type,
-                            source.reference.name,
-                            source.paths.dir.absolute.guest,
-                        ),
-                    ),
-                ),
                 false,
             ),
         );
@@ -364,6 +339,7 @@ export class Instantiator {
         );
     }
 
+    // TODO Extract to a separate service.
     protected addBeforeBuildTasks(
         createInstanceCommand: CommandsList,
         taskId: string,
@@ -532,6 +508,7 @@ export class Instantiator {
         );
     }
 
+    // TODO Extract to a separate service.
     protected addAfterBuildTasks(
         createInstanceCommand: CommandsList,
         taskId: string,
@@ -582,6 +559,7 @@ export class Instantiator {
         );
     }
 
+    // TODO Extract to a separate service.
     protected createBeforeBuildTaskCommand(
         beforeBuildTask: InstantiationContextBeforeBuildTaskInterface,
         source: InstantiationContextSourceInterface,
@@ -605,6 +583,7 @@ export class Instantiator {
         throw new Error(`Unknown type of before build task ${beforeBuildTask.type} for source ${source.id}.`);
     }
 
+    // TODO Extract to a separate service.
     protected createAfterBuildTaskCommand(
         afterBuildTask: InstantiationContextAfterBuildTaskInterface,
         taskId: string,

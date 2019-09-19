@@ -19,7 +19,7 @@ export class InstantiationContextFactory {
         definitionConfig: any,
         id: string,
         hash: string,
-        instantiationActionId: string,
+        actionId: string,
     ): InstantiationContext {
         const instantiationContext = new InstantiationContext(id, hash);
 
@@ -70,8 +70,8 @@ export class InstantiationContextFactory {
         instantiationContext.services = [];
 
         instantiationContext.afterBuildTasks = [];
-        const instantiationAction = this.findInstantiationAction(definitionConfig, instantiationActionId);
-        for (const afterBuildTask of instantiationAction.afterBuildTasks) {
+        const action = this.findAction(definitionConfig, actionId);
+        for (const afterBuildTask of action.afterBuildTasks) {
             instantiationContext.afterBuildTasks.push(afterBuildTask as AfterBuildTaskTypeInterface);
         }
 
@@ -105,14 +105,15 @@ export class InstantiationContextFactory {
         return instantiationContext;
     }
 
-    protected findInstantiationAction(definitionConfig: any, instantiationActionId: string): any {
+    protected findAction(definitionConfig: any, actionId: string): any {
+        // TODO Check action type.
         for (const action of definitionConfig.actions) {
-            if ('instantiation' === action.type && instantiationActionId === action.id) {
+            if (actionId === action.id) {
                 return action;
             }
         }
 
-        throw new Error(`Invalid instantiation action '${instantiationActionId}'.`);
+        throw new Error(`Invalid instantiation action '${actionId}'.`);
     }
 
 }
