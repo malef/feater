@@ -1,15 +1,15 @@
 import {Injectable} from '@nestjs/common';
 import {PathHelper} from './helper/path-helper.component';
 import {environment} from '../environments/environment';
-import {InstanceContextBeforeBuildTaskInterface} from './instance-context/before-build/instance-context-before-build-task.interface';
+import {InstantiationContextBeforeBuildTaskInterface} from './instantiation-context/before-build/instantiation-context-before-build-task.interface';
 import {AfterBuildTaskTypeInterface} from '../graphql/type/nested/definition-config/after-build-task-type.interface';
 import {FeaterVariablesSet} from './sets/feater-variables-set';
-import {InstanceContext} from './instance-context/instance-context';
+import {InstantiationContext} from './instantiation-context/instantiation-context';
 import {EnvVariablesSet} from './sets/env-variables-set';
 import {SummaryItemsSet} from './sets/summary-items-set';
 
 @Injectable()
-export class InstanceContextFactory {
+export class InstantiationContextFactory {
 
     constructor(
         protected readonly pathHelper: PathHelper,
@@ -20,17 +20,17 @@ export class InstanceContextFactory {
         id: string,
         hash: string,
         instantiationActionId: string,
-    ): InstanceContext {
-        const instanceContext = new InstanceContext(id, hash);
+    ): InstantiationContext {
+        const instantiationContext = new InstantiationContext(id, hash);
 
-        instanceContext.composeProjectName = `${environment.instantiation.containerNamePrefix}${instanceContext.hash}`;
-        instanceContext.paths = {
+        instantiationContext.composeProjectName = `${environment.instantiation.containerNamePrefix}${instantiationContext.hash}`;
+        instantiationContext.paths = {
             dir: this.pathHelper.getInstancePaths(hash),
         };
 
-        instanceContext.volumes = [];
+        instantiationContext.volumes = [];
         for (const volumeConfig of definitionConfig.volumes) {
-            instanceContext.volumes.push({
+            instantiationContext.volumes.push({
                 id: volumeConfig.id,
                 assetId: volumeConfig.assetId,
                 paths: {
@@ -39,9 +39,9 @@ export class InstanceContextFactory {
             });
         }
 
-        instanceContext.sources = [];
+        instantiationContext.sources = [];
         for (const sourceConfig of definitionConfig.sources) {
-            instanceContext.sources.push({
+            instantiationContext.sources.push({
                 id: sourceConfig.id,
                 cloneUrl: sourceConfig.cloneUrl,
                 reference: {
@@ -52,14 +52,14 @@ export class InstanceContextFactory {
                     dir: this.pathHelper.getSourcePaths(hash, sourceConfig.id),
                 },
                 beforeBuildTasks: sourceConfig.beforeBuildTasks.map(
-                    (beforeBuildTaskConfig) => beforeBuildTaskConfig as InstanceContextBeforeBuildTaskInterface,
+                    (beforeBuildTaskConfig) => beforeBuildTaskConfig as InstantiationContextBeforeBuildTaskInterface,
                 ),
             });
         }
 
-        instanceContext.proxiedPorts = [];
+        instantiationContext.proxiedPorts = [];
         for (const proxiedPort of definitionConfig.proxiedPorts) {
-            instanceContext.proxiedPorts.push({
+            instantiationContext.proxiedPorts.push({
                 id: proxiedPort.id,
                 serviceId: proxiedPort.serviceId,
                 name: proxiedPort.name,
@@ -67,19 +67,19 @@ export class InstanceContextFactory {
             });
         }
 
-        instanceContext.services = [];
+        instantiationContext.services = [];
 
-        instanceContext.afterBuildTasks = [];
+        instantiationContext.afterBuildTasks = [];
         const instantiationAction = this.findInstantiationAction(definitionConfig, instantiationActionId);
         for (const afterBuildTask of instantiationAction.afterBuildTasks) {
-            instanceContext.afterBuildTasks.push(afterBuildTask as AfterBuildTaskTypeInterface);
+            instantiationContext.afterBuildTasks.push(afterBuildTask as AfterBuildTaskTypeInterface);
         }
 
-        instanceContext.nonInterpolatedSummaryItems = SummaryItemsSet.fromList(definitionConfig.summaryItems);
+        instantiationContext.nonInterpolatedSummaryItems = SummaryItemsSet.fromList(definitionConfig.summaryItems);
 
-        instanceContext.composeFiles = [];
+        instantiationContext.composeFiles = [];
         for (const composeFileConfig of definitionConfig.composeFiles) {
-            instanceContext.composeFiles.push(composeFileConfig);
+            instantiationContext.composeFiles.push(composeFileConfig);
         }
 
         const envVariables = EnvVariablesSet.fromList(definitionConfig.envVariables);
@@ -91,18 +91,18 @@ export class InstanceContextFactory {
         }
 
         // Add some basic Feater variables and env variables.
-        envVariables.add('FEATER__INSTANCE_ID', instanceContext.id);
-        featerVariables.add('instance_id', instanceContext.id);
-        envVariables.add('FEATER__INSTANCE_HASH', instanceContext.hash);
-        featerVariables.add('instance_hash', instanceContext.hash);
+        envVariables.add('FEATER__INSTANCE_ID', instantiationContext.id);
+        featerVariables.add('instance_id', instantiationContext.id);
+        envVariables.add('FEATER__INSTANCE_HASH', instantiationContext.hash);
+        featerVariables.add('instance_hash', instantiationContext.hash);
 
-        envVariables.add('COMPOSE_PROJECT_NAME', instanceContext.composeProjectName);
-        featerVariables.add('compose_project_name', instanceContext.composeProjectName);
+        envVariables.add('COMPOSE_PROJECT_NAME', instantiationContext.composeProjectName);
+        featerVariables.add('compose_project_name', instantiationContext.composeProjectName);
 
-        instanceContext.mergeEnvVariablesSet(envVariables);
-        instanceContext.mergeFeaterVariablesSet(featerVariables);
+        instantiationContext.mergeEnvVariablesSet(envVariables);
+        instantiationContext.mergeFeaterVariablesSet(featerVariables);
 
-        return instanceContext;
+        return instantiationContext;
     }
 
     protected findInstantiationAction(definitionConfig: any, instantiationActionId: string): any {

@@ -1,12 +1,12 @@
 import {Injectable} from '@nestjs/common';
-import {ContainerStateCheckerComponent} from '../../instantiation/container-state-checker-component.service';
-import {IpAddressCheckerComponent} from '../../instantiation/ip-address-checker.component';
+import {ContainerStateChecker} from '../../instantiation/container-state-checker.service';
+import {IpAddressChecker} from '../../instantiation/ip-address-checker.service';
 
 @Injectable()
 export class DockerDaemonResolverFactory {
     constructor(
-        private readonly containerStatusChecker: ContainerStateCheckerComponent,
-        private readonly ipAddressChecker: IpAddressCheckerComponent,
+        private readonly containerStatusChecker: ContainerStateChecker,
+        private readonly ipAddressChecker: IpAddressChecker,
     ) { }
 
     public getContainerStateResolver(containerNamePrefixExtractor?: (object: any) => string): (object: any) => Promise<string|null> {

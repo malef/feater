@@ -1,8 +1,8 @@
 import {AfterBuildTaskCommandFactoryInterface} from '../command-factory.interface';
 import {CopyAssetIntoContainerCommand} from './command';
-import {InstanceContextAfterBuildTaskInterface} from '../../../instance-context/after-build/instance-context-after-build-task.interface';
-import {InstanceContext} from '../../../instance-context/instance-context';
-import {InstanceContextCopyAssetIntoContainerInterface} from '../../../instance-context/after-build/instance-context-copy-asset-into-container.interface';
+import {InstantiationContextAfterBuildTaskInterface} from '../../../instantiation-context/after-build/instantiation-context-after-build-task.interface';
+import {InstantiationContext} from '../../../instantiation-context/instantiation-context';
+import {InstantiationContextCopyAssetIntoContainerInterface} from '../../../instantiation-context/after-build/instantiation-context-copy-asset-into-container.interface';
 import {ContextAwareCommand} from '../../../executor/context-aware-command.interface';
 import {CommandType} from '../../../executor/command.type';
 import {Injectable} from '@nestjs/common';
@@ -18,27 +18,27 @@ export class CopyAssetIntoContainerCommandFactoryComponent implements AfterBuild
 
     createCommand(
         type: string,
-        afterBuildTask: InstanceContextAfterBuildTaskInterface,
+        afterBuildTask: InstantiationContextAfterBuildTaskInterface,
         taskId: string,
-        instanceContext: InstanceContext,
-        updateInstanceFromInstanceContext: () => Promise<void>,
+        instantiationContext: InstantiationContext,
+        updateInstance: () => Promise<void>,
     ): CommandType {
-        const typedAfterBuildTask = afterBuildTask as InstanceContextCopyAssetIntoContainerInterface;
+        const typedAfterBuildTask = afterBuildTask as InstantiationContextCopyAssetIntoContainerInterface;
 
         return new ContextAwareCommand(
             taskId,
-            instanceContext.id,
-            instanceContext.hash,
+            instantiationContext.id,
+            instantiationContext.hash,
             `Copy asset \`${typedAfterBuildTask.assetId}\` for service \`${typedAfterBuildTask.serviceId}\``,
             () => {
-                const service = instanceContext.findService(typedAfterBuildTask.serviceId);
+                const service = instantiationContext.findService(typedAfterBuildTask.serviceId);
 
                 return new CopyAssetIntoContainerCommand(
                     typedAfterBuildTask.serviceId,
                     typedAfterBuildTask.assetId,
                     typedAfterBuildTask.destinationPath,
                     service.containerId,
-                    instanceContext.paths.dir.absolute.guest,
+                    instantiationContext.paths.dir.absolute.guest,
                 );
             },
         );

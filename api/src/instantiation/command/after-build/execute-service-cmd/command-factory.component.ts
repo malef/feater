@@ -1,8 +1,8 @@
 import {AfterBuildTaskCommandFactoryInterface} from '../command-factory.interface';
 import {ExecuteServiceCmdCommand} from './command';
-import {InstanceContextAfterBuildTaskInterface} from '../../../instance-context/after-build/instance-context-after-build-task.interface';
-import {InstanceContext} from '../../../instance-context/instance-context';
-import {InstanceContextExecuteServiceCmdInterface} from '../../../instance-context/after-build/instance-context-execute-service-cmd.Interface';
+import {InstantiationContextAfterBuildTaskInterface} from '../../../instantiation-context/after-build/instantiation-context-after-build-task.interface';
+import {InstantiationContext} from '../../../instantiation-context/instantiation-context';
+import {InstantiationContextExecuteServiceCmdInterface} from '../../../instantiation-context/after-build/instantiation-context-execute-service-cmd.interface';
 import {ContextAwareCommand} from '../../../executor/context-aware-command.interface';
 import {EnvVariablesSet} from '../../../sets/env-variables-set';
 import {CommandType} from '../../../executor/command.type';
@@ -19,28 +19,28 @@ export class ExecuteServiceCmdCommandFactoryComponent implements AfterBuildTaskC
 
     createCommand(
         type: string,
-        afterBuildTask: InstanceContextAfterBuildTaskInterface,
+        afterBuildTask: InstantiationContextAfterBuildTaskInterface,
         taskId: string,
-        instanceContext: InstanceContext,
-        updateInstanceFromInstanceContext: () => Promise<void>,
+        instantiationContext: InstantiationContext,
+        updateInstance: () => Promise<void>,
     ): CommandType {
-        const typedAfterBuildTask = afterBuildTask as InstanceContextExecuteServiceCmdInterface;
+        const typedAfterBuildTask = afterBuildTask as InstantiationContextExecuteServiceCmdInterface;
 
         return new ContextAwareCommand(
             taskId,
-            instanceContext.id,
-            instanceContext.hash,
+            instantiationContext.id,
+            instantiationContext.hash,
             `Execute service command for service \`${typedAfterBuildTask.serviceId}\``,
             () => {
-                const service = instanceContext.findService(typedAfterBuildTask.serviceId);
+                const service = instantiationContext.findService(typedAfterBuildTask.serviceId);
 
                 return new ExecuteServiceCmdCommand(
-                    instanceContext.envVariables,
+                    instantiationContext.envVariables,
                     EnvVariablesSet.fromList(typedAfterBuildTask.customEnvVariables),
                     typedAfterBuildTask.inheritedEnvVariables,
                     service.containerId,
                     typedAfterBuildTask.command,
-                    instanceContext.paths.dir.absolute.guest,
+                    instantiationContext.paths.dir.absolute.guest,
                 );
             },
         );

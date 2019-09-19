@@ -14,7 +14,7 @@ export interface CachedContainerInfo {
 }
 
 @Injectable()
-export class ContainerInfoCheckerComponent {
+export class ContainerInfoChecker {
 
     private containerNameRegExp = new RegExp(
         `^/${environment.instantiation.containerNamePrefix}([a-z0-9]{8})_(.+?)_\\d+\$`,

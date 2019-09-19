@@ -1,8 +1,8 @@
 import {AfterBuildTaskCommandFactoryInterface} from '../command-factory.interface';
 import {ExecuteHostCmdCommand} from './command';
-import {InstanceContextAfterBuildTaskInterface} from '../../../instance-context/after-build/instance-context-after-build-task.interface';
-import {InstanceContext} from '../../../instance-context/instance-context';
-import {InstanceContextExecuteHostCmdInterface} from '../../../instance-context/after-build/instance-context-execute-host-cmd.Interface';
+import {InstantiationContextAfterBuildTaskInterface} from '../../../instantiation-context/after-build/instantiation-context-after-build-task.interface';
+import {InstantiationContext} from '../../../instantiation-context/instantiation-context';
+import {InstantiationContextExecuteHostCmdInterface} from '../../../instantiation-context/after-build/instantiation-context-execute-host-cmd.interface';
 import {ContextAwareCommand} from '../../../executor/context-aware-command.interface';
 import {EnvVariablesSet} from '../../../sets/env-variables-set';
 import {CommandType} from '../../../executor/command.type';
@@ -19,24 +19,24 @@ export class ExecuteHostCmdCommandFactoryComponent implements AfterBuildTaskComm
 
     createCommand(
         type: string,
-        afterBuildTask: InstanceContextAfterBuildTaskInterface,
+        afterBuildTask: InstantiationContextAfterBuildTaskInterface,
         taskId: string,
-        instanceContext: InstanceContext,
-        updateInstanceFromInstanceContext: () => Promise<void>,
+        instantiationContext: InstantiationContext,
+        updateInstance: () => Promise<void>,
     ): CommandType {
-        const typedAfterBuildTask = afterBuildTask as InstanceContextExecuteHostCmdInterface;
+        const typedAfterBuildTask = afterBuildTask as InstantiationContextExecuteHostCmdInterface;
 
         return new ContextAwareCommand(
             taskId,
-            instanceContext.id,
-            instanceContext.hash,
+            instantiationContext.id,
+            instantiationContext.hash,
             `Execute host command`,
             () => new ExecuteHostCmdCommand(
-                instanceContext.envVariables,
+                instantiationContext.envVariables,
                 EnvVariablesSet.fromList(typedAfterBuildTask.customEnvVariables),
                 typedAfterBuildTask.inheritedEnvVariables,
                 typedAfterBuildTask.command,
-                instanceContext.paths.dir.absolute.guest,
+                instantiationContext.paths.dir.absolute.guest,
             ),
         );
     }

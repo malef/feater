@@ -15,7 +15,7 @@ import {SourceTypeInterface} from '../type/nested/definition-config/source-type.
 import {DeployKeyInterface} from '../../persistence/interface/deploy-key.interface';
 import {DeployKeyTypeInterface} from '../type/deploy-key-type.interface';
 import {PredictedEnvVariableTypeInterface} from '../type/predicted-env-variable-type.interface';
-import {VariablesPredictor} from '../../instantiation/variable/variables-predictor';
+import {VariablesPredictor} from '../../instantiation/variable/variables-predictor.service';
 import {PredictedFeaterVariableTypeInterface} from '../type/predicted-feater-variable-type.interface';
 import {UpdateDefinitionInputTypeInterface} from '../input-type/update-definition-input-type.interface';
 import {RemoveDefinitionInputTypeInterface} from '../input-type/remove-definition-input-type.interface';

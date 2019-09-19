@@ -1,6 +1,6 @@
-import {InstanceContextBeforeBuildTaskInterface} from '../../instance-context/before-build/instance-context-before-build-task.interface';
-import {InstanceContext} from '../../instance-context/instance-context';
-import {InstanceContextSourceInterface} from '../../instance-context/instance-context-source.interface';
+import {InstantiationContextBeforeBuildTaskInterface} from '../../instantiation-context/before-build/instantiation-context-before-build-task.interface';
+import {InstantiationContext} from '../../instantiation-context/instantiation-context';
+import {InstantiationContextSourceInterface} from '../../instantiation-context/instantiation-context-source.interface';
 import {CommandType} from '../../executor/command.type';
 
 export interface BeforeBuildTaskCommandFactoryInterface {
@@ -9,11 +9,11 @@ export interface BeforeBuildTaskCommandFactoryInterface {
 
     createCommand(
         type: string,
-        beforeBuildTask: InstanceContextBeforeBuildTaskInterface,
-        source: InstanceContextSourceInterface,
+        beforeBuildTask: InstantiationContextBeforeBuildTaskInterface,
+        source: InstantiationContextSourceInterface,
         taskId: string,
-        instance: InstanceContext,
-        updateInstanceFromInstanceContext: () => Promise<void>,
+        instantiationContext: InstantiationContext,
+        updateInstance: () => Promise<void>,
     ): CommandType;
 
 }

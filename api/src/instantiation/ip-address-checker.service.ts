@@ -1,11 +1,11 @@
 import {Injectable} from '@nestjs/common';
-import {ContainerInfoCheckerComponent} from './container-info-checker-component.service';
+import {ContainerInfoChecker} from './container-info-checker.service';
 
 @Injectable()
-export class IpAddressCheckerComponent {
+export class IpAddressChecker {
 
     constructor(
-        private readonly containerInfoChecker: ContainerInfoCheckerComponent,
+        private readonly containerInfoChecker: ContainerInfoChecker,
     ) {}
 
     async check(containerNamePrefix: string): Promise<string|null> {

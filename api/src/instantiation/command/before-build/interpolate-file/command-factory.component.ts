@@ -3,10 +3,10 @@ import {BeforeBuildTaskCommandFactoryInterface} from '../command-factory.interfa
 import {InterpolateFileCommand} from './command';
 import {ContextAwareCommand} from '../../../executor/context-aware-command.interface';
 import {InterpolateFileCommandResultInterface} from './command-result.interface';
-import {InstanceContextBeforeBuildTaskInterface} from '../../../instance-context/before-build/instance-context-before-build-task.interface';
-import {InstanceContextSourceInterface} from '../../../instance-context/instance-context-source.interface';
-import {InstanceContext} from '../../../instance-context/instance-context';
-import {InstanceContextInterpolateFileInterface} from '../../../instance-context/before-build/instance-context-interpolate-file.interface';
+import {InstantiationContextBeforeBuildTaskInterface} from '../../../instantiation-context/before-build/instantiation-context-before-build-task.interface';
+import {InstantiationContextSourceInterface} from '../../../instantiation-context/instantiation-context-source.interface';
+import {InstantiationContext} from '../../../instantiation-context/instantiation-context';
+import {InstantiationContextInterpolateFileInterface} from '../../../instantiation-context/before-build/instantiation-context-interpolate-file.interface';
 import {FeaterVariablesSet} from '../../../sets/feater-variables-set';
 import {CommandType} from '../../../executor/command.type';
 import {Injectable} from '@nestjs/common';
@@ -22,25 +22,25 @@ export class InterpolateFileCommandFactoryComponent implements BeforeBuildTaskCo
 
     createCommand(
         type: string,
-        beforeBuildTask: InstanceContextBeforeBuildTaskInterface,
-        source: InstanceContextSourceInterface,
+        beforeBuildTask: InstantiationContextBeforeBuildTaskInterface,
+        source: InstantiationContextSourceInterface,
         taskId: string,
-        instanceContext: InstanceContext,
-        updateInstanceFromInstanceContext: () => Promise<void>,
+        instantiationContext: InstantiationContext,
+        updateInstance: () => Promise<void>,
     ): CommandType {
-        const typedBeforeBuildTask = beforeBuildTask as InstanceContextInterpolateFileInterface;
+        const typedBeforeBuildTask = beforeBuildTask as InstantiationContextInterpolateFileInterface;
 
         return new ContextAwareCommand(
             taskId,
-            instanceContext.id,
-            instanceContext.hash,
+            instantiationContext.id,
+            instantiationContext.hash,
             `Interpolate file for source \`${source.id}\``,
             () => new InterpolateFileCommand(
-                instanceContext.featerVariables,
+                instantiationContext.featerVariables,
                 path.join(source.paths.dir.absolute.guest, typedBeforeBuildTask.relativePath),
             ),
             async (result: InterpolateFileCommandResultInterface): Promise<void> => {
-                (beforeBuildTask as InstanceContextInterpolateFileInterface).interpolatedText = result.interpolatedText;
+                (beforeBuildTask as InstantiationContextInterpolateFileInterface).interpolatedText = result.interpolatedText;
             },
         );
     }

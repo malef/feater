@@ -1,7 +1,7 @@
 import {AbsolutePathsInterface} from '../helper/absolute-paths.interface';
-import {InstanceContextBeforeBuildTaskInterface} from './before-build/instance-context-before-build-task.interface';
+import {InstantiationContextBeforeBuildTaskInterface} from './before-build/instantiation-context-before-build-task.interface';
 
-export interface InstanceContextSourceInterface {
+export interface InstantiationContextSourceInterface {
     readonly id: string;
     readonly cloneUrl: string;
     readonly reference: {
@@ -11,5 +11,5 @@ export interface InstanceContextSourceInterface {
     readonly paths: {
         readonly dir: AbsolutePathsInterface,
     };
-    readonly beforeBuildTasks: InstanceContextBeforeBuildTaskInterface[];
+    readonly beforeBuildTasks: InstantiationContextBeforeBuildTaskInterface[];
 }

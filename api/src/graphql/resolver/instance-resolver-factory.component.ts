@@ -8,7 +8,7 @@ import {InstanceRepository} from '../../persistence/repository/instance.reposito
 import {InstanceInterface} from '../../persistence/interface/instance.interface';
 import {CreateInstanceInputTypeInterface} from '../input-type/create-instance-input-type.interface';
 import {RemoveInstanceInputTypeInterface} from '../input-type/remove-instance-input-type.interface';
-import {InstanceCreatorComponent} from '../../instantiation/instance-creator.component';
+import {Instantiator} from '../../instantiation/instantiator.service';
 import {DefinitionRepository} from '../../persistence/repository/definition.repository';
 import {ResolverPaginationArgumentsHelper} from './pagination-argument/resolver-pagination-arguments-helper.component';
 import {ResolverPaginationArgumentsInterface} from './pagination-argument/resolver-pagination-arguments.interface';
@@ -25,7 +25,7 @@ export class InstanceResolverFactory {
         private readonly resolveListOptionsHelper: ResolverPaginationArgumentsHelper,
         private readonly instanceRepository: InstanceRepository,
         private readonly definitionRepository: DefinitionRepository,
-        private readonly instantiator: InstanceCreatorComponent,
+        private readonly instantiator: Instantiator,
     ) { }
 
     protected readonly defaultSortKey = 'created_at_desc';
