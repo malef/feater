@@ -7,9 +7,9 @@ import {
 } from '@angular/core';
 import {
     DefinitionAddFormSourceFormElement,
-    BeforeBuildTaskFormElement,
-    TaskFormElement,
-    InterpolateTaskFormElement,
+    DefinitionAddBeforeBuildTaskFormElement,
+    DefinitionAddCopyTaskFormElement,
+    DefinitionAddInterpolateTaskFormElement,
 } from '../definition-add-form.model';
 
 
@@ -31,16 +31,16 @@ export class DefinitionAddSourceFormElementComponent implements OnInit {
         this.deleteItem.emit(this.item);
     }
 
-    isBeforeBuildTaskCopy(beforeBuildTask: BeforeBuildTaskFormElement) {
+    isBeforeBuildTaskCopy(beforeBuildTask: DefinitionAddBeforeBuildTaskFormElement) {
         return ('copy' === beforeBuildTask.type);
     }
 
-    isBeforeBuildTaskInterpolate(beforeBuildTask: BeforeBuildTaskFormElement) {
+    isBeforeBuildTaskInterpolate(beforeBuildTask: DefinitionAddBeforeBuildTaskFormElement) {
         return ('interpolate' === beforeBuildTask.type);
     }
 
     addBeforeBuildTaskCopy() {
-        this.item.beforeBuildTasks.push(<TaskFormElement>{
+        this.item.beforeBuildTasks.push(<DefinitionAddCopyTaskFormElement>{
             type: 'copy',
             sourceRelativePath: '',
             destinationRelativePath: ''
@@ -48,14 +48,14 @@ export class DefinitionAddSourceFormElementComponent implements OnInit {
     }
 
     addBeforeBuildTaskInterpolate() {
-        this.item.beforeBuildTasks.push(<InterpolateTaskFormElement>{
+        this.item.beforeBuildTasks.push(<DefinitionAddInterpolateTaskFormElement>{
 
             type: 'interpolate',
             relativePath: ''
         });
     }
 
-    deleteBeforeBuildTask(beforeBuildTask: BeforeBuildTaskFormElement) {
+    deleteBeforeBuildTask(beforeBuildTask: DefinitionAddBeforeBuildTaskFormElement) {
         const index = this.item.beforeBuildTasks.indexOf(beforeBuildTask);
         if (-1 !== index) {
             this.item.beforeBuildTasks.splice(index, 1);

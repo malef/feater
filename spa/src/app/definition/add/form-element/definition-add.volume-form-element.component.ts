@@ -7,9 +7,9 @@ import {
 } from '@angular/core';
 import {
     DefinitionAddFormVolumeFormElement,
-    BeforeBuildTaskFormElement,
-    TaskFormElement,
-    InterpolateTaskFormElement,
+    DefinitionAddBeforeBuildTaskFormElement,
+    DefinitionAddCopyTaskFormElement,
+    DefinitionAddInterpolateTaskFormElement,
 } from '../definition-add-form.model';
 
 

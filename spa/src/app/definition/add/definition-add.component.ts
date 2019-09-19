@@ -1,13 +1,9 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {Router, ActivatedRoute, Params} from '@angular/router';
 import {map, switchMap} from 'rxjs/operators';
-import gql from 'graphql-tag';
 import {Apollo} from 'apollo-angular';
 import {jsonToGraphQLQuery} from 'json-to-graphql-query';
 import {NgxSpinnerService} from 'ngx-spinner';
-import * as _ from 'lodash';
-import * as jsYaml from 'js-yaml';
-import * as camelCaseKeys from 'camelcase-keys';
 import {
     DefinitionAddForm,
     DefinitionAddFormSourceFormElement,
@@ -16,16 +12,17 @@ import {
     DefinitionAddFormEnvVariableFormElement,
     DefinitionAddFormSummaryItemFormElement,
     DefinitionAddFormConfigFormElement,
-    ExecuteHostCommandTaskFormElement,
-    ExecuteServiceCommandTaskFormElement,
-    AfterBuildTaskFormElement,
-    CopyAssetIntoContainerTaskFormElement,
+    DefinitionAddActionFormElement,
 } from './definition-add-form.model';
 import {
     getProjectQueryGql,
     GetProjectQueryInterface,
     GetProjectQueryProjectFieldInterface,
 } from './get-project.query';
+import _ from 'lodash';
+import jsYaml from 'js-yaml';
+import camelCaseKeys from 'camelcase-keys';
+import gql from 'graphql-tag';
 
 
 @Component({
@@ -63,7 +60,7 @@ export class DefinitionAddComponent implements OnInit {
                     envDirRelativePath: '',
                     composeFileRelativePaths: [''],
                 },
-                afterBuildTasks: [],
+                actions: [],
                 summaryItems: [],
             },
         };
@@ -149,57 +146,22 @@ export class DefinitionAddComponent implements OnInit {
         }
     }
 
-    addAfterBuildTaskExecuteHostCommand(): void {
-        this.item.config.afterBuildTasks.push({
-            type: 'executeHostCommand',
+    addAction(): void {
+        this.item.config.actions.push({
             id: '',
-            dependsOn: [],
-            command: [''],
-            inheritedEnvVariables: [],
-            customEnvVariables: [],
-        } as ExecuteHostCommandTaskFormElement);
+            type: '',
+            name: '',
+            afterBuildTasks: [],
+        });
     }
 
-    addAfterBuildTaskExecuteServiceCommand(): void {
-        this.item.config.afterBuildTasks.push({
-            type: 'executeServiceCommand',
-            id: '',
-            dependsOn: [],
-            command: [''],
-            inheritedEnvVariables: [],
-            customEnvVariables: [],
-        } as ExecuteServiceCommandTaskFormElement);
-    }
-
-    addAfterBuildTaskCopyAssetIntoContainer(): void {
-        this.item.config.afterBuildTasks.push({
-            type: 'copyAssetIntoContainer',
-            id: '',
-            dependsOn: [],
-            serviceId: '',
-            assetId: '',
-            destinationPath: '',
-        } as CopyAssetIntoContainerTaskFormElement);
-    }
-
-    isAfterBuildTaskExecuteHostCommand(afterBuildTask: AfterBuildTaskFormElement): boolean {
-        return 'executeHostCommand' === afterBuildTask.type;
-    }
-
-    isAfterBuildTaskExecuteServiceCommand(afterBuildTask: AfterBuildTaskFormElement): boolean {
-        return 'executeServiceCommand' === afterBuildTask.type;
-    }
-
-    isAfterBuildTaskCopyAssetIntoContainer(afterBuildTask: AfterBuildTaskFormElement): boolean {
-        return 'copyAssetIntoContainer' === afterBuildTask.type;
-    }
-
-    deleteAfterBuildTask(afterBuildTask: AfterBuildTaskFormElement): void {
-        const index = this.item.config.afterBuildTasks.indexOf(afterBuildTask);
+    deleteAction(action: DefinitionAddActionFormElement): void {
+        const index = this.item.config.actions.indexOf(action);
         if (-1 !== index) {
-            this.item.config.afterBuildTasks.splice(index, 1);
+            this.item.config.actions.splice(index, 1);
         }
     }
+
 
     addSummaryItem(): void {
         this.item.config.summaryItems.push({
@@ -229,26 +191,7 @@ export class DefinitionAddComponent implements OnInit {
         this.switchMode('form');
     }
 
-    getAvailableEnvVariableNames(): string[] {
-        const availableEnvVariableNames = [];
-        for (const envVariable of this.item.config.envVariables) {
-            availableEnvVariableNames.push(envVariable.name);
-        }
-        availableEnvVariableNames.push('FEATER__INSTANCE_ID');
-        for (const proxiedPort of this.item.config.proxiedPorts) {
-            availableEnvVariableNames.push(`FEATER__PROXY_DOMIAN__${proxiedPort.id.toUpperCase()}`);
-        }
-
-        return availableEnvVariableNames;
-    }
-
     protected mapItem(): any {
-        for (const afterBuildTask of this.item.config.afterBuildTasks) {
-            if ('executeHostCommand' === afterBuildTask.type || 'executeServiceCommand' === afterBuildTask.type) {
-                this.filterAfterBuildExecuteCommandTask(afterBuildTask as ExecuteHostCommandTaskFormElement);
-            }
-        }
-
         const mappedItem = {
             projectId: this.project.id,
             name: this.item.name,
@@ -265,30 +208,41 @@ export class DefinitionAddComponent implements OnInit {
                 composeFiles: [
                     this.item.config.composeFile,
                 ],
-                afterBuildTasks: _.cloneDeep(this.item.config.afterBuildTasks),
+                actions: this.item.config.actions.map(action => ({
+                    id: action.id,
+                    name: action.name,
+                    type: action.type,
+                    afterBuildTasks: action.afterBuildTasks.map(afterBuildTask => {
+                        const mappedAfterBuildTask = _.cloneDeep(afterBuildTask);
+
+                        if ('' === mappedAfterBuildTask.id) {
+                            delete mappedAfterBuildTask.id;
+                        }
+
+                        if (0 === mappedAfterBuildTask.dependsOn.length) {
+                            delete mappedAfterBuildTask.dependsOn;
+                        }
+
+                        if ('executeHostCommand' === afterBuildTask.type || 'executeServiceCommand' === afterBuildTask.type) {
+                            // @ts-ignore
+                            afterBuildTask.command = _.filter(afterBuildTask.command, (commandPart) => !/^ *$/.test(commandPart));
+                            // @ts-ignore
+                            for (const inheritedEnvVariable of afterBuildTask.inheritedEnvVariables) {
+                                if (/^ *$/.test(inheritedEnvVariable.alias)) {
+                                    inheritedEnvVariable.alias = null;
+                                }
+                            }
+                        }
+
+                        return mappedAfterBuildTask;
+                    }),
+                })),
                 summaryItems: this.item.config.summaryItems,
             },
         };
 
-        for (const afterBuildTask of mappedItem.config.afterBuildTasks) {
-            if ('' === afterBuildTask.id) {
-                delete afterBuildTask.id;
-            }
-            if (0 === afterBuildTask.dependsOn.length) {
-                delete afterBuildTask.dependsOn;
-            }
-        }
 
         return mappedItem;
-    }
-
-    protected filterAfterBuildExecuteCommandTask(afterBuildTask: ExecuteHostCommandTaskFormElement) {
-        afterBuildTask.command = _.filter(afterBuildTask.command, (commandPart) => !/^ *$/.test(commandPart));
-        for (const inheritedEnvVariable of afterBuildTask.inheritedEnvVariables) {
-            if (/^ *$/.test(inheritedEnvVariable.alias)) {
-                inheritedEnvVariable.alias = null;
-            }
-        }
     }
 
     protected mapYamlConfig(yamlConfig: any): DefinitionAddFormConfigFormElement {
@@ -303,7 +257,7 @@ export class DefinitionAddComponent implements OnInit {
             envVariables: [],
             composeFile: null,
             summaryItems: [],
-            afterBuildTasks: [], // TODO Change to actions.
+            actions: [],
         };
 
         for (const source of camelCaseYamlConfig.sources) {
@@ -333,18 +287,27 @@ export class DefinitionAddComponent implements OnInit {
             composeFileRelativePaths: camelCaseYamlConfig.composeFiles[0].composeFileRelativePaths,
         };
 
-        for (const afterBuildTask of camelCaseYamlConfig.actions[0].afterBuildTasks) { // TODO This needs to be improved.
-            const mappedAfterBuildTask = afterBuildTask;
+        for (const action of camelCaseYamlConfig.actions) {
+            const mappedAfterBuildTasks = [];
+            for (const afterBuildTask of action.afterBuildTasks) {
+                const mappedAfterBuildTask = afterBuildTask;
 
-            if (!afterBuildTask.id) {
-                mappedAfterBuildTask.id = '';
+                if (!afterBuildTask.id) {
+                    mappedAfterBuildTask.id = '';
+                }
+
+                if (!afterBuildTask.dependsOn) {
+                    mappedAfterBuildTask.dependsOn = [];
+                }
+
+                mappedAfterBuildTasks.push(mappedAfterBuildTask);
             }
-
-            if (!afterBuildTask.dependsOn) {
-                mappedAfterBuildTask.dependsOn = [];
-            }
-
-            mappedYamlConfig.afterBuildTasks.push(mappedAfterBuildTask);
+            mappedYamlConfig.actions.push({
+                id: action.id,
+                type: action.type,
+                name: action.name,
+                afterBuildTasks: mappedAfterBuildTasks,
+            });
         }
 
         for (const summaryItem of camelCaseYamlConfig.summaryItems) {

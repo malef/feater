@@ -1,5 +1,5 @@
 import {Component, Input, Output, EventEmitter} from '@angular/core';
-import {ExecuteServiceCommandTaskFormElement} from '../../definition-add-form.model';
+import {DefinitionAddExecuteServiceCommandTaskFormElement} from '../../definition-add-form.model';
 
 
 @Component({
@@ -9,12 +9,12 @@ import {ExecuteServiceCommandTaskFormElement} from '../../definition-add-form.mo
 })
 export class ExecuteServiceCommandTaskFormElementComponent {
 
-    @Input() item: ExecuteServiceCommandTaskFormElement;
+    @Input() item: DefinitionAddExecuteServiceCommandTaskFormElement;
 
     @Input() availableEnvVariableNames: string[];
 
-    @Output() deleteItem: EventEmitter<ExecuteServiceCommandTaskFormElement> =
-        new EventEmitter<ExecuteServiceCommandTaskFormElement>();
+    @Output() deleteItem: EventEmitter<DefinitionAddExecuteServiceCommandTaskFormElement> =
+        new EventEmitter<DefinitionAddExecuteServiceCommandTaskFormElement>();
 
     delete(): void {
         this.deleteItem.emit(this.item);

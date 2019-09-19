@@ -75,7 +75,7 @@ export const typeDefsProvider = {
             proxiedPorts: [ProxiedPortInput!]!
             envVariables: [EnvVariableInput!]!
             composeFiles: [ComposeFileInput!]!
-            afterBuildTasks: [AfterBuildTaskInput!]!
+            actions: [ActionInput!]!
             summaryItems: [SummaryItemInput!]!
         }
 
@@ -119,6 +119,13 @@ export const typeDefsProvider = {
             sourceId: String!
             envDirRelativePath: String!
             composeFileRelativePaths: [String!]!
+        }
+
+        input ActionInput {
+            id: String!
+            name: String!
+            type: String!
+            afterBuildTasks: [AfterBuildTaskInput!]!
         }
 
         input AfterBuildTaskInput {

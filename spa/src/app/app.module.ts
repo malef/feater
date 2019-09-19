@@ -33,6 +33,7 @@ import {DefinitionAddBeforeBuildTaskCopyFormElementComponent} from './definition
 import {DefinitionAddBeforeBuildTaskInterpolateFormElementComponent} from './definition/add/form-element/definition-add.before-build-task-interpolate-form-element.component';
 import {DefinitionAddProxiedPortFormElementComponent} from './definition/add/form-element/definition-add.proxied-port-form-element.component';
 import {DefinitionAddEnvVariableFormElementComponent} from './definition/add/form-element/definition-add.environmental-variable-form-element.component';
+import {DefinitionAddActionFormElementComponent} from './definition/add/form-element/definition-add.action-form-element.component';
 import {DefinitionAddSummaryItemFormElementComponent} from './definition/add/form-element/definition-add.summary-item-form-element.component';
 import {DefinitionAddComposeFileFormElementComponent} from './definition/add/form-element/definition-add.compose-file-form-element.component';
 import {DefinitionDetailComponent} from './definition/detail/definition-detail.component';
@@ -106,6 +107,7 @@ const appRoutes: Routes = [
         DefinitionAddBeforeBuildTaskCopyFormElementComponent,
         DefinitionAddBeforeBuildTaskInterpolateFormElementComponent,
         DefinitionAddProxiedPortFormElementComponent,
+        DefinitionAddActionFormElementComponent,
         DefinitionAddEnvVariableFormElementComponent,
         DefinitionAddComposeFileFormElementComponent,
         ExecuteHostCommandTaskFormElementComponent,
