@@ -1,3 +1,4 @@
+import {ActionLogInterface} from '../../persistence/interface/action-log.interface';
 import {CommandLogInterface} from '../../persistence/interface/command-log.interface';
 import {environment} from '../../environments/environment';
 import * as winston from 'winston';
@@ -53,16 +54,14 @@ export class CommandLogger {
         this.logger.debug(message, this.getMeta());
     }
 
-    markAsCompleted(): Promise<any> {
+    async markAsCompleted(): Promise<void> {
         this.commandLog.completedAt = new Date();
-
-        return this.commandLog.save();
+        await this.commandLog.save();
     }
 
-    markAsFailed(): Promise<any> {
+    async markAsFailed(): Promise<void> {
         this.commandLog.failedAt = new Date();
-
-        return this.commandLog.save();
+        await this.commandLog.save();
     }
 
     private getMeta(): any {

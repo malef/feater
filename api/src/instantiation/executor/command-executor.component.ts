@@ -1,6 +1,6 @@
 import {ContextAwareCommandExecutorComponent} from './context-aware-command-executor.component';
 import {SimpleCommand} from './simple-command';
-import {ContextAwareCommand} from './context-aware-command.interface';
+import {ContextAwareCommand} from './context-aware-command';
 import {CommandsList} from './commands-list';
 import {CommandType} from './command.type';
 import {CommandsListExecutorComponent} from './commands-list-executor.component';

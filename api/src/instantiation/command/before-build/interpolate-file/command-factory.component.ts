@@ -1,7 +1,7 @@
 import * as path from 'path';
 import {BeforeBuildTaskCommandFactoryInterface} from '../command-factory.interface';
 import {InterpolateFileCommand} from './command';
-import {ContextAwareCommand} from '../../../executor/context-aware-command.interface';
+import {ContextAwareCommand} from '../../../executor/context-aware-command';
 import {InterpolateFileCommandResultInterface} from './command-result.interface';
 import {InstantiationContextBeforeBuildTaskInterface} from '../../../instantiation-context/before-build/instantiation-context-before-build-task.interface';
 import {InstantiationContextSourceInterface} from '../../../instantiation-context/instantiation-context-source.interface';

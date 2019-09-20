@@ -1,7 +1,7 @@
 import {Injectable} from '@nestjs/common';
 import {BaseLogger} from '../logger/base-logger';
 import {CommandsList} from './executor/commands-list';
-import {ContextAwareCommand} from './executor/context-aware-command.interface';
+import {ContextAwareCommand} from './executor/context-aware-command';
 import {ResetSourceCommand} from './command/reset-source/command';
 import {CopyFileCommandFactoryComponent} from './command/before-build/copy-file/command-factory.component';
 import {InterpolateFileCommandFactoryComponent} from './command/before-build/interpolate-file/command-factory.component';
@@ -85,6 +85,8 @@ export class Modificator {
             await this.instanceRepository.save(instance);
         };
 
+        instance.failedAt = undefined;
+        instance.completedAt = undefined;
         await updateInstance();
 
         this.addResetSource(modifyInstanceCommand, actionLogId, modificationContext, updateInstance);
@@ -96,11 +98,15 @@ export class Modificator {
             .then(
                 async (): Promise<void> => {
                     this.logger.info('Modification started.');
+                    actionLog.completedAt = new Date();
+                    await actionLog.save();
                     instance.completedAt = new Date();
                     await updateInstance();
                 },
                 async (error: Error): Promise<void> => {
                     this.logger.error('Modification failed.');
+                    actionLog.failedAt = new Date();
+                    await actionLog.save();
                     instance.failedAt = new Date();
                     await updateInstance();
                 },

@@ -1,4 +1,4 @@
-import {ContextAwareCommand} from './context-aware-command.interface';
+import {ContextAwareCommand} from './context-aware-command';
 import {Injectable} from '@nestjs/common';
 import {CommandLogRepository} from '../../persistence/repository/command-log.repository';
 import {CommandLogger} from '../logger/command-logger';
@@ -43,11 +43,9 @@ export class ContextAwareCommandExecutorComponent {
 
     protected async createCommandLogger(command: ContextAwareCommand): Promise<CommandLogger> {
         const commandLog = await command.createCommandLog(this.commandLogRepository);
+        const commandLogPaths = this.pathHelper.getCommandLogPaths(commandLog.instanceHash, commandLog.id.toString());
 
-        return new CommandLogger(
-            commandLog,
-            this.pathHelper.getCommandLogPaths(commandLog.instanceHash, commandLog.id.toString()).absolute.guest,
-        );
+        return new CommandLogger(commandLog, commandLogPaths.absolute.guest);
     }
 
     protected createCommand(command: ContextAwareCommand, commandLogger: CommandLogger): CommandType {

@@ -3,7 +3,7 @@ import {ExecuteServiceCmdCommand} from './command';
 import {InstantiationContextAfterBuildTaskInterface} from '../../../instantiation-context/after-build/instantiation-context-after-build-task.interface';
 import {InstantiationContext} from '../../../instantiation-context/instantiation-context';
 import {InstantiationContextExecuteServiceCmdInterface} from '../../../instantiation-context/after-build/instantiation-context-execute-service-cmd.interface';
-import {ContextAwareCommand} from '../../../executor/context-aware-command.interface';
+import {ContextAwareCommand} from '../../../executor/context-aware-command';
 import {EnvVariablesSet} from '../../../sets/env-variables-set';
 import {CommandType} from '../../../executor/command.type';
 import {Injectable} from '@nestjs/common';

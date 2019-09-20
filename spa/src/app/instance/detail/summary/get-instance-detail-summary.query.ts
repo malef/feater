@@ -28,6 +28,12 @@ export const getInstanceDetailSummaryQueryGql = gql`
             updatedAt
             completedAt
             failedAt
+            actionLogs {
+                actionId
+                createdAt
+                completedAt
+                failedAt
+            }
         }
     }
 `;
@@ -62,6 +68,14 @@ export interface GetInstanceDetailSummaryQueryInstanceFieldInterface {
     updatedAt: string;
     completedAt: string;
     failedAt: string;
+    actionLogs: [
+        {
+            actionId: string;
+            createdAt: string;
+            completedAt: string;
+            failedAt: string;
+        }
+    ]
 }
 
 export interface GetInstanceDetailSummaryQueryInterface {

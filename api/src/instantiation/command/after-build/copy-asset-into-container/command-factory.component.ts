@@ -3,7 +3,7 @@ import {CopyAssetIntoContainerCommand} from './command';
 import {InstantiationContextAfterBuildTaskInterface} from '../../../instantiation-context/after-build/instantiation-context-after-build-task.interface';
 import {InstantiationContext} from '../../../instantiation-context/instantiation-context';
 import {InstantiationContextCopyAssetIntoContainerInterface} from '../../../instantiation-context/after-build/instantiation-context-copy-asset-into-container.interface';
-import {ContextAwareCommand} from '../../../executor/context-aware-command.interface';
+import {ContextAwareCommand} from '../../../executor/context-aware-command';
 import {CommandType} from '../../../executor/command.type';
 import {Injectable} from '@nestjs/common';
 

@@ -1,7 +1,7 @@
 import {Injectable} from '@nestjs/common';
 import {BaseLogger} from '../logger/base-logger';
 import {CommandsList} from './executor/commands-list';
-import {ContextAwareCommand} from './executor/context-aware-command.interface';
+import {ContextAwareCommand} from './executor/context-aware-command';
 import {CreateDirectoryCommand} from './command/create-directory/command';
 import {CreateVolumeFromAssetCommand} from './command/create-volume-from-asset/command';
 import {CreateVolumeFromAssetCommandResultInterface} from './command/create-volume-from-asset/command-result.interface';
@@ -133,11 +133,15 @@ export class Instantiator {
             .then(
                 async (): Promise<void> => {
                     this.logger.info('Instantiation started.');
+                    actionLog.completedAt = new Date();
+                    await actionLog.save();
                     instance.completedAt = new Date();
                     await updateInstance();
                 },
                 async (error: Error): Promise<void> => {
                     this.logger.error('Instantiation failed.');
+                    actionLog.failedAt = new Date();
+                    await actionLog.save();
                     instance.failedAt = new Date();
                     await updateInstance();
                 },
