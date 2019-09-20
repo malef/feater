@@ -263,3 +263,12 @@ h2 {
 .buttons .btn {
     margin-right: 4px;
 }
+
+.before-build-task-well,
+.after-build-task-well {
+    padding: 16px;
+    margin-bottom: 16px;
+    background-color: rgb(225, 229, 233);
+    border-radius: 3px;
+    position: relative;
+}

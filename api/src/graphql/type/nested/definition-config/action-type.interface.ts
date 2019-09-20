@@ -4,9 +4,5 @@ export interface ActionTypeInterface {
     id: string;
     name: string;
     type: string;
-    createdAt: Date;
-    updatedAt?: Date;
-    completedAt?: Date;
-    failedAt?: Date;
     afterBuildTasks: AfterBuildTaskTypeInterfaces[];
 }

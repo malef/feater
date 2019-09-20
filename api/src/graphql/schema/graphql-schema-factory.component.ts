@@ -17,7 +17,7 @@ import {DeployKeyResolverFactory} from '../resolver/deploy-key-resolver-factory.
 import {DeployKeyTypeInterface} from '../type/deploy-key-type.interface';
 import {CommandLogInterface} from '../../persistence/interface/command-log.interface';
 import {CommandLogsResolverFactory} from '../resolver/command-logs-resolver-factory.component';
-import {ActionTypeInterface} from '../type/nested/definition-config/action-type.interface';
+import {ActionLogTypeInterface} from '../type/action-log-type.interface';
 import {ActionLogsResolverFactory} from '../resolver/action-logs-resolver-factory.component';
 import * as GraphQLJSON from 'graphql-type-json';
 
@@ -158,16 +158,16 @@ export class GraphqlSchemaFactory {
 
             InstanceActionLog: {
                 commandLogs: this.commandLogsResolverFactory.getListResolver(
-                    (actionLog: ActionTypeInterface) => ({actionLogId: actionLog.id.toString()}),
+                    (actionLog: ActionLogTypeInterface) => ({actionLogId: actionLog.id.toString()}),
                 ),
                 createdAt: this.dateResolverFactory.getDateResolver(
-                    (actionLog: ActionTypeInterface) => actionLog.createdAt,
+                    (actionLog: ActionLogTypeInterface) => actionLog.createdAt,
                 ),
                 completedAt: this.dateResolverFactory.getDateResolver(
-                    (actionLog: ActionTypeInterface) => actionLog.completedAt,
+                    (actionLog: ActionLogTypeInterface) => actionLog.completedAt,
                 ),
                 failedAt: this.dateResolverFactory.getDateResolver(
-                    (actionLog: ActionTypeInterface) => actionLog.failedAt,
+                    (actionLog: ActionLogTypeInterface) => actionLog.failedAt,
                 ),
             },
 

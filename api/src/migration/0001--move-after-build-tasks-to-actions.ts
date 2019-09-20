@@ -10,7 +10,7 @@ import {ActionLogRepository} from '../persistence/repository/action-log.reposito
 import * as _ from 'lodash';
 
 async function bootstrap() {
-    console.log('Starting.');
+    console.log('\n\nStarting migration.\n\n');
     const app: INestApplicationContext = await NestFactory.createApplicationContext(ApplicationModule);
 
     const definitionRepository = app.get(DefinitionRepository);
@@ -41,17 +41,37 @@ async function bootstrap() {
         definition.markModified('config');
         await definition.save();
     }
-    console.log('All definitions migrated.');
+    console.log('All definitions migrated.\n\n');
 
     const instances = await instanceRepository.find({}, 0, 999999);
     console.log(`${instances.length} instance(s) to migrate.`);
     for (const instance of instances) {
-        // TODO Timestamps should be added to action log during this migration.
+        const existingActionLogs = await actionLogRepository.find({instanceId: instance._id.toString()}, 0, 1);
+        if (existingActionLogs.length) {
+            console.log(`-- skipping instance ${instance._id.toString()} named '${instance.name}'.`);
+
+            continue;
+        }
+
+        console.log(`-- migrating instance ${instance._id.toString()} named '${instance.name}'.`);
+
         const actionLog = await actionLogRepository.create(
             instance.id,
             'create_instance',
             'instantiation',
         );
+        actionLog.createdAt = instance.createdAt;
+        actionLog.markModified('createdAt');
+        if (instance.completedAt) {
+            actionLog.completedAt = instance.completedAt;
+            actionLog.markModified('completedAt');
+        }
+        if (instance.failedAt) {
+            actionLog.failedAt = instance.failedAt;
+            actionLog.markModified('failedAt');
+        }
+        await actionLog.save();
+
         const commandLogs = await commandLogRepository.find({instanceId: instance._id.toString()}, 0, 999999);
         for (const commandLog of commandLogs) {
             commandLog.set('actionLogId', actionLog._id.toString());
@@ -61,8 +81,9 @@ async function bootstrap() {
             await commandLog.save();
         }
     }
-    console.log('All instances migrated.');
+    console.log('All instances migrated.\n\n');
 
+    // Remove obsolete `details` from all commandLogs.
     const commandLogs = await commandLogRepository.find({}, 0, 999999);
     console.log(`${commandLogs.length} command log(s) to migrate.`);
     for (const commandLog of commandLogs) {
@@ -70,7 +91,7 @@ async function bootstrap() {
         commandLog.markModified('details');
         await commandLog.save();
     }
-    console.log('All command logs migrated.');
+    console.log('All command logs migrated.\n\n');
 
     await app.close();
     process.exit();
