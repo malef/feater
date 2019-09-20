@@ -33,7 +33,7 @@ import {ExecuteServiceCmdCommandFactoryComponent} from './command/after-build/ex
 import {ContextAwareCommandExecutorComponent} from './executor/context-aware-command-executor.component';
 import {CompositeSimpleCommandExecutorComponent} from './executor/composite-simple-command-executor.component';
 import {PathHelper} from './helper/path-helper.component';
-import {InstantiationContextFactory} from './instantiation-context-factory.service';
+import {ActionExecutionContextFactory} from './action-execution-context-factory.service';
 import {EnableProxyDomainsCommandExecutorComponent} from './command/enable-proxy-domains/command-executor.component';
 import {CommandsMapExecutorComponent} from './executor/commands-map-executor.component';
 import {CommandsListExecutorComponent} from './executor/commands-list-executor.component';
@@ -75,7 +75,7 @@ import {IpAddressChecker} from './ip-address-checker.service';
         PathHelper,
         Instantiator,
         Modificator,
-        InstantiationContextFactory,
+        ActionExecutionContextFactory,
         CopyFileCommandFactoryComponent,
         InterpolateFileCommandFactoryComponent,
         CopyAssetIntoContainerCommandFactoryComponent,

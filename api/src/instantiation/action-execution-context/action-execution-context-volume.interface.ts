@@ -1,6 +1,6 @@
 import {AbsolutePathsInterface} from '../helper/absolute-paths.interface';
 
-export interface InstantiationContextVolumeInterface {
+export interface ActionExecutionContextVolumeInterface {
     readonly id: string;
     readonly assetId: string;
     readonly paths: {

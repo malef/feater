@@ -1,5 +1,5 @@
 import {AbsolutePathsInterface} from '../helper/absolute-paths.interface';
 
-export interface InstantiationContextPathsInterface {
+export interface ActionExecutionContextPathsInterface {
     readonly dir: AbsolutePathsInterface;
 }

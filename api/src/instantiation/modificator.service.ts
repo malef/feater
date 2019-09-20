@@ -11,11 +11,11 @@ import {ExecuteHostCmdCommandFactoryComponent} from './command/after-build/execu
 import {ExecuteServiceCmdCommandFactoryComponent} from './command/after-build/execute-service-cmd/command-factory.component';
 import {AfterBuildTaskCommandFactoryInterface} from './command/after-build/command-factory.interface';
 import {CommandExecutorComponent} from './executor/command-executor.component';
-import {InstantiationContextSourceInterface} from './instantiation-context/instantiation-context-source.interface';
-import {InstantiationContextAfterBuildTaskInterface} from './instantiation-context/after-build/instantiation-context-after-build-task.interface';
-import {InstantiationContextBeforeBuildTaskInterface} from './instantiation-context/before-build/instantiation-context-before-build-task.interface';
-import {InstantiationContext} from './instantiation-context/instantiation-context';
-import {InstantiationContextFactory} from './instantiation-context-factory.service';
+import {ActionExecutionContextSourceInterface} from './action-execution-context/action-execution-context-source.interface';
+import {ActionExecutionContextAfterBuildTaskInterface} from './action-execution-context/after-build/action-execution-context-after-build-task.interface';
+import {ActionExecutionContextBeforeBuildTaskInterface} from './action-execution-context/before-build/action-execution-context-before-build-task.interface';
+import {ActionExecutionContext} from './action-execution-context/action-execution-context';
+import {ActionExecutionContextFactory} from './action-execution-context-factory.service';
 import {CommandType} from './executor/command.type';
 import {CommandsMap} from './executor/commands-map';
 import {CommandsMapItem} from './executor/commands-map-item';
@@ -34,7 +34,7 @@ export class Modificator {
     constructor(
         protected readonly instanceRepository: InstanceRepository,
         protected readonly actionLogRepository: ActionLogRepository,
-        protected readonly instantiationContextFactory: InstantiationContextFactory,
+        protected readonly instantiationContextFactory: ActionExecutionContextFactory,
         protected readonly logger: BaseLogger,
         protected readonly commandExecutorComponent: CommandExecutorComponent,
         protected copyFileCommandFactoryComponent: CopyFileCommandFactoryComponent,
@@ -117,7 +117,7 @@ export class Modificator {
     protected addResetSource(
         createInstanceCommand: CommandsList,
         actionLogId: string,
-        instantiationContext: InstantiationContext,
+        instantiationContext: ActionExecutionContext,
         updateInstance: () => Promise<void>,
     ): void {
         createInstanceCommand.addCommand(
@@ -145,7 +145,7 @@ export class Modificator {
     protected addBeforeBuildTasks(
         createInstanceCommand: CommandsList,
         actionLogId: string,
-        instantiationContext: InstantiationContext,
+        instantiationContext: ActionExecutionContext,
         updateInstance: () => Promise<void>,
     ): void {
         createInstanceCommand.addCommand(
@@ -173,7 +173,7 @@ export class Modificator {
     protected addAfterBuildTasks(
         createInstanceCommand: CommandsList,
         actionLogId: string,
-        instantiationContext: InstantiationContext,
+        instantiationContext: ActionExecutionContext,
         updateInstance: () => Promise<void>,
     ): void {
         const commandMapItems: CommandsMapItem[] = instantiationContext.afterBuildTasks.map(
@@ -200,10 +200,10 @@ export class Modificator {
 
     // TODO Extract to a separate service.
     protected createBeforeBuildTaskCommand(
-        beforeBuildTask: InstantiationContextBeforeBuildTaskInterface,
-        source: InstantiationContextSourceInterface,
+        beforeBuildTask: ActionExecutionContextBeforeBuildTaskInterface,
+        source: ActionExecutionContextSourceInterface,
         actionLogId: string,
-        instantiationContext: InstantiationContext,
+        instantiationContext: ActionExecutionContext,
         updateInstance: () => Promise<void>,
     ): CommandType {
         for (const factory of this.beforeBuildTaskCommandFactoryComponents) {
@@ -224,9 +224,9 @@ export class Modificator {
 
     // TODO Extract to a separate service.
     protected createAfterBuildTaskCommand(
-        afterBuildTask: InstantiationContextAfterBuildTaskInterface,
+        afterBuildTask: ActionExecutionContextAfterBuildTaskInterface,
         actionLogId: string,
-        instantiationContext: InstantiationContext,
+        instantiationContext: ActionExecutionContext,
         updateInstance: () => Promise<void>,
     ): CommandType {
         for (const factory of this.afterBuildTaskCommandFactoryComponents) {

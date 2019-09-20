@@ -1,4 +1,4 @@
-export interface InstantiationContextProxiedPortInterface {
+export interface ActionExecutionContextProxiedPortInterface {
     readonly id: string;
     readonly name: string;
     readonly serviceId: string;

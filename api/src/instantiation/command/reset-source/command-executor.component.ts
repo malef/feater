@@ -94,7 +94,7 @@ export class ResetSourceCommandExecutorComponent implements SimpleCommandExecuto
             throw new Error('Unsupported reference type, only branches are supported.');
         }
 
-        const commit = await repo.getReferenceCommit(`refs/remotes/origin/${command.referenceName}-after`); // TODO Remofe `-after` suffix.
+        const commit = await repo.getReferenceCommit(`refs/remotes/origin/${command.referenceName}`);
         command.commandLogger.info(`Referenced branch: ${command.referenceName}`);
         command.commandLogger.info(`Commit hash: ${commit.sha()}`);
 

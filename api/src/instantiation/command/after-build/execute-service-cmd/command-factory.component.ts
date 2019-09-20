@@ -1,8 +1,8 @@
 import {AfterBuildTaskCommandFactoryInterface} from '../command-factory.interface';
 import {ExecuteServiceCmdCommand} from './command';
-import {InstantiationContextAfterBuildTaskInterface} from '../../../instantiation-context/after-build/instantiation-context-after-build-task.interface';
-import {InstantiationContext} from '../../../instantiation-context/instantiation-context';
-import {InstantiationContextExecuteServiceCmdInterface} from '../../../instantiation-context/after-build/instantiation-context-execute-service-cmd.interface';
+import {ActionExecutionContextAfterBuildTaskInterface} from '../../../action-execution-context/after-build/action-execution-context-after-build-task.interface';
+import {ActionExecutionContext} from '../../../action-execution-context/action-execution-context';
+import {ActionExecutionContextExecuteServiceCmdInterface} from '../../../action-execution-context/after-build/action-execution-context-execute-service-cmd.interface';
 import {ContextAwareCommand} from '../../../executor/context-aware-command';
 import {EnvVariablesSet} from '../../../sets/env-variables-set';
 import {CommandType} from '../../../executor/command.type';
@@ -19,12 +19,12 @@ export class ExecuteServiceCmdCommandFactoryComponent implements AfterBuildTaskC
 
     createCommand(
         type: string,
-        afterBuildTask: InstantiationContextAfterBuildTaskInterface,
+        afterBuildTask: ActionExecutionContextAfterBuildTaskInterface,
         actionLogId: string,
-        instantiationContext: InstantiationContext,
+        instantiationContext: ActionExecutionContext,
         updateInstance: () => Promise<void>,
     ): CommandType {
-        const typedAfterBuildTask = afterBuildTask as InstantiationContextExecuteServiceCmdInterface;
+        const typedAfterBuildTask = afterBuildTask as ActionExecutionContextExecuteServiceCmdInterface;
 
         return new ContextAwareCommand(
             actionLogId,

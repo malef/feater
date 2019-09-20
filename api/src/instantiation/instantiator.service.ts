@@ -29,11 +29,11 @@ import {ExecuteServiceCmdCommandFactoryComponent} from './command/after-build/ex
 import {AfterBuildTaskCommandFactoryInterface} from './command/after-build/command-factory.interface';
 import {CommandExecutorComponent} from './executor/command-executor.component';
 import {PrepareSummaryItemsCommandResultInterface} from './command/prepare-summary-items/command-result.interface';
-import {InstantiationContextSourceInterface} from './instantiation-context/instantiation-context-source.interface';
-import {InstantiationContextAfterBuildTaskInterface} from './instantiation-context/after-build/instantiation-context-after-build-task.interface';
-import {InstantiationContextBeforeBuildTaskInterface} from './instantiation-context/before-build/instantiation-context-before-build-task.interface';
-import {InstantiationContext} from './instantiation-context/instantiation-context';
-import {InstantiationContextFactory} from './instantiation-context-factory.service';
+import {ActionExecutionContextSourceInterface} from './action-execution-context/action-execution-context-source.interface';
+import {ActionExecutionContextAfterBuildTaskInterface} from './action-execution-context/after-build/action-execution-context-after-build-task.interface';
+import {ActionExecutionContextBeforeBuildTaskInterface} from './action-execution-context/before-build/action-execution-context-before-build-task.interface';
+import {ActionExecutionContext} from './action-execution-context/action-execution-context';
+import {ActionExecutionContextFactory} from './action-execution-context-factory.service';
 import {EnableProxyDomainsCommand} from './command/enable-proxy-domains/command';
 import {InstanceRepository} from '../persistence/repository/instance.repository';
 import {CommandType} from './executor/command.type';
@@ -54,7 +54,7 @@ export class Instantiator {
     constructor(
         protected readonly instanceRepository: InstanceRepository,
         protected readonly actionLogRepository: ActionLogRepository,
-        protected readonly instantiationContextFactory: InstantiationContextFactory,
+        protected readonly instantiationContextFactory: ActionExecutionContextFactory,
         protected readonly logger: BaseLogger,
         protected readonly commandExecutorComponent: CommandExecutorComponent,
         protected copyFileCommandFactoryComponent: CopyFileCommandFactoryComponent,
@@ -152,7 +152,7 @@ export class Instantiator {
     protected addCreateDirectory(
         createInstanceCommand: CommandsList,
         actionLogId: string,
-        instantiationContext: InstantiationContext,
+        instantiationContext: ActionExecutionContext,
         updateInstance: () => Promise<void>,
     ): void {
         createInstanceCommand.addCommand(new ContextAwareCommand(
@@ -169,7 +169,7 @@ export class Instantiator {
     protected addCreateVolumeFromAssetsAndCloneSource(
         createInstanceCommand: CommandsList,
         actionLogId: string,
-        instantiationContext: InstantiationContext,
+        instantiationContext: ActionExecutionContext,
         updateInstance: () => Promise<void>,
     ): void {
         const createVolumeFromAssetCommands = instantiationContext.volumes.map(
@@ -226,7 +226,7 @@ export class Instantiator {
     protected addParseDockerCompose(
         createInstanceCommand: CommandsList,
         actionLogId: string,
-        instantiationContext: InstantiationContext,
+        instantiationContext: ActionExecutionContext,
         updateInstance: () => Promise<void>,
     ): void {
         createInstanceCommand.addCommand(
@@ -267,7 +267,7 @@ export class Instantiator {
     protected addPrepareProxyDomains(
         createInstanceCommand: CommandsList,
         actionLogId: string,
-        instantiationContext: InstantiationContext,
+        instantiationContext: ActionExecutionContext,
         updateInstance: () => Promise<void>,
     ): void {
         createInstanceCommand.addCommand(
@@ -301,7 +301,7 @@ export class Instantiator {
     protected addPrepareEnvVarsForSources(
         createInstanceCommand: CommandsList,
         actionLogId: string,
-        instantiationContext: InstantiationContext,
+        instantiationContext: ActionExecutionContext,
         updateInstance: () => Promise<void>,
     ): void {
         createInstanceCommand.addCommand(
@@ -332,7 +332,7 @@ export class Instantiator {
     protected addPrepareSummaryItems(
         createInstanceCommand: CommandsList,
         actionLogId: string,
-        instantiationContext: InstantiationContext,
+        instantiationContext: ActionExecutionContext,
         updateInstance: () => Promise<void>,
     ): void {
         createInstanceCommand.addCommand(
@@ -357,7 +357,7 @@ export class Instantiator {
     protected addBeforeBuildTasks(
         createInstanceCommand: CommandsList,
         actionLogId: string,
-        instantiationContext: InstantiationContext,
+        instantiationContext: ActionExecutionContext,
         updateInstance: () => Promise<void>,
     ): void {
         createInstanceCommand.addCommand(
@@ -384,7 +384,7 @@ export class Instantiator {
     protected addRunDockerCompose(
         createInstanceCommand: CommandsList,
         actionLogId: string,
-        instantiationContext: InstantiationContext,
+        instantiationContext: ActionExecutionContext,
         updateInstance: () => Promise<void>,
     ): void {
         createInstanceCommand.addCommand(
@@ -420,7 +420,7 @@ export class Instantiator {
     protected addGetContainerIds(
         createInstanceCommand: CommandsList,
         actionLogId: string,
-        instantiationContext: InstantiationContext,
+        instantiationContext: ActionExecutionContext,
         updateInstance: () => Promise<void>,
     ): void {
         createInstanceCommand.addCommand(
@@ -458,7 +458,7 @@ export class Instantiator {
     protected addConnectContainersToNetwork(
         createInstanceCommand: CommandsList,
         actionLogId: string,
-        instantiationContext: InstantiationContext,
+        instantiationContext: ActionExecutionContext,
         updateInstance: () => Promise<void>,
     ): void {
         createInstanceCommand.addCommand(
@@ -491,7 +491,7 @@ export class Instantiator {
     protected addConfigureProxyDomains(
         createInstanceCommand: CommandsList,
         actionLogId: string,
-        instantiationContext: InstantiationContext,
+        instantiationContext: ActionExecutionContext,
         updateInstance: () => Promise<void>,
     ): void {
         createInstanceCommand.addCommand(
@@ -526,7 +526,7 @@ export class Instantiator {
     protected addAfterBuildTasks(
         createInstanceCommand: CommandsList,
         actionLogId: string,
-        instantiationContext: InstantiationContext,
+        instantiationContext: ActionExecutionContext,
         updateInstance: () => Promise<void>,
     ): void {
         const commandMapItems: CommandsMapItem[] = instantiationContext.afterBuildTasks.map(
@@ -554,7 +554,7 @@ export class Instantiator {
     protected addEnableProxyDomains(
         createInstanceCommand: CommandsList,
         actionLogId: string,
-        instantiationContext: InstantiationContext,
+        instantiationContext: ActionExecutionContext,
         updateInstance: () => Promise<void>,
     ): void {
         createInstanceCommand.addCommand(
@@ -575,10 +575,10 @@ export class Instantiator {
 
     // TODO Extract to a separate service.
     protected createBeforeBuildTaskCommand(
-        beforeBuildTask: InstantiationContextBeforeBuildTaskInterface,
-        source: InstantiationContextSourceInterface,
+        beforeBuildTask: ActionExecutionContextBeforeBuildTaskInterface,
+        source: ActionExecutionContextSourceInterface,
         actionLogId: string,
-        instantiationContext: InstantiationContext,
+        instantiationContext: ActionExecutionContext,
         updateInstance: () => Promise<void>,
     ): CommandType {
         for (const factory of this.beforeBuildTaskCommandFactoryComponents) {
@@ -599,9 +599,9 @@ export class Instantiator {
 
     // TODO Extract to a separate service.
     protected createAfterBuildTaskCommand(
-        afterBuildTask: InstantiationContextAfterBuildTaskInterface,
+        afterBuildTask: ActionExecutionContextAfterBuildTaskInterface,
         actionLogId: string,
-        instantiationContext: InstantiationContext,
+        instantiationContext: ActionExecutionContext,
         updateInstance: () => Promise<void>,
     ): CommandType {
         for (const factory of this.afterBuildTaskCommandFactoryComponents) {

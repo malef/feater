@@ -1,8 +1,8 @@
 import {AfterBuildTaskCommandFactoryInterface} from '../command-factory.interface';
 import {CopyAssetIntoContainerCommand} from './command';
-import {InstantiationContextAfterBuildTaskInterface} from '../../../instantiation-context/after-build/instantiation-context-after-build-task.interface';
-import {InstantiationContext} from '../../../instantiation-context/instantiation-context';
-import {InstantiationContextCopyAssetIntoContainerInterface} from '../../../instantiation-context/after-build/instantiation-context-copy-asset-into-container.interface';
+import {ActionExecutionContextAfterBuildTaskInterface} from '../../../action-execution-context/after-build/action-execution-context-after-build-task.interface';
+import {ActionExecutionContext} from '../../../action-execution-context/action-execution-context';
+import {ActionExecutionContextCopyAssetIntoContainerInterface} from '../../../action-execution-context/after-build/action-execution-context-copy-asset-into-container.interface';
 import {ContextAwareCommand} from '../../../executor/context-aware-command';
 import {CommandType} from '../../../executor/command.type';
 import {Injectable} from '@nestjs/common';
@@ -18,12 +18,12 @@ export class CopyAssetIntoContainerCommandFactoryComponent implements AfterBuild
 
     createCommand(
         type: string,
-        afterBuildTask: InstantiationContextAfterBuildTaskInterface,
+        afterBuildTask: ActionExecutionContextAfterBuildTaskInterface,
         actionLogId: string,
-        instantiationContext: InstantiationContext,
+        instantiationContext: ActionExecutionContext,
         updateInstance: () => Promise<void>,
     ): CommandType {
-        const typedAfterBuildTask = afterBuildTask as InstantiationContextCopyAssetIntoContainerInterface;
+        const typedAfterBuildTask = afterBuildTask as ActionExecutionContextCopyAssetIntoContainerInterface;
 
         return new ContextAwareCommand(
             actionLogId,

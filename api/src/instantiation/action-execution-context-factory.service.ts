@@ -1,15 +1,15 @@
 import {Injectable} from '@nestjs/common';
 import {PathHelper} from './helper/path-helper.component';
 import {environment} from '../environments/environment';
-import {InstantiationContextBeforeBuildTaskInterface} from './instantiation-context/before-build/instantiation-context-before-build-task.interface';
+import {ActionExecutionContextBeforeBuildTaskInterface} from './action-execution-context/before-build/action-execution-context-before-build-task.interface';
 import {AfterBuildTaskTypeInterface} from '../graphql/type/nested/definition-config/after-build-task-type.interface';
 import {FeaterVariablesSet} from './sets/feater-variables-set';
-import {InstantiationContext} from './instantiation-context/instantiation-context';
+import {ActionExecutionContext} from './action-execution-context/action-execution-context';
 import {EnvVariablesSet} from './sets/env-variables-set';
 import {SummaryItemsSet} from './sets/summary-items-set';
 
 @Injectable()
-export class InstantiationContextFactory {
+export class ActionExecutionContextFactory {
 
     constructor(
         protected readonly pathHelper: PathHelper,
@@ -20,8 +20,8 @@ export class InstantiationContextFactory {
         id: string,
         hash: string,
         actionId: string,
-    ): InstantiationContext {
-        const instantiationContext = new InstantiationContext(id, hash);
+    ): ActionExecutionContext {
+        const instantiationContext = new ActionExecutionContext(id, hash);
 
         instantiationContext.composeProjectName = `${environment.instantiation.containerNamePrefix}${instantiationContext.hash}`;
         instantiationContext.paths = {
@@ -52,7 +52,7 @@ export class InstantiationContextFactory {
                     dir: this.pathHelper.getSourcePaths(hash, sourceConfig.id),
                 },
                 beforeBuildTasks: sourceConfig.beforeBuildTasks.map(
-                    (beforeBuildTaskConfig) => beforeBuildTaskConfig as InstantiationContextBeforeBuildTaskInterface,
+                    (beforeBuildTaskConfig) => beforeBuildTaskConfig as ActionExecutionContextBeforeBuildTaskInterface,
                 ),
             });
         }
@@ -106,14 +106,13 @@ export class InstantiationContextFactory {
     }
 
     protected findAction(definitionConfig: any, actionId: string): any {
-        // TODO Check action type.
         for (const action of definitionConfig.actions) {
             if (actionId === action.id) {
                 return action;
             }
         }
 
-        throw new Error(`Invalid instantiation action '${actionId}'.`);
+        throw new Error(`Invalid action '${actionId}'.`);
     }
 
 }
