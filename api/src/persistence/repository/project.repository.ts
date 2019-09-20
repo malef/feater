@@ -8,7 +8,7 @@ import {CreateProjectInputTypeInterface} from '../../graphql/input-type/create-p
 export class ProjectRepository {
 
     constructor(
-        @InjectModel('Project') private readonly projectModel: Model<ProjectInterface>,
+        @InjectModel('Project') public readonly projectModel: Model<ProjectInterface>,
     ) {}
 
     find(criteria: object, offset: number, limit: number, sort?: object): Promise<ProjectInterface[]> {

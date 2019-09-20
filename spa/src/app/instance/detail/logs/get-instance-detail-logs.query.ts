@@ -9,6 +9,7 @@ export const getInstanceDetailLogsQueryGql = gql`
                 id
                 actionId
                 actionType
+                actionName
                 createdAt
                 completedAt
                 failedAt
@@ -35,6 +36,7 @@ export interface GetInstanceDetailLogsQueryInstanceFieldInterface {
         id: string;
         actionId: string;
         actionType: string;
+        actionName: string;
         createdAt: string;
         completedAt: string;
         failedAt: string;

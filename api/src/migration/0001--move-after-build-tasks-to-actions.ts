@@ -59,6 +59,7 @@ async function bootstrap() {
             instance.id,
             'create_instance',
             'instantiation',
+            'Create instance',
         );
         actionLog.createdAt = instance.createdAt;
         actionLog.markModified('createdAt');

@@ -442,6 +442,7 @@ export const typeDefsProvider = {
             id: String!
             actionId: String!
             actionType: String!
+            actionName: String!
             createdAt: String!
             completedAt: String
             failedAt: String
@@ -461,6 +462,7 @@ export const typeDefsProvider = {
             updatedAt: String
             completedAt: String
             failedAt: String
+            isModificationAllowed: Boolean!
             actionLogs: [InstanceActionLog!]!
         }
 

@@ -66,6 +66,7 @@ export class Modificator {
             instance._id.toString(),
             action.id,
             action.type,
+            action.name,
         );
 
         const actionLogId = actionLog._id.toString();

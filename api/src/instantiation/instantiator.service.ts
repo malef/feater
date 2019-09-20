@@ -87,6 +87,7 @@ export class Instantiator {
             instance._id.toString(),
             action.id,
             action.type,
+            action.name,
         );
 
         const actionLogId = actionLog._id.toString();

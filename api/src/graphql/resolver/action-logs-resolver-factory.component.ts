@@ -31,6 +31,7 @@ export class ActionLogsResolverFactory {
                     id: actionLog._id.toString(),
                     actionId: actionLog.actionId,
                     actionType: actionLog.actionType,
+                    actionName: actionLog.actionName,
                     createdAt: actionLog.createdAt,
                     completedAt: actionLog.completedAt,
                     failedAt: actionLog.failedAt,

@@ -95,8 +95,8 @@
                 <div *ngIf="instance?.actionLogs.length">
                     <div *ngFor="let actionLog of instance?.actionLogs" class="panel panel-default command-log">
                         <div class="panel-heading">
-                            <div class="command-log-description" [innerHTML]="('Action `' + actionLog.actionId + '`') | MarkdownToHtml"></div>
-                            <div class="command-log-indicator" style="text-align: right;">
+                            <div [innerHTML]="(actionLog.actionName + ' (`' + actionLog.actionId + '`)') | MarkdownToHtml"></div>
+                            <div>
                                 <span>
                                     <span *ngIf="!actionLog.completedAt && !actionLog.failedAt" class="label label-default">
                                         Started at {{ actionLog.createdAt | date:'yyyy-MM-dd HH:mm:ss' }},
@@ -121,8 +121,10 @@
             </div>
 
             <div>
-                <p *ngIf="!modificationActions.length">No modification actions defined.</p>
-                <div class="buttons">
+                <div *ngIf="isModificationDisabled()">
+                    {{ getModificationDisabledReason() }}
+                </div>
+                <div *ngIf="!isModificationDisabled()" class="buttons">
                     <span *ngFor="let modificationAction of modificationActions">
                         <button (click)="modifyInstance(modificationAction.id)"
                                 type="submit"

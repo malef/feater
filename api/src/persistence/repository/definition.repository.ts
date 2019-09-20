@@ -12,7 +12,7 @@ import {UpdateDefinitionInputTypeInterface} from '../../graphql/input-type/updat
 export class DefinitionRepository {
 
     constructor(
-        @InjectModel('Definition') private readonly definitionModel: Model<DefinitionInterface>,
+        @InjectModel('Definition') public readonly definitionModel: Model<DefinitionInterface>,
         private readonly deployKeyRepository: DeployKeyRepository,
     ) {}
 

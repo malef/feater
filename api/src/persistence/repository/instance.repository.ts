@@ -13,7 +13,7 @@ export class InstanceRepository {
     }[] = [];
 
     constructor(
-        @InjectModel('Instance') private readonly instanceModel: Model<InstanceInterface>,
+        @InjectModel('Instance') public readonly instanceModel: Model<InstanceInterface>,
     ) {}
 
     find(criteria: object, offset: number, limit: number, sort?: object): Promise<InstanceInterface[]> {

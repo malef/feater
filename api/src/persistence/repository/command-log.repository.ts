@@ -7,7 +7,7 @@ import {CommandLogInterface} from '../interface/command-log.interface';
 export class CommandLogRepository {
 
     constructor(
-        @InjectModel('CommandLog') private readonly commandLogModel: Model<CommandLogInterface>,
+        @InjectModel('CommandLog') public readonly commandLogModel: Model<CommandLogInterface>,
     ) {}
 
     find(criteria: object, offset: number, limit: number, sort?: object): Promise<CommandLogInterface[]> {

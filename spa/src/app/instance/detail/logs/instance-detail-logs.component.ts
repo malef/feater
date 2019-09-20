@@ -1,5 +1,4 @@
 import * as _ from 'lodash';
-import * as moment from 'moment';
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {Apollo} from 'apollo-angular';
@@ -116,6 +115,7 @@ export class InstanceDetailLogsComponent implements OnInit {
             id: actionLogData.id,
             actionId: actionLogData.actionId,
             actionType: actionLogData.actionType,
+            actionName: actionLogData.actionName,
             createdAt: actionLogData.createdAt,
             completedAt: actionLogData.completedAt,
             failedAt: actionLogData.failedAt,

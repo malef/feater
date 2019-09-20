@@ -34,22 +34,24 @@
                                 <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
                             </span>
                         </div>
-                        <div class="command-log-description" [innerHTML]="('Action `' + actionLog.actionId + '`') | MarkdownToHtml"></div>
-                        <div class="command-log-indicator" style="text-align: right;">
-                            <span>
-                                <span *ngIf="!actionLog.completedAt && !actionLog.failedAt" class="label label-default">
-                                    Started at {{ actionLog.createdAt | date:'yyyy-MM-dd HH:mm:ss' }},
-                                    still in progress
+                        <div class="command-log-description">
+                            <div [innerHTML]="(actionLog.actionName + ' (`' + actionLog.actionId + '`)') | MarkdownToHtml"></div>
+                            <div>
+                                <span>
+                                    <span *ngIf="!actionLog.completedAt && !actionLog.failedAt" class="label label-default">
+                                        Started at {{ actionLog.createdAt | date:'yyyy-MM-dd HH:mm:ss' }},
+                                        still in progress
+                                    </span>
+                                    <span *ngIf="actionLog.failedAt" class="label label-danger">
+                                        Failed at {{ actionLog.failedAt | date:'yyyy-MM-dd HH:mm:ss' }},
+                                        after {{ {start: actionLog.createdAt, end: actionLog.failedAt} | elapsedTime }}
+                                    </span>
+                                    <span *ngIf="actionLog.completedAt" class="label label-success">
+                                        Completed at {{ actionLog.completedAt | date:'yyyy-MM-dd HH:mm:ss' }},
+                                        in {{ {start: actionLog.createdAt, end: actionLog.completedAt} | elapsedTime }}
+                                    </span>
                                 </span>
-                                <span *ngIf="actionLog.failedAt" class="label label-danger">
-                                    Failed at {{ actionLog.failedAt | date:'yyyy-MM-dd HH:mm:ss' }},
-                                    after {{ {start: actionLog.createdAt, end: actionLog.failedAt} | elapsedTime }}
-                                </span>
-                                <span *ngIf="actionLog.completedAt" class="label label-success">
-                                    Completed at {{ actionLog.completedAt | date:'yyyy-MM-dd HH:mm:ss' }},
-                                    in {{ {start: actionLog.createdAt, end: actionLog.completedAt} | elapsedTime }}
-                                </span>
-                            </span>
+                            </div>
                         </div>
                     </div>
 
@@ -67,20 +69,22 @@
                                             <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
                                         </span>
                                     </div>
-                                    <div class="command-log-description" [innerHTML]="commandLog.description | MarkdownToHtml"></div>
-                                    <div class="command-log-indicator">
-                                        <span *ngIf="!commandLog.completedAt && !commandLog.failedAt" class="label label-default">
-                                            Started at {{ commandLog.createdAt | date:'yyyy-MM-dd HH:mm:ss' }},
-                                            still in progress
-                                        </span>
-                                        <span *ngIf="commandLog.failedAt" class="label label-danger">
-                                            Failed at {{ commandLog.failedAt | date:'yyyy-MM-dd HH:mm:ss' }},
-                                            after {{ {start: commandLog.createdAt, end: commandLog.failedAt} | elapsedTime }}
-                                        </span>
-                                        <span *ngIf="commandLog.completedAt" class="label label-success">
-                                            Completed at {{ commandLog.completedAt | date:'yyyy-MM-dd HH:mm:ss' }},
-                                            in {{ {start: commandLog.createdAt, end: commandLog.completedAt} | elapsedTime }}
-                                        </span>
+                                    <div class="command-log-description">
+                                        <div [innerHTML]="commandLog.description | MarkdownToHtml"></div>
+                                        <div>
+                                            <span *ngIf="!commandLog.completedAt && !commandLog.failedAt" class="label label-default">
+                                                Started at {{ commandLog.createdAt | date:'yyyy-MM-dd HH:mm:ss' }},
+                                                still in progress
+                                            </span>
+                                            <span *ngIf="commandLog.failedAt" class="label label-danger">
+                                                Failed at {{ commandLog.failedAt | date:'yyyy-MM-dd HH:mm:ss' }},
+                                                after {{ {start: commandLog.createdAt, end: commandLog.failedAt} | elapsedTime }}
+                                            </span>
+                                            <span *ngIf="commandLog.completedAt" class="label label-success">
+                                                Completed at {{ commandLog.completedAt | date:'yyyy-MM-dd HH:mm:ss' }},
+                                                in {{ {start: commandLog.createdAt, end: commandLog.completedAt} | elapsedTime }}
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
 

@@ -60,7 +60,14 @@ export class DefinitionAddComponent implements OnInit {
                     envDirRelativePath: '',
                     composeFileRelativePaths: [''],
                 },
-                actions: [],
+                actions: [
+                    {
+                        id: 'create_instance',
+                        type: 'instantiation',
+                        name: 'Create instance',
+                        afterBuildTasks: [],
+                    }
+                ],
                 summaryItems: [],
             },
         };
@@ -149,7 +156,7 @@ export class DefinitionAddComponent implements OnInit {
     addAction(): void {
         this.item.config.actions.push({
             id: '',
-            type: '',
+            type: 'modification',
             name: '',
             afterBuildTasks: [],
         });

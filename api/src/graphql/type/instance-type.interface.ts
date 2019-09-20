@@ -13,4 +13,5 @@ export interface InstanceTypeInterface {
     readonly updatedAt: Date;
     readonly completedAt: Date;
     readonly failedAt: Date;
+    readonly isModificationAllowed: boolean;
 }

@@ -5,6 +5,7 @@ export const ActionLogSchema = new Schema(
         instanceId: String,
         actionId: String,
         actionType: String,
+        actionName: String,
         createdAt: Date,
         updatedAt: Date,
         completedAt: Date,

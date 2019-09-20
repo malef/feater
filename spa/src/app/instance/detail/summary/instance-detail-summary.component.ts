@@ -17,7 +17,7 @@ import gql from 'graphql-tag';
 })
 export class InstanceDetailSummaryComponent implements OnInit, OnDestroy {
 
-    readonly POLLING_INTERVAL = 5000; // 5 seconds.
+    private readonly POLLING_INTERVAL = 5000; // 5 seconds.
 
     instance: GetInstanceDetailSummaryQueryInstanceFieldInterface;
 
@@ -48,8 +48,7 @@ export class InstanceDetailSummaryComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.getInstance();
-        const polling = interval(this.POLLING_INTERVAL);
-        this.pollingSubscription = polling.subscribe(
+        this.pollingSubscription = interval(this.POLLING_INTERVAL).subscribe(
             () => { this.getInstance(false); },
         );
     }
@@ -59,32 +58,57 @@ export class InstanceDetailSummaryComponent implements OnInit, OnDestroy {
     }
 
     modifyInstance(modificationActionId: string) {
-        this.apollo.mutate({
-            mutation: this.modifyInstanceMutation,
-            variables: {
-                instanceId: this.instance.id,
-                modificationActionId,
-            },
-        }).subscribe(
-            () => { this.getInstance(false); },
-            (error) => { console.log(error); }
+        if (this.isModificationDisabled()) {
+            return;
+        }
+
+        this.apollo
+            .mutate({
+                mutation: this.modifyInstanceMutation,
+                variables: {
+                    instanceId: this.instance.id,
+                    modificationActionId,
+                },
+            }).subscribe(
+                () => { this.getInstance(false); },
+                (error) => { console.log(error); }
+            );
+    }
+
+    isModificationDisabled(): boolean {
+        return (
+            !this.instance
+            || !this.instance.isModificationAllowed
+            || (!this.instance.completedAt && !this.instance.failedAt)
         );
+    }
+
+    getModificationDisabledReason(): string {
+        if (this.instance && !this.instance.isModificationAllowed) {
+            return 'Related definition was changed after creating this instance.'
+        }
+        if (this.instance && !this.instance.completedAt && !this.instance.failedAt) {
+            return 'Some action is already in progress.'
+        }
+
+        return '';
     }
 
     removeInstance() {
-        this.apollo.mutate({
-            mutation: this.removeInstanceMutation,
-            variables: {
-                id: this.instance.id,
-            },
-        }).subscribe(
-            () => {
-                this.router.navigateByUrl(`/definition/${this.instance.definition.id}`);
-            }
-        );
+        this.apollo
+            .mutate({
+                mutation: this.removeInstanceMutation,
+                variables: {
+                    id: this.instance.id,
+                },
+            }).subscribe(
+                () => {
+                    this.router.navigateByUrl(`/definition/${this.instance.definition.id}`);
+                }
+            );
     }
 
-    protected getInstance(spinner: boolean = true) {
+    protected getInstance(spinner = true) {
         if (spinner) {
             this.spinner.show();
         }

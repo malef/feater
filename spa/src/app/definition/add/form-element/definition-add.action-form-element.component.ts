@@ -77,6 +77,7 @@ export class DefinitionAddActionFormElementComponent {
     }
 
     getAvailableEnvVariableNames(): string[] {
+        // TODO Update.
         const availableEnvVariableNames = [];
         // for (const envVariable of this.item.envVariables) {
         //     availableEnvVariableNames.push(envVariable.name);

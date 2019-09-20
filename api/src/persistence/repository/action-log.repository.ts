@@ -7,7 +7,7 @@ import {ActionLogInterface} from '../interface/action-log.interface';
 export class ActionLogRepository {
 
     constructor(
-        @InjectModel('ActionLog') private readonly actionLogModel: Model<ActionLogInterface>,
+        @InjectModel('ActionLog') public readonly actionLogModel: Model<ActionLogInterface>,
     ) {}
 
     find(criteria: object, offset: number, limit: number, sort?: object): Promise<ActionLogInterface[]> {
@@ -26,11 +26,13 @@ export class ActionLogRepository {
         instanceId: string,
         actionId: string,
         actionType: string,
+        actionName: string,
     ): Promise<ActionLogInterface> {
         const createdActionLog = new this.actionLogModel({
             instanceId,
             actionId,
             actionType,
+            actionName,
             createdAt: new Date(),
         } as ActionLogInterface);
 
