@@ -17,7 +17,7 @@ export interface CachedContainerInfo {
 @Injectable()
 export class ContainerInfoChecker {
 
-    private POLLING_INTERVAL = 5000; // 5 seconds.
+    private POLLING_INTERVAL = 30000; // 30 seconds.
 
     private containerNameRegExp = new RegExp(
         `^/${environment.instantiation.containerNamePrefix}([a-z0-9]{8})_(.+?)_\\d+\$`,
@@ -26,9 +26,9 @@ export class ContainerInfoChecker {
     private containerInfos: CachedContainerInfo[] = [];
 
     constructor() {
-        interval(this.POLLING_INTERVAL).pipe(
-            exhaustMap(() => from(this.updateCache())),
-        );
+        interval(this.POLLING_INTERVAL)
+            .pipe(exhaustMap(() => from(this.fetchContainersInfo())))
+            .subscribe(response => { this.updateContainersInfo(response); });
     }
 
     getContainerInfo(containerNamePrefix: string): CachedContainerInfo | null {
@@ -38,19 +38,14 @@ export class ContainerInfoChecker {
         );
     }
 
-    protected updateCache(): Promise<void> {
+    protected fetchContainersInfo(): Promise<void> {
         return got(
             'unix:/var/run/docker.sock:/containers/json',
             {
                 json: true,
                 query: this.prepareQueryString(),
             },
-        ).then(response => {
-            this.containerInfos.splice(0);
-            for (const containerInfo of response.body) {
-                this.containerInfos.push(this.parseContainerInfo(containerInfo));
-            }
-        });
+        );
     }
 
     protected prepareQueryString(): string {
@@ -79,5 +74,12 @@ export class ContainerInfoChecker {
             status: containerInfo.Status,
             ipAddress: containerInfo.NetworkSettings.Networks[networkName].IPAddress,
         };
+    }
+
+    protected updateContainersInfo(response: any): void {
+        this.containerInfos.splice(0);
+        for (const containerInfo of response.body) {
+            this.containerInfos.push(this.parseContainerInfo(containerInfo));
+        }
     }
 }
