@@ -69,17 +69,21 @@ export class ActionExecutionContextFactory {
 
         instantiationContext.services = [];
 
-        instantiationContext.afterBuildTasks = [];
-        const action = this.findAction(definitionConfig, actionId);
-        for (const afterBuildTask of action.afterBuildTasks) {
-            instantiationContext.afterBuildTasks.push(afterBuildTask as AfterBuildTaskTypeInterface);
+        instantiationContext.composeFiles = [];
+        for (const composeFileConfig of definitionConfig.composeFiles) {
+            instantiationContext.composeFiles.push(composeFileConfig);
         }
 
         instantiationContext.nonInterpolatedSummaryItems = SummaryItemsSet.fromList(definitionConfig.summaryItems);
 
-        instantiationContext.composeFiles = [];
-        for (const composeFileConfig of definitionConfig.composeFiles) {
-            instantiationContext.composeFiles.push(composeFileConfig);
+        instantiationContext.downloadables = [];
+        for (const downloadable of definitionConfig.downloadables) {
+            instantiationContext.downloadables.push({
+                id: downloadable.id,
+                name: downloadable.name,
+                serviceId: downloadable.serviceId,
+                absolutePath: downloadable.absolutePath,
+            });
         }
 
         const envVariables = EnvVariablesSet.fromList(definitionConfig.envVariables);
@@ -101,6 +105,12 @@ export class ActionExecutionContextFactory {
 
         instantiationContext.mergeEnvVariablesSet(envVariables);
         instantiationContext.mergeFeaterVariablesSet(featerVariables);
+
+        instantiationContext.afterBuildTasks = [];
+        const action = this.findAction(definitionConfig, actionId);
+        for (const afterBuildTask of action.afterBuildTasks) {
+            instantiationContext.afterBuildTasks.push(afterBuildTask as AfterBuildTaskTypeInterface);
+        }
 
         return instantiationContext;
     }

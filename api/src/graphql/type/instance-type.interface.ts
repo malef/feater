@@ -7,6 +7,12 @@ export interface InstanceTypeInterface {
     readonly definitionId: string;
     readonly services: InstanceServiceTypeInterface[];
     readonly summaryItems: any;
+    readonly downloadables: {
+        readonly id: string;
+        readonly name: string;
+        readonly serviceId: string;
+        readonly absolutePath: string;
+    }[];
     readonly envVariables: any;
     readonly proxiedPorts: any;
     readonly createdAt: Date;

@@ -46,6 +46,18 @@ const InstanceSummaryItemSchema = new Schema(
     },
 );
 
+const InstanceDownloadableSchema = new Schema(
+    {
+        id: String,
+        name: String,
+        serviceId: String,
+        absolutePath: String,
+    }, {
+        strict: true,
+        _id: false,
+    },
+);
+
 export const InstanceSchema = new Schema(
     {
         definitionId: String,
@@ -55,6 +67,7 @@ export const InstanceSchema = new Schema(
         envVariables: [InstanceEnvVariableSchema],
         proxiedPorts: [InstanceProxiedPortSchema],
         summaryItems: [InstanceSummaryItemSchema],
+        downloadables: [InstanceDownloadableSchema],
         createdAt: Date,
         updatedAt: Date,
         completedAt: Date,

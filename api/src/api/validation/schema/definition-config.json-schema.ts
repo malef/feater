@@ -6,6 +6,7 @@ export const definitionConfigJsonSchema = {
         'composeFile',
         'envVariables',
         'summaryItems',
+        'downloadables',
     ],
     properties: {
         sources: {
@@ -142,6 +143,36 @@ export const definitionConfigJsonSchema = {
                         minLength: 1,
                     },
                     asLink: {
+                        type: 'boolean',
+                    },
+                },
+                additionalProperties: false,
+            },
+        },
+        downloadables: {
+            type: 'array',
+            items: {
+                type: 'object',
+                required: [
+                    'id',
+                    'name',
+                    'serviceId',
+                    'absolutePath',
+                ],
+                properties: {
+                    id: {
+                        type: 'string',
+                        minLength: 1,
+                    },
+                    name: {
+                        type: 'string',
+                        minLength: 1,
+                    },
+                    serviceId: {
+                        type: 'string',
+                        minLength: 1,
+                    },
+                    absolutePath: {
                         type: 'boolean',
                     },
                 },
