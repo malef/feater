@@ -440,6 +440,13 @@ export const typeDefsProvider = {
             value: String!
         }
 
+        type InstanceDownloadable {
+            id: String!
+            name: String!
+            serviceId: String!
+            absolutePath: String!
+        }
+
         type InstanceCommandLogEntry {
             level: String!
             message: String!
@@ -474,6 +481,7 @@ export const typeDefsProvider = {
             envVariables: [InstanceEnvVariable!]
             proxiedPorts: [InstanceProxiedPort!]
             summaryItems: [InstanceSummaryItem!]
+            downloadables: [InstanceDownloadable!]
             createdAt: String
             updatedAt: String
             completedAt: String

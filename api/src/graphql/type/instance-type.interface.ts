@@ -15,6 +15,7 @@ export interface InstanceTypeInterface {
     }[];
     readonly envVariables: any;
     readonly proxiedPorts: any;
+    readonly downloadables: any;
     readonly createdAt: Date;
     readonly updatedAt: Date;
     readonly completedAt: Date;
