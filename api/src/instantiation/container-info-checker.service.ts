@@ -1,9 +1,10 @@
 import {Injectable} from '@nestjs/common';
+import {environment} from '../environments/environment';
+import {from, interval} from 'rxjs';
+import {exhaustMap} from 'rxjs/operators';
 import * as got from 'got';
 import * as querystring from 'querystring';
-import {environment} from '../environments/environment';
 import * as _ from 'lodash';
-import {setTimeout} from 'timers';
 
 export interface CachedContainerInfo {
     readonly namePrefix: string;
@@ -16,6 +17,8 @@ export interface CachedContainerInfo {
 @Injectable()
 export class ContainerInfoChecker {
 
+    private POLLING_INTERVAL = 5000; // 5 seconds.
+
     private containerNameRegExp = new RegExp(
         `^/${environment.instantiation.containerNamePrefix}([a-z0-9]{8})_(.+?)_\\d+\$`,
     );
@@ -23,20 +26,19 @@ export class ContainerInfoChecker {
     private containerInfos: CachedContainerInfo[] = [];
 
     constructor() {
-        this.setupTimeout();
-    }
-
-    setupTimeout() {
-        setTimeout(
-            async () => {
-                await this.updateCache();
-                this.setupTimeout();
-            },
-            5000, // 5 seconds
+        interval(this.POLLING_INTERVAL).pipe(
+            exhaustMap(() => from(this.updateCache())),
         );
     }
 
-    updateCache(): Promise<void> {
+    getContainerInfo(containerNamePrefix: string): CachedContainerInfo | null {
+        return _.find(
+            this.containerInfos,
+            {namePrefix: containerNamePrefix},
+        );
+    }
+
+    protected updateCache(): Promise<void> {
         return got(
             'unix:/var/run/docker.sock:/containers/json',
             {
@@ -44,16 +46,11 @@ export class ContainerInfoChecker {
                 query: this.prepareQueryString(),
             },
         ).then(response => {
-            const parsedContainerInfos = [];
             this.containerInfos.splice(0);
             for (const containerInfo of response.body) {
                 this.containerInfos.push(this.parseContainerInfo(containerInfo));
             }
         });
-    }
-
-    getContainerInfo(containerNamePrefix: string): CachedContainerInfo|null {
-        return _.find(this.containerInfos, {namePrefix: containerNamePrefix});
     }
 
     protected prepareQueryString(): string {
@@ -65,7 +62,7 @@ export class ContainerInfoChecker {
         });
     }
 
-    protected parseContainerInfo(containerInfo: any): CachedContainerInfo|null {
+    protected parseContainerInfo(containerInfo: any): CachedContainerInfo | null {
         const matches = containerInfo.Names[0].match(this.containerNameRegExp);
         if (null === matches) {
             return null;
