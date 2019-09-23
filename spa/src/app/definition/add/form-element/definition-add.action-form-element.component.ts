@@ -15,6 +15,8 @@ export class DefinitionAddActionFormElementComponent {
 
     @Input() item: DefinitionAddActionFormElement;
 
+    @Input() availableEnvVariableNames: string[];
+
     @Output() deleteItem: EventEmitter<DefinitionAddActionFormElement> =
         new EventEmitter<DefinitionAddActionFormElement>();
 

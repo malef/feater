@@ -34,7 +34,7 @@
 
     <hr style="border-color: rgba(44,62,80,0.15);">
 
-        <!-- After build tasks -->
+    <!-- After build tasks -->
 
     <div class="row">
         <div class="col-md-12">
@@ -53,14 +53,14 @@
                         <app-execute-host-command-task-form-element
                                 *ngIf="isAfterBuildTaskExecuteHostCommand(afterBuildTask)"
                                 [item]="afterBuildTask"
-                                [availableEnvVariableNames]="getAvailableEnvVariableNames()"
+                                [availableEnvVariableNames]="availableEnvVariableNames"
                                 (deleteItem)="deleteAfterBuildTask($event)"
                         ></app-execute-host-command-task-form-element>
 
                         <app-execute-service-command-task-form-element
                                 *ngIf="isAfterBuildTaskExecuteServiceCommand(afterBuildTask)"
                                 [item]="afterBuildTask"
-                                [availableEnvVariableNames]="getAvailableEnvVariableNames()"
+                                [availableEnvVariableNames]="availableEnvVariableNames"
                                 (deleteItem)="deleteAfterBuildTask($event)"
                         ></app-execute-service-command-task-form-element>
 

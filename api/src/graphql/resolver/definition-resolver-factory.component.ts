@@ -88,6 +88,7 @@ export class DefinitionResolverFactory {
     public getCreateItemResolver(): (obj: any, createDefinitionInput: CreateDefinitionInputTypeInterface) => Promise<DefinitionTypeInterface> {
         return async (obj: any, createDefinitionInput: CreateDefinitionInputTypeInterface): Promise<DefinitionTypeInterface> => {
             // TODO Add input validation.
+            this.fixConfigInput(createDefinitionInput.config);
             const definition = await this.definitionRepository.create(createDefinitionInput);
 
             return this.mapPersistentModelToTypeModel(definition);
@@ -97,6 +98,7 @@ export class DefinitionResolverFactory {
     public getUpdateItemResolver(): (obj: any, updateDefinitionInput: UpdateDefinitionInputTypeInterface) => Promise<DefinitionTypeInterface> {
         return async (obj: any, updateDefinitionInput: UpdateDefinitionInputTypeInterface): Promise<DefinitionTypeInterface> => {
             // TODO Add input validation.
+            this.fixConfigInput(updateDefinitionInput.config);
             const definition = await this.definitionRepository.update(updateDefinitionInput.id, updateDefinitionInput);
 
             return this.mapPersistentModelToTypeModel(definition);
@@ -203,5 +205,13 @@ export class DefinitionResolverFactory {
             createdAt: definition.createdAt,
             updatedAt: definition.updatedAt,
         } as DefinitionTypeInterface;
+    }
+
+    protected fixConfigInput(config: any): void {
+        for (const source of config.sources) {
+            source.id = source.id.trim();
+            source.cloneUrl = source.cloneUrl.trim();
+            source.reference.name = source.reference.name.trim();
+        }
     }
 }

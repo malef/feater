@@ -53,8 +53,9 @@
 
             <div *ngIf="item.config.sources.length">
                 <div *ngFor="let source of item.config.sources">
-                    <app-definition-add-source-form-element [item]="source"
-                                                            (deleteItem)="deleteSource($event)"
+                    <app-definition-add-source-form-element
+                            [item]="source"
+                            (deleteItem)="deleteSource($event)"
                     ></app-definition-add-source-form-element>
                 </div>
             </div>
@@ -87,8 +88,9 @@
 
             <div *ngIf="item.config.volumes.length">
                 <div *ngFor="let volume of item.config.volumes">
-                    <app-definition-add-volume-form-element [volume]="volume"
-                                                            (deleteItem)="deleteVolume($event)"
+                    <app-definition-add-volume-form-element
+                            [volume]="volume"
+                            (deleteItem)="deleteVolume($event)"
                     ></app-definition-add-volume-form-element>
                 </div>
             </div>
@@ -121,8 +123,9 @@
 
             <div *ngIf="item.config.proxiedPorts.length">
                 <div *ngFor="let proxiedPort of item.config.proxiedPorts">
-                    <app-definition-add-proxied-port-form-element [item]="proxiedPort"
-                                                                  (deleteItem)="deleteProxiedPort($event)"
+                    <app-definition-add-proxied-port-form-element
+                            [item]="proxiedPort"
+                            (deleteItem)="deleteProxiedPort($event)"
                     ></app-definition-add-proxied-port-form-element>
                 </div>
             </div>
@@ -155,8 +158,9 @@
 
             <div *ngIf="item.config.envVariables.length">
                 <div *ngFor="let envVariable of item.config.envVariables">
-                    <app-definition-add-environmental-variable-form-element [item]="envVariable"
-                                                                            (deleteItem)="deleteEnvVariable($event)"
+                    <app-definition-add-environmental-variable-form-element
+                            [item]="envVariable"
+                            (deleteItem)="deleteEnvVariable($event)"
                     ></app-definition-add-environmental-variable-form-element>
                 </div>
             </div>
@@ -181,8 +185,9 @@
                 </div>
             </div>
 
-            <app-definition-add-compose-file-form-element [item]="this.item.config.composeFile"
-                                                          [sources]="this.item.config.sources"
+            <app-definition-add-compose-file-form-element
+                    [item]="this.item.config.composeFile"
+                    [sources]="this.item.config.sources"
             ></app-definition-add-compose-file-form-element>
         </div>
 
@@ -203,8 +208,10 @@
 
             <div *ngIf="item.config.actions.length">
                 <div *ngFor="let action of item.config.actions">
-                    <app-definition-add-action-form-element [item]="action"
-                                                                  (deleteItem)="deleteAction($event)"
+                    <app-definition-add-action-form-element
+                            [item]="action"
+                            [availableEnvVariableNames]="getAvailableEnvVariableNames()"
+                            (deleteItem)="deleteAction($event)"
                     ></app-definition-add-action-form-element>
                 </div>
             </div>
@@ -237,8 +244,9 @@
 
             <div *ngIf="item.config.summaryItems.length">
                 <div *ngFor="let summaryItem of item.config.summaryItems">
-                    <app-definition-add-summary-item-form-element [item]="summaryItem"
-                                                                  (deleteItem)="deleteSummaryItem($event)"
+                    <app-definition-add-summary-item-form-element
+                            [item]="summaryItem"
+                            (deleteItem)="deleteSummaryItem($event)"
                     ></app-definition-add-summary-item-form-element>
                 </div>
             </div>
@@ -265,14 +273,25 @@
                 <div class="col-md-12">
                     <div class="form-group">
                         <label class="control-label">Yaml config</label>
-                        <textarea class="form-control" rows="10" #yamlConfig name="addDefinition_yamlConfig" style="font-family: monospace;"></textarea>
+                        <textarea
+                                class="form-control"
+                                rows="10"
+                                #yamlConfig
+                                name="addDefinition_yamlConfig"
+                                style="font-family: monospace;"
+                        ></textarea>
                     </div>
                 </div>
             </div>
 
             <div class="row">
                 <div class="col-md-12">
-                    <button type="submit" class="btn btn-success" (click)="importYamlConfig(yamlConfig.value)">Import</button>
+                    <button
+                            type="submit" class="btn btn-success"
+                            (click)="importYamlConfig(yamlConfig.value)"
+                    >
+                        Import
+                    </button>
                 </div>
             </div>
         </div>

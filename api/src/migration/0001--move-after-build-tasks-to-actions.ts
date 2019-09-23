@@ -10,7 +10,7 @@ import {ActionLogRepository} from '../persistence/repository/action-log.reposito
 import * as _ from 'lodash';
 
 async function bootstrap() {
-    console.log('\n\nStarting migration.\n\n');
+    console.log('\n\nStarting migration 0001.\n\n');
     const app: INestApplicationContext = await NestFactory.createApplicationContext(ApplicationModule);
 
     const definitionRepository = app.get(DefinitionRepository);

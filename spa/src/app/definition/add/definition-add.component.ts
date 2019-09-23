@@ -198,6 +198,19 @@ export class DefinitionAddComponent implements OnInit {
         this.switchMode('form');
     }
 
+    getAvailableEnvVariableNames(): string[] {
+        const availableEnvVariableNames = [];
+        for (const envVariable of this.item.config.envVariables) {
+            availableEnvVariableNames.push(envVariable.name);
+        }
+        availableEnvVariableNames.push('FEATER__INSTANCE_ID');
+        for (const proxiedPort of this.item.config.proxiedPorts) {
+            availableEnvVariableNames.push(`FEATER__PROXY_DOMIAN__${proxiedPort.id.toUpperCase()}`);
+        }
+
+        return availableEnvVariableNames;
+    }
+
     protected mapItem(): any {
         const mappedItem = {
             projectId: this.project.id,
