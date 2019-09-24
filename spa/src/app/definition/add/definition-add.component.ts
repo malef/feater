@@ -12,7 +12,8 @@ import {
     DefinitionAddFormEnvVariableFormElement,
     DefinitionAddFormSummaryItemFormElement,
     DefinitionAddFormConfigFormElement,
-    DefinitionAddActionFormElement, DefinitionAddFormDownloadableFormElement,
+    DefinitionAddActionFormElement,
+    DefinitionAddFormDownloadableFormElement,
 } from './definition-add-form.model';
 import {
     getProjectQueryGql,
