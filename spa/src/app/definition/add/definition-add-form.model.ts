@@ -15,6 +15,7 @@ export interface DefinitionAddFormConfigFormElement {
     composeFile: DefinitionAddComposeFileFormElement;
     actions: DefinitionAddActionFormElement[];
     summaryItems: DefinitionAddFormSummaryItemFormElement[];
+    downloadables: DefinitionAddFormDownloadableFormElement[];
 }
 
 export interface DefinitionAddFormSourceFormElement {
@@ -55,6 +56,13 @@ export interface DefinitionAddFormSummaryItemFormElement {
     value: string;
 }
 
+export interface DefinitionAddFormDownloadableFormElement {
+    id: string;
+    name: string;
+    serviceId: string;
+    absolutePath: string;
+}
+
 export interface DefinitionAddComposeFileFormElement {
     sourceId: string;
     envDirRelativePath: string;
@@ -72,6 +80,13 @@ export interface DefinitionAddAfterBuildTaskFormElement {
     type: string;
     id?: string;
     dependsOn?: string[];
+}
+
+export interface DefinitionAddFormDownloadableFormElement {
+    id: string;
+    name: string;
+    serviceId: string;
+    absolutePath: string;
 }
 
 export interface DefinitionAddExecuteCommandTaskFormElement extends DefinitionAddAfterBuildTaskFormElement {

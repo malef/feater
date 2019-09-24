@@ -248,6 +248,7 @@ export class InstanceResolverFactory {
             definitionId: instance.definitionId,
             services: instance.services,
             summaryItems: instance.summaryItems,
+            downloadables: instance.downloadables,
             envVariables: instance.envVariables,
             proxiedPorts: instance.proxiedPorts,
             createdAt: instance.createdAt,

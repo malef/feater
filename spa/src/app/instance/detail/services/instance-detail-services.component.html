@@ -13,6 +13,7 @@
             <li><a routerLink="/instance/{{ instance?.id }}/environment">Environment</a></li>
             <li class="active"><a routerLink="/instance/{{ instance?.id }}/services">Services</a></li>
             <li><a routerLink="/instance/{{ instance?.id }}/proxy-domains">Proxy domains</a></li>
+            <li><a routerLink="/instance/{{ instance?.id }}/downloads">Downloads</a></li>
             <li><a routerLink="/instance/{{ instance?.id }}/logs">Logs</a></li>
         </ul>
     </div>
@@ -30,7 +31,8 @@
                                 <th scope="col" class="fit-column">Container ID</th>
                                 <th scope="col">IP address</th>
                                 <th scope="col" class="fit-column">Container state</th>
-                                <th scope="col" class="fit-column">Actions</th>
+                                <th scope="col" class="fit-column" style="padding-right: 2em;"></th>
+                                <th scope="col" class="fit-column"></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -54,6 +56,11 @@
                                           (click)="stopService(service)"
                                           class="glyphicon glyphicon-stop"
                                     ></span>
+                                </td>
+                                <td class="service-actions fit-column">
+                                    <a [attr.href]="getDownloadUrl(service)">
+                                        <span class="glyphicon glyphicon-download"></span>
+                                    </a>
                                 </td>
                             </tr>
                         </tbody>

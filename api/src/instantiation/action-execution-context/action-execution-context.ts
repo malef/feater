@@ -9,6 +9,7 @@ import {EnvVariablesSet} from '../sets/env-variables-set';
 import {FeaterVariablesSet} from '../sets/feater-variables-set';
 import {SummaryItemsSet} from '../sets/summary-items-set';
 import * as _ from 'lodash';
+import {ActionExecutionContextDownloadableInterface} from './action-execution-context-downloadable.interface';
 
 export class ActionExecutionContext {
 
@@ -24,6 +25,7 @@ export class ActionExecutionContext {
     featerVariables: FeaterVariablesSet;
     nonInterpolatedSummaryItems: SummaryItemsSet;
     summaryItems: SummaryItemsSet;
+    downloadables: ActionExecutionContextDownloadableInterface[];
 
     constructor(
         readonly id: string,

@@ -13,6 +13,7 @@ import {
     DefinitionAddFormSummaryItemFormElement,
     DefinitionAddFormConfigFormElement,
     DefinitionAddActionFormElement,
+    DefinitionAddFormDownloadableFormElement,
 } from './definition-add-form.model';
 import {
     getProjectQueryGql,
@@ -69,6 +70,7 @@ export class DefinitionAddComponent implements OnInit {
                     }
                 ],
                 summaryItems: [],
+                downloadables: [],
             },
         };
     }
@@ -184,6 +186,22 @@ export class DefinitionAddComponent implements OnInit {
         }
     }
 
+    addDownloadable(): void {
+        this.item.config.downloadables.push({
+            id: '',
+            name: '',
+            serviceId: '',
+            absolutePath: '',
+        });
+    }
+
+    deleteDownloadable(downloadable: DefinitionAddFormDownloadableFormElement): void {
+        const index = this.item.config.downloadables.indexOf(downloadable);
+        if (-1 !== index) {
+            this.item.config.downloadables.splice(index, 1);
+        }
+    }
+
     switchMode(mode: string): void {
         this.mode = mode;
     }
@@ -258,6 +276,7 @@ export class DefinitionAddComponent implements OnInit {
                     }),
                 })),
                 summaryItems: this.item.config.summaryItems,
+                downloadables: this.item.config.downloadables,
             },
         };
 
@@ -276,8 +295,9 @@ export class DefinitionAddComponent implements OnInit {
             proxiedPorts: [],
             envVariables: [],
             composeFile: null,
-            summaryItems: [],
             actions: [],
+            summaryItems: [],
+            downloadables: [],
         };
 
         for (const source of camelCaseYamlConfig.sources) {
@@ -332,6 +352,10 @@ export class DefinitionAddComponent implements OnInit {
 
         for (const summaryItem of camelCaseYamlConfig.summaryItems) {
             mappedYamlConfig.summaryItems.push(summaryItem);
+        }
+
+        for (const downloadable of camelCaseYamlConfig.downloadables) {
+            mappedYamlConfig.downloadables.push(downloadable);
         }
 
         return mappedYamlConfig;

@@ -107,6 +107,8 @@ export class Instantiator {
             instance.summaryItems = instantiationContext.summaryItems.toList();
             instance.services = _.cloneDeep(instantiationContext.services);
             instance.proxiedPorts = _.cloneDeep(instantiationContext.proxiedPorts);
+            instance.downloadables = _.cloneDeep(instantiationContext.downloadables);
+
             // TODO Handle Feater variables.
             // TODO Handle volumes.
 

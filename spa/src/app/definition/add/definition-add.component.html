@@ -262,6 +262,40 @@
             </div>
         </div>
 
+        <!-- Downloadables -->
+
+        <div class="form-section">
+            <div class="row">
+                <div class="col-md-12">
+                    <h3>Downloadables</h3>
+                </div>
+            </div>
+
+            <div *ngIf="!item.config.downloadables.length" class="row">
+                <div class="col-md-12">
+                    <p>No downloadables defined.</p>
+                </div>
+            </div>
+
+            <div *ngIf="item.config.downloadables.length">
+                <div *ngFor="let downloadable of item.config.downloadables">
+                    <app-definition-add-downloadable-form-element [item]="downloadable"
+                                                                  (deleteItem)="deleteDownloadable($event)"
+                    ></app-definition-add-downloadable-form-element>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <a class="btn btn-success btn-sm"
+                       (click)="addDownloadable()"
+                    >
+                        <span class="glyphicon glyphicon-plus"></span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <!-- Import from Yaml -->

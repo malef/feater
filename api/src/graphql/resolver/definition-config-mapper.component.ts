@@ -19,6 +19,7 @@ import {
 } from '../type/nested/definition-config/after-build-task-type.interface';
 import {VolumeTypeInterface} from '../type/nested/definition-config/volume-type.interface';
 import {ActionTypeInterface} from '../type/nested/definition-config/action-type.interface';
+import {DownloadableTypeInterface} from '../type/nested/definition-config/downloadable-type.interface';
 
 @Injectable()
 export class DefinitionConfigMapper {
@@ -69,12 +70,17 @@ export class DefinitionConfigMapper {
                 name: action.name,
                 type: action.type,
                 afterBuildTasks: mappedAfterBuildTasks,
-            })
+            });
         }
 
         const mappedSummaryItems: SummaryItemTypeInterface[] = [];
         for (const summaryItem of config.summaryItems) {
             mappedSummaryItems.push(this.mapSummaryItem(summaryItem));
+        }
+
+        const mappedDownloadables: DownloadableTypeInterface[] = [];
+        for (const downloadable of config.downloadables) {
+            mappedDownloadables.push(this.mapDownloadable(downloadable));
         }
 
         return {
@@ -85,6 +91,7 @@ export class DefinitionConfigMapper {
             composeFiles: mappedComposeFiles,
             actions: mappedActions,
             summaryItems: mappedSummaryItems,
+            downloadables: mappedDownloadables,
         } as ConfigTypeInterface;
     }
 
@@ -204,6 +211,15 @@ export class DefinitionConfigMapper {
             name: summaryItem.name,
             value: summaryItem.value,
         } as SummaryItemTypeInterface;
+    }
+
+    protected mapDownloadable(downloadable: any): DownloadableTypeInterface {
+        return {
+            id: downloadable.id,
+            name: downloadable.name,
+            serviceId: downloadable.serviceId,
+            absolutePath: downloadable.absolutePath,
+        } as DownloadableTypeInterface;
     }
 
     protected mapEnvVariable(envVariable: any): EnvVariableTypeInterface {

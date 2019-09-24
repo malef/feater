@@ -77,6 +77,7 @@ export const typeDefsProvider = {
             composeFiles: [ComposeFileInput!]!
             actions: [ActionInput!]!
             summaryItems: [SummaryItemInput!]!
+            downloadables: [DownloadableInput!]!
         }
 
         input SourceInput {
@@ -153,6 +154,13 @@ export const typeDefsProvider = {
         input SummaryItemInput {
             name: String!
             value: String!
+        }
+
+        input DownloadableInput {
+            id: String!
+            name: String!
+            serviceId: String!
+            absolutePath: String!
         }
 
         type Mutation {
@@ -294,6 +302,7 @@ export const typeDefsProvider = {
             composeFiles: [ComposeFile!]!
             actions: [Action!]!
             summaryItems: [SummaryItem!]!
+            downloadables: [Downloadable!]!
         }
 
         type Action {
@@ -379,6 +388,13 @@ export const typeDefsProvider = {
             value: String!
         }
 
+        type Downloadable {
+            id: String!
+            name: String!
+            serviceId: String!
+            absolutePath: String!
+        }
+
         type EnvVariable {
             name: String!
             value: String!
@@ -424,6 +440,13 @@ export const typeDefsProvider = {
             value: String!
         }
 
+        type InstanceDownloadable {
+            id: String!
+            name: String!
+            serviceId: String!
+            absolutePath: String!
+        }
+
         type InstanceCommandLogEntry {
             level: String!
             message: String!
@@ -458,6 +481,7 @@ export const typeDefsProvider = {
             envVariables: [InstanceEnvVariable!]
             proxiedPorts: [InstanceProxiedPort!]
             summaryItems: [InstanceSummaryItem!]
+            downloadables: [InstanceDownloadable!]
             createdAt: String
             updatedAt: String
             completedAt: String

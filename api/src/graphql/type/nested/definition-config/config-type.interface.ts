@@ -5,6 +5,7 @@ import {ComposeFileTypeInterface} from './compose-file-type.interface';
 import {EnvVariableTypeInterface} from './env-variable-type.interface';
 import {VolumeTypeInterface} from './volume-type.interface';
 import {ActionTypeInterface} from './action-type.interface';
+import {DownloadableTypeInterface} from './downloadable-type.interface';
 
 export interface ConfigTypeInterface {
     volumes: VolumeTypeInterface[];
@@ -14,4 +15,5 @@ export interface ConfigTypeInterface {
     composeFiles: ComposeFileTypeInterface[];
     actions: ActionTypeInterface[];
     summaryItems: SummaryItemTypeInterface[];
+    downloadables: DownloadableTypeInterface[];
 }

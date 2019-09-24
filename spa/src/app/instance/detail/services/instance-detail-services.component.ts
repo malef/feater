@@ -9,6 +9,7 @@ import {
 } from './get-instance-detail-services.query';
 import gql from 'graphql-tag';
 import {Subscription, interval} from 'rxjs';
+import {environment} from '../../../../environments/environment';
 
 @Component({
     selector: 'app-instance-detail-services',
@@ -130,7 +131,13 @@ export class InstanceDetailServicesComponent implements OnInit, OnDestroy {
         }
     }
 
-    protected getInstance(spinner: boolean = true) {
+    getDownloadUrl(service: {id: string}): string {
+        return environment.dockerLogsDownloadUrl
+            .replace(':instanceId', this.instance.id)
+            .replace(':serviceId', service.id);
+    }
+
+    protected getInstance(spinner = true) {
         if (spinner) {
             this.spinner.show();
         }
