@@ -36,6 +36,7 @@ import {DefinitionAddEnvVariableFormElementComponent} from './definition/add/for
 import {DefinitionAddActionFormElementComponent} from './definition/add/form-element/definition-add.action-form-element.component';
 import {DefinitionAddSummaryItemFormElementComponent} from './definition/add/form-element/definition-add.summary-item-form-element.component';
 import {DefinitionAddComposeFileFormElementComponent} from './definition/add/form-element/definition-add.compose-file-form-element.component';
+import {DefinitionAddDownloadableFormElementComponent} from './definition/add/form-element/definition-add.downloadable-form-element.component';
 import {DefinitionDetailComponent} from './definition/detail/definition-detail.component';
 import {DefinitionAddVolumeFormElementComponent} from './definition/add/form-element/definition-add.volume-form-element.component';
 import {DefinitionListComponent} from './definition/list/definition-list.component';
@@ -109,6 +110,7 @@ const appRoutes: Routes = [
         DefinitionAddBeforeBuildTaskCopyFormElementComponent,
         DefinitionAddBeforeBuildTaskInterpolateFormElementComponent,
         DefinitionAddProxiedPortFormElementComponent,
+        DefinitionAddDownloadableFormElementComponent,
         DefinitionAddActionFormElementComponent,
         DefinitionAddEnvVariableFormElementComponent,
         DefinitionAddComposeFileFormElementComponent,

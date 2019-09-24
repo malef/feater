@@ -36,12 +36,12 @@ async function bootstrap() {
     console.log(`${instances.length} instance(s) to migrate.`);
     for (const instance of instances) {
         if (instance.downloadables) {
-            console.log(`-- skipping definition ${instance._id.toString()} named '${instance.name}'.`);
+            console.log(`-- skipping instance ${instance._id.toString()} named '${instance.name}'.`);
 
             continue;
         }
 
-        console.log(`-- migrating definition ${instance._id.toString()} named '${instance.name}'.`);
+        console.log(`-- migrating instance ${instance._id.toString()} named '${instance.name}'.`);
         instance.downloadables = [];
         instance.markModified('downloadables');
         await instance.save();
