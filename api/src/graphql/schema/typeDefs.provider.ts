@@ -75,8 +75,9 @@ export const typeDefsProvider = {
             proxiedPorts: [ProxiedPortInput!]!
             envVariables: [EnvVariableInput!]!
             composeFiles: [ComposeFileInput!]!
-            afterBuildTasks: [AfterBuildTaskInput!]!
+            actions: [ActionInput!]!
             summaryItems: [SummaryItemInput!]!
+            downloadables: [DownloadableInput!]!
         }
 
         input SourceInput {
@@ -121,6 +122,13 @@ export const typeDefsProvider = {
             composeFileRelativePaths: [String!]!
         }
 
+        input ActionInput {
+            id: String!
+            name: String!
+            type: String!
+            afterBuildTasks: [AfterBuildTaskInput!]!
+        }
+
         input AfterBuildTaskInput {
             type: String!
             id: String
@@ -146,6 +154,13 @@ export const typeDefsProvider = {
         input SummaryItemInput {
             name: String!
             value: String!
+        }
+
+        input DownloadableInput {
+            id: String!
+            name: String!
+            serviceId: String!
+            absolutePath: String!
         }
 
         type Mutation {
@@ -177,7 +192,13 @@ export const typeDefsProvider = {
 
             createInstance(
                 definitionId: String!
+                instantiationActionId: String!
                 name: String!
+            ): Instance
+
+            modifyInstance(
+                instanceId: String!
+                modificationActionId: String!
             ): Instance
 
             removeInstance(
@@ -279,8 +300,16 @@ export const typeDefsProvider = {
             proxiedPorts: [ProxiedPort!]!
             envVariables: [EnvVariable!]!
             composeFiles: [ComposeFile!]!
-            afterBuildTasks: [AfterBuildTask]!
+            actions: [Action!]!
             summaryItems: [SummaryItem!]!
+            downloadables: [Downloadable!]!
+        }
+
+        type Action {
+            id: String!
+            name: String!
+            type: String!
+            afterBuildTasks: [AfterBuildTask]!
         }
 
         type Volume {
@@ -359,6 +388,13 @@ export const typeDefsProvider = {
             value: String!
         }
 
+        type Downloadable {
+            id: String!
+            name: String!
+            serviceId: String!
+            absolutePath: String!
+        }
+
         type EnvVariable {
             name: String!
             value: String!
@@ -404,6 +440,13 @@ export const typeDefsProvider = {
             value: String!
         }
 
+        type InstanceDownloadable {
+            id: String!
+            name: String!
+            serviceId: String!
+            absolutePath: String!
+        }
+
         type InstanceCommandLogEntry {
             level: String!
             message: String!
@@ -418,6 +461,17 @@ export const typeDefsProvider = {
             entries: [InstanceCommandLogEntry!]!
         }
 
+        type InstanceActionLog {
+            id: String!
+            actionId: String!
+            actionType: String!
+            actionName: String!
+            createdAt: String!
+            completedAt: String
+            failedAt: String
+            commandLogs: [InstanceCommandLog!]!
+        }
+
         type Instance {
             id: String!
             hash: String
@@ -427,11 +481,13 @@ export const typeDefsProvider = {
             envVariables: [InstanceEnvVariable!]
             proxiedPorts: [InstanceProxiedPort!]
             summaryItems: [InstanceSummaryItem!]
+            downloadables: [InstanceDownloadable!]
             createdAt: String
             updatedAt: String
             completedAt: String
             failedAt: String
-            commandLogs: [InstanceCommandLog!]!
+            isModificationAllowed: Boolean!
+            actionLogs: [InstanceActionLog!]!
         }
 
         type RemoveDeployKeyResult {

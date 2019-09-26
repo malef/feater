@@ -1,4 +1,4 @@
-<div class="well well-sm form-well">
+<div>
 
     <a class="btn btn-danger btn-sm form-well-delete-btn" (click)="delete()">
         <span class="glyphicon glyphicon-trash"></span>
@@ -106,8 +106,9 @@
 
     <div class="row">
         <div class="col-lg-6">
-            <app-inherited-env-vars-form-element [inheritedEnvVars]="item.inheritedEnvVariables"
-                                                 [availableEnvVarNames]="availableEnvVariableNames"
+            <app-inherited-env-vars-form-element
+                    [inheritedEnvVars]="item.inheritedEnvVariables"
+                    [availableEnvVarNames]="availableEnvVariableNames"
             ></app-inherited-env-vars-form-element>
         </div>
 

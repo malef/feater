@@ -53,7 +53,7 @@
                     <div class="buttons">
                         <span routerLink="/definition/{{definition?.id}}/edit" class="btn btn-primary">Edit</span>
                         <span routerLink="/definition/{{definition?.id}}/duplicate" class="btn btn-primary">Duplicate</span>
-                        <span (click)="removeDefinition()" class="btn btn-danger" [ngClass]="{'disabled': !!definition.instances.length}">Remove</span>
+                        <span (click)="removeDefinition()" class="btn btn-danger" [ngClass]="{'disabled': !!definition?.instances.length}">Remove</span>
                     </div>
                 </div>
             </div>
@@ -77,7 +77,7 @@
         <div class="row">
             <div class="col-md-12">
                 <div *ngIf="definition">
-                    <app-deploy-key-table [deployKeys]="definition.deployKeys"></app-deploy-key-table>
+                    <app-deploy-key-table [deployKeys]="definition?.deployKeys"></app-deploy-key-table>
                 </div>
             </div>
         </div>
@@ -157,7 +157,7 @@
         <div class="row">
             <div class="col-md-12">
                 <div *ngIf="definition">
-                    <app-instance-table [instances]="definition.instances" [withProjects]="false" [withDefinitions]="false"></app-instance-table>
+                    <app-instance-table [instances]="definition?.instances" [withProjects]="false" [withDefinitions]="false"></app-instance-table>
                 </div>
             </div>
         </div>

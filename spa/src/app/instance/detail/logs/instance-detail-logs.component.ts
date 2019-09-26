@@ -1,5 +1,4 @@
 import * as _ from 'lodash';
-import * as moment from 'moment';
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {Apollo} from 'apollo-angular';
@@ -17,16 +16,14 @@ import {
 })
 export class InstanceDetailLogsComponent implements OnInit {
 
-    readonly TIMESTAMP_FORMAT = 'YYYY-MM-DD HH:mm:ss';
-
     readonly COLLAPSED = 1;
     readonly EXPANDED = 2;
 
     instance: GetInstanceDetailLogsQueryInstanceFieldInterface;
 
-    lastCommandLogEntryId: string = null;
+    expandActionLogToggles: {[actionLogId: string]: number} = {};
 
-    expandToggles: {[commandLogId: string]: number} = {};
+    expandCommandLogToggles: {[commandLogId: string]: number} = {};
 
     constructor(
         protected route: ActivatedRoute,
@@ -50,19 +47,38 @@ export class InstanceDetailLogsComponent implements OnInit {
         return obj.id;
     }
 
-    expand(commandLog: {id: string, completedAt?: Date}): void {
-        this.expandToggles[commandLog.id] = this.EXPANDED;
+    expandActionLog(actionLog: {id: string, completedAt?: Date}): void {
+        this.expandActionLogToggles[actionLog.id] = this.EXPANDED;
     }
 
-    collapse(commandLog: {id: string, completedAt?: Date}): void {
-        this.expandToggles[commandLog.id] = this.COLLAPSED;
+    collapseActionLog(actionLog: {id: string, completedAt?: Date}): void {
+        this.expandActionLogToggles[actionLog.id] = this.COLLAPSED;
     }
 
-    isExpanded(commandLog: {id: string, completedAt?: Date}): boolean {
-        if (this.EXPANDED === this.expandToggles[commandLog.id]) {
+    isActionLogExpanded(actionLog: {id: string, completedAt?: Date}): boolean {
+        if (this.EXPANDED === this.expandActionLogToggles[actionLog.id]) {
             return true;
         }
-        if (this.COLLAPSED === this.expandToggles[commandLog.id]) {
+        if (this.COLLAPSED === this.expandActionLogToggles[actionLog.id]) {
+            return false;
+        }
+
+        return !actionLog.completedAt;
+    }
+
+    expandCommandLog(commandLog: {id: string, completedAt?: Date}): void {
+        this.expandCommandLogToggles[commandLog.id] = this.EXPANDED;
+    }
+
+    collapseCommandLog(commandLog: {id: string, completedAt?: Date}): void {
+        this.expandCommandLogToggles[commandLog.id] = this.COLLAPSED;
+    }
+
+    isCommandLogExpanded(commandLog: {id: string, completedAt?: Date}): boolean {
+        if (this.EXPANDED === this.expandCommandLogToggles[commandLog.id]) {
+            return true;
+        }
+        if (this.COLLAPSED === this.expandCommandLogToggles[commandLog.id]) {
             return false;
         }
 
@@ -81,43 +97,37 @@ export class InstanceDetailLogsComponent implements OnInit {
             .valueChanges
             .subscribe(result => {
                 const resultData: GetInstanceDetailLogsQueryInterface = result.data;
-                this.updateLastCommandLogEntryId(resultData);
                 this.instance = {
                     id: resultData.instance.id,
                     name: resultData.instance.name,
-                    commandLogs: [],
+                    actionLogs: [],
                 };
-                for (const commandLogData of resultData.instance.commandLogs) {
-                    this.addCommandLog(commandLogData);
+                for (const actionLogData of resultData.instance.actionLogs) {
+                    this.addActionLog(actionLogData);
                 }
 
                 this.spinner.hide();
             });
     }
 
-    protected updateLastCommandLogEntryId(
-        resultData: GetInstanceDetailLogsQueryInterface,
-    ): void {
-        const entryIds = _.map(
-            _.flatten(
-                resultData.instance.commandLogs.map((commandLog) => {
-                    return commandLog.entries.length > 0
-                        ? commandLog.entries.slice(-1)
-                        : [];
-                })
-            ),
-            'id'
-        );
-        if (0 !== entryIds.length) {
-            this.lastCommandLogEntryId = _.max(entryIds);
+    protected addActionLog(actionLogData) {
+        const actionLog = {
+            id: actionLogData.id,
+            actionId: actionLogData.actionId,
+            actionType: actionLogData.actionType,
+            actionName: actionLogData.actionName,
+            createdAt: actionLogData.createdAt,
+            completedAt: actionLogData.completedAt,
+            failedAt: actionLogData.failedAt,
+            commandLogs: [],
+        };
+        this.instance.actionLogs.push(actionLog);
+        for (const commandLogData of actionLogData.commandLogs) {
+            this.addCommandLog(actionLog, commandLogData);
         }
     }
 
-    protected findCommandLog(commandLogId) {
-        return _.find(this.instance.commandLogs, {id: commandLogId});
-    }
-
-    protected addCommandLog(commandLogData) {
+    protected addCommandLog(actionLog, commandLogData) {
         const commandLog = {
             id: commandLogData.id,
             description: commandLogData.description,
@@ -126,7 +136,7 @@ export class InstanceDetailLogsComponent implements OnInit {
             failedAt: commandLogData.failedAt,
             entries: [],
         };
-        this.instance.commandLogs.push(commandLog);
+        actionLog.commandLogs.push(commandLog);
         this.addCommandLogEntries(commandLog, commandLogData.entries);
     }
 

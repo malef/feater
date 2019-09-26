@@ -9,7 +9,7 @@ import * as easyKeygen from 'easy-keygen';
 export class DeployKeyRepository {
 
     constructor(
-        @InjectModel('DeployKey') private readonly deployKeyModel: Model<DeployKeyInterface>,
+        @InjectModel('DeployKey') public readonly deployKeyModel: Model<DeployKeyInterface>,
     ) {}
 
     find(criteria: object, offset: number, limit: number, sort?: object): Promise<DeployKeyInterface[]> {

@@ -8,7 +8,7 @@ import {CreateAssetInputTypeInterface} from '../../graphql/input-type/create-ass
 export class AssetRepository {
 
     constructor(
-        @InjectModel('Asset') private readonly assetModel: Model<AssetInterface>,
+        @InjectModel('Asset') public readonly assetModel: Model<AssetInterface>,
     ) {}
 
     async find(criteria: object, offset: number, limit: number, sort?: object): Promise<AssetInterface[]> {

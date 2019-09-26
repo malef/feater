@@ -5,7 +5,7 @@ import {
     Output,
     EventEmitter,
 } from '@angular/core';
-import {InterpolateTaskFormElement} from '../definition-add-form.model';
+import {DefinitionAddInterpolateTaskFormElement} from '../definition-add-form.model';
 
 
 @Component({
@@ -15,10 +15,10 @@ import {InterpolateTaskFormElement} from '../definition-add-form.model';
 })
 export class DefinitionAddBeforeBuildTaskInterpolateFormElementComponent implements OnInit {
 
-    @Input() item: InterpolateTaskFormElement;
+    @Input() item: DefinitionAddInterpolateTaskFormElement;
 
-    @Output() deleteItem: EventEmitter<InterpolateTaskFormElement> =
-        new EventEmitter<InterpolateTaskFormElement>();
+    @Output() deleteItem: EventEmitter<DefinitionAddInterpolateTaskFormElement> =
+        new EventEmitter<DefinitionAddInterpolateTaskFormElement>();
 
     ngOnInit() {}
 

@@ -33,8 +33,10 @@ import {DefinitionAddBeforeBuildTaskCopyFormElementComponent} from './definition
 import {DefinitionAddBeforeBuildTaskInterpolateFormElementComponent} from './definition/add/form-element/definition-add.before-build-task-interpolate-form-element.component';
 import {DefinitionAddProxiedPortFormElementComponent} from './definition/add/form-element/definition-add.proxied-port-form-element.component';
 import {DefinitionAddEnvVariableFormElementComponent} from './definition/add/form-element/definition-add.environmental-variable-form-element.component';
+import {DefinitionAddActionFormElementComponent} from './definition/add/form-element/definition-add.action-form-element.component';
 import {DefinitionAddSummaryItemFormElementComponent} from './definition/add/form-element/definition-add.summary-item-form-element.component';
 import {DefinitionAddComposeFileFormElementComponent} from './definition/add/form-element/definition-add.compose-file-form-element.component';
+import {DefinitionAddDownloadableFormElementComponent} from './definition/add/form-element/definition-add.downloadable-form-element.component';
 import {DefinitionDetailComponent} from './definition/detail/definition-detail.component';
 import {DefinitionAddVolumeFormElementComponent} from './definition/add/form-element/definition-add.volume-form-element.component';
 import {DefinitionListComponent} from './definition/list/definition-list.component';
@@ -66,6 +68,7 @@ import {DefinitionDuplicateComponent} from './definition/duplicate/definition-du
 import {DefinitionEditComponent} from './definition/edit/definition-edit.component';
 
 import {NgxSpinnerModule} from 'ngx-spinner';
+import {InstanceDetailDownloadablesComponent} from './instance/detail/downloadables/instance-detail-downloadables.component';
 
 const appRoutes: Routes = [
     { path: '', component: AboutComponent },
@@ -84,6 +87,7 @@ const appRoutes: Routes = [
     { path: 'instance/:id/environment', component: InstanceDetailEnvironmentComponent},
     { path: 'instance/:id/services', component: InstanceDetailServicesComponent},
     { path: 'instance/:id/proxy-domains', component: InstanceDetailProxyDomainsComponent},
+    { path: 'instance/:id/downloads', component: InstanceDetailDownloadablesComponent},
     { path: 'instance/:id/logs', component: InstanceDetailLogsComponent},
     { path: 'assets', component: AssetListComponent },
     { path: 'asset/:id', component: AssetDetailComponent },
@@ -106,6 +110,8 @@ const appRoutes: Routes = [
         DefinitionAddBeforeBuildTaskCopyFormElementComponent,
         DefinitionAddBeforeBuildTaskInterpolateFormElementComponent,
         DefinitionAddProxiedPortFormElementComponent,
+        DefinitionAddDownloadableFormElementComponent,
+        DefinitionAddActionFormElementComponent,
         DefinitionAddEnvVariableFormElementComponent,
         DefinitionAddComposeFileFormElementComponent,
         ExecuteHostCommandTaskFormElementComponent,
@@ -121,6 +127,7 @@ const appRoutes: Routes = [
         InstanceDetailEnvironmentComponent,
         InstanceDetailServicesComponent,
         InstanceDetailProxyDomainsComponent,
+        InstanceDetailDownloadablesComponent,
         InstanceDetailLogsComponent,
         InstanceListComponent,
         AssetAddComponent,

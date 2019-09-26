@@ -29,7 +29,6 @@
                 <label class="control-label">Source reference type</label>
                 <select class="form-control" [(ngModel)]="item.reference.type">
                     <option value="branch" selected>Branch</option>
-                    <option value="tag">Tag</option>
                     <option value="commit">Commit</option>
                 </select>
             </div>
@@ -61,8 +60,8 @@
                 <p>No before build tasks to list.</p>
             </div>
             <div *ngIf="item.beforeBuildTasks.length">
-                <div *ngFor="let beforeBuildTask of item.beforeBuildTasks" style="margin-bottom: 16px;">
-                    <div style="padding: 16px; margin-bottom: 8px; border: 1px solid rgba(44,62,80,0.15); background-color: #f7f8f9; border-radius: 3px; position: relative;">
+                <div *ngFor="let beforeBuildTask of item.beforeBuildTasks">
+                    <div class="before-build-task-well">
 
                         <app-definition-add-before-build-task-copy-form-element
                                 *ngIf="isBeforeBuildTaskCopy(beforeBuildTask)"

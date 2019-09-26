@@ -1,16 +1,18 @@
 import {Module} from '@nestjs/common';
 import {LoggerModule} from '../logger/logger.module';
 import {PersistenceModule} from '../persistence/persistence.module';
-import {InstanceCreatorComponent} from './instance-creator.component';
+import {Instantiator} from './instantiator.service';
+import {Modificator} from './modificator.service';
 import {InterpolationHelper} from './helper/interpolation-helper.component';
-import {ContainerStateCheckerComponent} from './container-state-checker-component.service';
-import {ContainerInfoCheckerComponent} from './container-info-checker-component.service';
+import {ContainerStateChecker} from './container-state-checker.service';
+import {ContainerInfoChecker} from './container-info-checker.service';
 import {SpawnHelper} from './helper/spawn-helper.component';
 import {AssetHelper} from './helper/asset-helper.component';
 import {ConnectToNetworkCommandExecutorComponent} from './command/connect-containers-to-network/command-executor.component';
 import {CopyFileCommandExecutorComponent} from './command/before-build/copy-file/command-executor.component';
 import {CreateDirectoryCommandExecutorComponent} from './command/create-directory/command-executor.component';
 import {CloneSourceCommandExecutorComponent} from './command/clone-source/command-executor.component';
+import {ResetSourceCommandExecutorComponent} from './command/reset-source/command-executor.component';
 import {GetContainerIdsCommandExecutorComponent} from './command/get-container-id/command-executor.component';
 import {InterpolateFileCommandExecutorComponent} from './command/before-build/interpolate-file/command-executor.component';
 import {ParseDockerComposeCommandExecutorComponent} from './command/parse-docker-compose/command-executor.component';
@@ -31,13 +33,13 @@ import {ExecuteServiceCmdCommandFactoryComponent} from './command/after-build/ex
 import {ContextAwareCommandExecutorComponent} from './executor/context-aware-command-executor.component';
 import {CompositeSimpleCommandExecutorComponent} from './executor/composite-simple-command-executor.component';
 import {PathHelper} from './helper/path-helper.component';
-import {InstanceContextFactory} from './instance-context-factory.component';
+import {ActionExecutionContextFactory} from './action-execution-context-factory.service';
 import {EnableProxyDomainsCommandExecutorComponent} from './command/enable-proxy-domains/command-executor.component';
 import {CommandsMapExecutorComponent} from './executor/commands-map-executor.component';
 import {CommandsListExecutorComponent} from './executor/commands-list-executor.component';
 import {CommandExecutorComponent} from './executor/command-executor.component';
-import {VariablesPredictor} from './variable/variables-predictor';
-import {IpAddressCheckerComponent} from './ip-address-checker.component';
+import {VariablesPredictor} from './variable/variables-predictor.service';
+import {IpAddressChecker} from './ip-address-checker.service';
 
 @Module({
     imports: [
@@ -50,6 +52,7 @@ import {IpAddressCheckerComponent} from './ip-address-checker.component';
         CopyFileCommandExecutorComponent,
         CreateDirectoryCommandExecutorComponent,
         CloneSourceCommandExecutorComponent,
+        ResetSourceCommandExecutorComponent,
         GetContainerIdsCommandExecutorComponent,
         InterpolateFileCommandExecutorComponent,
         ParseDockerComposeCommandExecutorComponent,
@@ -63,15 +66,16 @@ import {IpAddressCheckerComponent} from './ip-address-checker.component';
         CopyAssetIntoContainerCommandExecutorComponent,
         CreateVolumeFromAssetCommandExecutorComponent,
         EnableProxyDomainsCommandExecutorComponent,
-        ContainerInfoCheckerComponent,
-        ContainerStateCheckerComponent,
-        IpAddressCheckerComponent,
+        ContainerInfoChecker,
+        ContainerStateChecker,
+        IpAddressChecker,
         AssetHelper,
         InterpolationHelper,
         SpawnHelper,
         PathHelper,
-        InstanceCreatorComponent,
-        InstanceContextFactory,
+        Instantiator,
+        Modificator,
+        ActionExecutionContextFactory,
         CopyFileCommandFactoryComponent,
         InterpolateFileCommandFactoryComponent,
         CopyAssetIntoContainerCommandFactoryComponent,
@@ -85,9 +89,10 @@ import {IpAddressCheckerComponent} from './ip-address-checker.component';
         VariablesPredictor,
     ],
     exports: [
-        InstanceCreatorComponent,
-        ContainerStateCheckerComponent,
-        IpAddressCheckerComponent,
+        Instantiator,
+        Modificator,
+        ContainerStateChecker,
+        IpAddressChecker,
         AssetHelper,
         VariablesPredictor,
         PathHelper,

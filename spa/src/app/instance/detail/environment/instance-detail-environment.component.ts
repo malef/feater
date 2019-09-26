@@ -16,7 +16,7 @@ import {Subscription, interval} from 'rxjs';
 })
 export class InstanceDetailEnvironmentComponent implements OnInit, OnDestroy {
 
-    readonly POLLING_INTERVAL = 5000; // 5 seconds.
+    private readonly POLLING_INTERVAL = 5000; // 5 seconds.
 
     instance: GetInstanceDetailEnvironmentQueryInstanceFieldInterface;
 
@@ -30,8 +30,7 @@ export class InstanceDetailEnvironmentComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.getInstance();
-        const polling = interval(this.POLLING_INTERVAL);
-        this.pollingSubscription = polling.subscribe(
+        this.pollingSubscription = interval(this.POLLING_INTERVAL).subscribe(
             () => { this.getInstance(false); },
         );
     }
@@ -40,7 +39,7 @@ export class InstanceDetailEnvironmentComponent implements OnInit, OnDestroy {
         this.pollingSubscription.unsubscribe();
     }
 
-    protected getInstance(spinner: boolean = true) {
+    protected getInstance(spinner = true) {
         if (spinner) {
             this.spinner.show();
         }

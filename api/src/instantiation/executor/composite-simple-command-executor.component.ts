@@ -5,6 +5,7 @@ import {ConnectToNetworkCommandExecutorComponent} from '../command/connect-conta
 import {CopyFileCommandExecutorComponent} from '../command/before-build/copy-file/command-executor.component';
 import {CreateDirectoryCommandExecutorComponent} from '../command/create-directory/command-executor.component';
 import {CloneSourceCommandExecutorComponent} from '../command/clone-source/command-executor.component';
+import {ResetSourceCommandExecutorComponent} from '../command/reset-source/command-executor.component';
 import {GetContainerIdsCommandExecutorComponent} from '../command/get-container-id/command-executor.component';
 import {InterpolateFileCommandExecutorComponent} from '../command/before-build/interpolate-file/command-executor.component';
 import {ParseDockerComposeCommandExecutorComponent} from '../command/parse-docker-compose/command-executor.component';
@@ -29,6 +30,7 @@ export class CompositeSimpleCommandExecutorComponent {
         copyFileCommandExecutorComponent: CopyFileCommandExecutorComponent,
         createDirectoryCommandExecutorComponent: CreateDirectoryCommandExecutorComponent,
         cloneSourceCommandExecutorComponent: CloneSourceCommandExecutorComponent,
+        resetSourceCommandExecutorComponent: ResetSourceCommandExecutorComponent,
         getContainerIdsCommandExecutorComponent: GetContainerIdsCommandExecutorComponent,
         interpolateBeforeBuildTaskCommandExecutorComponent: InterpolateFileCommandExecutorComponent,
         parseDockerComposeCommandExecutorComponent: ParseDockerComposeCommandExecutorComponent,
@@ -48,6 +50,7 @@ export class CompositeSimpleCommandExecutorComponent {
             copyFileCommandExecutorComponent,
             createDirectoryCommandExecutorComponent,
             cloneSourceCommandExecutorComponent,
+            resetSourceCommandExecutorComponent,
             getContainerIdsCommandExecutorComponent,
             interpolateBeforeBuildTaskCommandExecutorComponent,
             parseDockerComposeCommandExecutorComponent,

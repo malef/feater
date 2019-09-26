@@ -9,6 +9,7 @@ import {
 } from './get-instance-detail-services.query';
 import gql from 'graphql-tag';
 import {Subscription, interval} from 'rxjs';
+import {environment} from '../../../../environments/environment';
 
 @Component({
     selector: 'app-instance-detail-services',
@@ -17,7 +18,7 @@ import {Subscription, interval} from 'rxjs';
 })
 export class InstanceDetailServicesComponent implements OnInit, OnDestroy {
 
-    readonly POLLING_INTERVAL = 5000; // 5 seconds.
+    private readonly POLLING_INTERVAL = 5000; // 5 seconds.
 
     instance: GetInstanceDetailServicesQueryInstanceFieldInterface;
 
@@ -63,8 +64,7 @@ export class InstanceDetailServicesComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.getInstance();
-        const polling = interval(this.POLLING_INTERVAL);
-        this.pollingSubscription = polling.subscribe(
+        this.pollingSubscription = interval(this.POLLING_INTERVAL).subscribe(
             () => { this.getInstance(false); },
         );
     }
@@ -131,7 +131,13 @@ export class InstanceDetailServicesComponent implements OnInit, OnDestroy {
         }
     }
 
-    protected getInstance(spinner: boolean = true) {
+    getDownloadUrl(service: {id: string}): string {
+        return environment.dockerLogsDownloadUrl
+            .replace(':instanceId', this.instance.id)
+            .replace(':serviceId', service.id);
+    }
+
+    protected getInstance(spinner = true) {
         if (spinner) {
             this.spinner.show();
         }

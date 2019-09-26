@@ -53,8 +53,9 @@
 
             <div *ngIf="item.config.sources.length">
                 <div *ngFor="let source of item.config.sources">
-                    <app-definition-add-source-form-element [item]="source"
-                                                            (deleteItem)="deleteSource($event)"
+                    <app-definition-add-source-form-element
+                            [item]="source"
+                            (deleteItem)="deleteSource($event)"
                     ></app-definition-add-source-form-element>
                 </div>
             </div>
@@ -87,8 +88,9 @@
 
             <div *ngIf="item.config.volumes.length">
                 <div *ngFor="let volume of item.config.volumes">
-                    <app-definition-add-volume-form-element [volume]="volume"
-                                                            (deleteItem)="deleteVolume($event)"
+                    <app-definition-add-volume-form-element
+                            [volume]="volume"
+                            (deleteItem)="deleteVolume($event)"
                     ></app-definition-add-volume-form-element>
                 </div>
             </div>
@@ -121,8 +123,9 @@
 
             <div *ngIf="item.config.proxiedPorts.length">
                 <div *ngFor="let proxiedPort of item.config.proxiedPorts">
-                    <app-definition-add-proxied-port-form-element [item]="proxiedPort"
-                                                                  (deleteItem)="deleteProxiedPort($event)"
+                    <app-definition-add-proxied-port-form-element
+                            [item]="proxiedPort"
+                            (deleteItem)="deleteProxiedPort($event)"
                     ></app-definition-add-proxied-port-form-element>
                 </div>
             </div>
@@ -155,8 +158,9 @@
 
             <div *ngIf="item.config.envVariables.length">
                 <div *ngFor="let envVariable of item.config.envVariables">
-                    <app-definition-add-environmental-variable-form-element [item]="envVariable"
-                                                                            (deleteItem)="deleteEnvVariable($event)"
+                    <app-definition-add-environmental-variable-form-element
+                            [item]="envVariable"
+                            (deleteItem)="deleteEnvVariable($event)"
                     ></app-definition-add-environmental-variable-form-element>
                 </div>
             </div>
@@ -181,75 +185,43 @@
                 </div>
             </div>
 
-            <app-definition-add-compose-file-form-element [item]="this.item.config.composeFile"
-                                                          [sources]="this.item.config.sources"
+            <app-definition-add-compose-file-form-element
+                    [item]="this.item.config.composeFile"
+                    [sources]="this.item.config.sources"
             ></app-definition-add-compose-file-form-element>
         </div>
 
-        <!-- After build tasks -->
+        <!-- Actions -->
 
         <div class="form-section">
             <div class="row">
                 <div class="col-md-12">
-                    <h3 style="display: inline;">After build tasks</h3>
+                    <h3>Actions</h3>
+                </div>
+            </div>
+
+            <div *ngIf="!item.config.actions.length" class="row">
+                <div class="col-md-12">
+                    <p>No actions defined.</p>
+                </div>
+            </div>
+
+            <div *ngIf="item.config.actions.length">
+                <div *ngFor="let action of item.config.actions">
+                    <app-definition-add-action-form-element
+                            [item]="action"
+                            [availableEnvVariableNames]="getAvailableEnvVariableNames()"
+                            (deleteItem)="deleteAction($event)"
+                    ></app-definition-add-action-form-element>
                 </div>
             </div>
 
             <div class="row">
                 <div class="col-md-12">
-                    <p *ngIf="!item.config.afterBuildTasks.length">
-                        No after build tasks defined.
-                    </p>
-                    <div *ngIf="item.config.afterBuildTasks.length">
-                        <div *ngFor="let afterBuildTask of item.config.afterBuildTasks">
-
-                            <app-execute-host-command-task-form-element
-                                    *ngIf="isAfterBuildTaskExecuteHostCommand(afterBuildTask)"
-                                    [item]="afterBuildTask"
-                                    [availableEnvVariableNames]="getAvailableEnvVariableNames()"
-                                    (deleteItem)="deleteAfterBuildTask($event)"
-                            ></app-execute-host-command-task-form-element>
-
-                            <app-execute-service-command-task-form-element
-                                    *ngIf="isAfterBuildTaskExecuteServiceCommand(afterBuildTask)"
-                                    [item]="afterBuildTask"
-                                    [availableEnvVariableNames]="getAvailableEnvVariableNames()"
-                                    (deleteItem)="deleteAfterBuildTask($event)"
-                            ></app-execute-service-command-task-form-element>
-
-                            <app-copy-asset-into-container-task-form-element
-                                    *ngIf="isAfterBuildTaskCopyAssetIntoContainer(afterBuildTask)"
-                                    [item]="afterBuildTask"
-                                    (deleteItem)="deleteAfterBuildTask($event)"
-                            ></app-copy-asset-into-container-task-form-element>
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-md-12">
-                    <a
-                            class="btn btn-success btn-sm"
-                            (click)="addAfterBuildTaskExecuteHostCommand()"
-                            style="margin-right: 8px;"
+                    <a class="btn btn-success btn-sm"
+                       (click)="addAction()"
                     >
-                        Execute host command <span class="glyphicon glyphicon-plus"></span>
-                    </a>
-                    <a
-                            class="btn btn-success btn-sm"
-                            (click)="addAfterBuildTaskExecuteServiceCommand()"
-                            style="margin-right: 8px;"
-                    >
-                        Execute service command  <span class="glyphicon glyphicon-plus"></span>
-                    </a>
-                    <a
-                            class="btn btn-success btn-sm"
-                            (click)="addAfterBuildTaskCopyAssetIntoContainer()"
-                            style="margin-right: 8px;"
-                    >
-                        Copy asset into container <span class="glyphicon glyphicon-plus"></span>
+                        <span class="glyphicon glyphicon-plus"></span>
                     </a>
                 </div>
             </div>
@@ -272,8 +244,9 @@
 
             <div *ngIf="item.config.summaryItems.length">
                 <div *ngFor="let summaryItem of item.config.summaryItems">
-                    <app-definition-add-summary-item-form-element [item]="summaryItem"
-                                                                  (deleteItem)="deleteSummaryItem($event)"
+                    <app-definition-add-summary-item-form-element
+                            [item]="summaryItem"
+                            (deleteItem)="deleteSummaryItem($event)"
                     ></app-definition-add-summary-item-form-element>
                 </div>
             </div>
@@ -282,6 +255,40 @@
                 <div class="col-md-12">
                     <a class="btn btn-success btn-sm"
                        (click)="addSummaryItem()"
+                    >
+                        <span class="glyphicon glyphicon-plus"></span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Downloadables -->
+
+        <div class="form-section">
+            <div class="row">
+                <div class="col-md-12">
+                    <h3>Downloadables</h3>
+                </div>
+            </div>
+
+            <div *ngIf="!item.config.downloadables.length" class="row">
+                <div class="col-md-12">
+                    <p>No downloadables defined.</p>
+                </div>
+            </div>
+
+            <div *ngIf="item.config.downloadables.length">
+                <div *ngFor="let downloadable of item.config.downloadables">
+                    <app-definition-add-downloadable-form-element [item]="downloadable"
+                                                                  (deleteItem)="deleteDownloadable($event)"
+                    ></app-definition-add-downloadable-form-element>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <a class="btn btn-success btn-sm"
+                       (click)="addDownloadable()"
                     >
                         <span class="glyphicon glyphicon-plus"></span>
                     </a>
@@ -300,14 +307,25 @@
                 <div class="col-md-12">
                     <div class="form-group">
                         <label class="control-label">Yaml config</label>
-                        <textarea class="form-control" rows="10" #yamlConfig name="addDefinition_yamlConfig" style="font-family: monospace;"></textarea>
+                        <textarea
+                                class="form-control"
+                                rows="10"
+                                #yamlConfig
+                                name="addDefinition_yamlConfig"
+                                style="font-family: monospace;"
+                        ></textarea>
                     </div>
                 </div>
             </div>
 
             <div class="row">
                 <div class="col-md-12">
-                    <button type="submit" class="btn btn-success" (click)="importYamlConfig(yamlConfig.value)">Import</button>
+                    <button
+                            type="submit" class="btn btn-success"
+                            (click)="importYamlConfig(yamlConfig.value)"
+                    >
+                        Import
+                    </button>
                 </div>
             </div>
         </div>

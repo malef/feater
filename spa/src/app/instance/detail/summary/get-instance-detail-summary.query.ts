@@ -12,6 +12,13 @@ export const getInstanceDetailSummaryQueryGql = gql`
                     id
                     name
                 }
+                config {
+                    actions {
+                        id
+                        type
+                        name
+                    }
+                }
             }
             summaryItems {
                 name
@@ -21,6 +28,14 @@ export const getInstanceDetailSummaryQueryGql = gql`
             updatedAt
             completedAt
             failedAt
+            actionLogs {
+                actionId
+                actionName
+                createdAt
+                completedAt
+                failedAt
+            }
+            isModificationAllowed
         }
     }
 `;
@@ -35,6 +50,15 @@ export interface GetInstanceDetailSummaryQueryInstanceFieldInterface {
             id: string;
             name: string;
         };
+        config: {
+            actions: [
+                {
+                    id: string;
+                    type: string;
+                    name: string;
+                }
+            ];
+        };
     };
     summaryItems: [
         {
@@ -46,6 +70,16 @@ export interface GetInstanceDetailSummaryQueryInstanceFieldInterface {
     updatedAt: string;
     completedAt: string;
     failedAt: string;
+    actionLogs: [
+        {
+            actionId: string;
+            actionName: string;
+            createdAt: string;
+            completedAt: string;
+            failedAt: string;
+        }
+    ];
+    isModificationAllowed: boolean;
 }
 
 export interface GetInstanceDetailSummaryQueryInterface {

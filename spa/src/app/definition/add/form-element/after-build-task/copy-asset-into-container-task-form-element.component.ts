@@ -1,5 +1,5 @@
 import {Component, Input, Output, EventEmitter} from '@angular/core';
-import {CopyAssetIntoContainerTaskFormElement} from '../../definition-add-form.model';
+import {DefinitionAddCopyAssetIntoContainerTaskFormElement} from '../../definition-add-form.model';
 
 
 @Component({
@@ -9,10 +9,10 @@ import {CopyAssetIntoContainerTaskFormElement} from '../../definition-add-form.m
 })
 export class CopyAssetIntoContainerTaskFormElementComponent {
 
-    @Input() item: CopyAssetIntoContainerTaskFormElement;
+    @Input() item: DefinitionAddCopyAssetIntoContainerTaskFormElement;
 
-    @Output() deleteItem: EventEmitter<CopyAssetIntoContainerTaskFormElement> =
-        new EventEmitter<CopyAssetIntoContainerTaskFormElement>();
+    @Output() deleteItem: EventEmitter<DefinitionAddCopyAssetIntoContainerTaskFormElement> =
+        new EventEmitter<DefinitionAddCopyAssetIntoContainerTaskFormElement>();
 
     addDependsOn(): void {
         this.item.dependsOn.push('');

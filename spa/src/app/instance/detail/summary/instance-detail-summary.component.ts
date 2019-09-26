@@ -17,11 +17,21 @@ import gql from 'graphql-tag';
 })
 export class InstanceDetailSummaryComponent implements OnInit, OnDestroy {
 
-    readonly POLLING_INTERVAL = 5000; // 5 seconds.
+    private readonly POLLING_INTERVAL = 5000; // 5 seconds.
 
     instance: GetInstanceDetailSummaryQueryInstanceFieldInterface;
 
     pollingSubscription: Subscription;
+
+    modificationActions: { id: string; name: string; type: string; }[] = [];
+
+    protected readonly modifyInstanceMutation = gql`
+        mutation ($instanceId: String!, $modificationActionId: String!) {
+            modifyInstance(instanceId: $instanceId, modificationActionId: $modificationActionId) {
+                id
+            }
+        }
+    `;
 
     protected readonly removeInstanceMutation = gql`
         mutation ($id: String!) {
@@ -38,8 +48,7 @@ export class InstanceDetailSummaryComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.getInstance();
-        const polling = interval(this.POLLING_INTERVAL);
-        this.pollingSubscription = polling.subscribe(
+        this.pollingSubscription = interval(this.POLLING_INTERVAL).subscribe(
             () => { this.getInstance(false); },
         );
     }
@@ -48,20 +57,58 @@ export class InstanceDetailSummaryComponent implements OnInit, OnDestroy {
         this.pollingSubscription.unsubscribe();
     }
 
-    removeInstance() {
-        this.apollo.mutate({
-            mutation: this.removeInstanceMutation,
-            variables: {
-                id: this.instance.id,
-            },
-        }).subscribe(
-            () => {
-                this.router.navigateByUrl(`/definition/${this.instance.definition.id}`);
-            }
+    modifyInstance(modificationActionId: string) {
+        if (this.isModificationDisabled()) {
+            return;
+        }
+
+        this.apollo
+            .mutate({
+                mutation: this.modifyInstanceMutation,
+                variables: {
+                    instanceId: this.instance.id,
+                    modificationActionId,
+                },
+            }).subscribe(
+                () => { this.getInstance(false); },
+                (error) => { console.log(error); }
+            );
+    }
+
+    isModificationDisabled(): boolean {
+        return (
+            !this.instance
+            || !this.instance.isModificationAllowed
+            || (!this.instance.completedAt && !this.instance.failedAt)
         );
     }
 
-    protected getInstance(spinner: boolean = true) {
+    getModificationDisabledReason(): string {
+        if (this.instance && !this.instance.isModificationAllowed) {
+            return 'Related definition was changed after creating this instance.'
+        }
+        if (this.instance && !this.instance.completedAt && !this.instance.failedAt) {
+            return 'Some action is already in progress.'
+        }
+
+        return '';
+    }
+
+    removeInstance() {
+        this.apollo
+            .mutate({
+                mutation: this.removeInstanceMutation,
+                variables: {
+                    id: this.instance.id,
+                },
+            }).subscribe(
+                () => {
+                    this.router.navigateByUrl(`/definition/${this.instance.definition.id}`);
+                }
+            );
+    }
+
+    protected getInstance(spinner = true) {
         if (spinner) {
             this.spinner.show();
         }
@@ -76,6 +123,11 @@ export class InstanceDetailSummaryComponent implements OnInit, OnDestroy {
             .subscribe(result => {
                 const resultData: GetInstanceDetailSummaryQueryInterface = result.data;
                 this.instance = resultData.instance;
+                this.modificationActions = this.instance.definition.config.actions.filter(
+                    function (action) {
+                        return 'modification' === action.type;
+                    }
+                );
                 if (spinner) {
                     this.spinner.hide();
                 }

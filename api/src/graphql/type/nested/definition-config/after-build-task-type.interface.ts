@@ -1,3 +1,9 @@
+export type AfterBuildTaskTypeInterfaces =
+    ExecuteCommandAfterBuildTaskTypeInterface |
+    ExecuteHostCommandAfterBuildTaskTypeInterface |
+    ExecuteServiceCommandAfterBuildTaskTypeInterface |
+    CopyAssetIntoContainerAfterBuildTaskTypeInterface;
+
 export interface AfterBuildTaskTypeInterface {
     type: string;
     id?: string;

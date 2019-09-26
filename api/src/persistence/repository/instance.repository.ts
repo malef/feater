@@ -13,7 +13,7 @@ export class InstanceRepository {
     }[] = [];
 
     constructor(
-        @InjectModel('Instance') private readonly instanceModel: Model<InstanceInterface>,
+        @InjectModel('Instance') public readonly instanceModel: Model<InstanceInterface>,
     ) {}
 
     find(criteria: object, offset: number, limit: number, sort?: object): Promise<InstanceInterface[]> {
@@ -42,9 +42,15 @@ export class InstanceRepository {
     }
 
     async create(createInstanceInputType: CreateInstanceInputTypeInterface): Promise<InstanceInterface> {
-        const instance = new this.instanceModel(createInstanceInputType);
+        const instance = new this.instanceModel({
+            definitionId: createInstanceInputType.definitionId,
+            instantiationActionId: createInstanceInputType.instantiationActionId,
+            name: createInstanceInputType.name,
+        });
+
         instance.createdAt = new Date();
         instance.updatedAt = new Date();
+
         await instance.save();
 
         return instance;
