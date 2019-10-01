@@ -5,7 +5,7 @@ services:
   api:
     build: api
     volumes:
-    - "../../api:/app"
+    - "../../server:/app"
     - "${FEATER_BUILD_DATA_PATH}:/data/build"
     - "${FEATER_PROXY_DOMAIN_DATA_PATH}:/data/proxyDomain"
     - "${FEATER_ASSET_DATA_PATH}:/data/asset"
@@ -21,7 +21,7 @@ services:
   spa:
     build: spa
     volumes:
-    - "../../spa:/app"
+    - "../../client:/app"
     ports:
     - '${FEATER_SPA_PORT}:4200'
     networks:
