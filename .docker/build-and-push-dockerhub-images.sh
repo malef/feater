@@ -2,11 +2,13 @@
 
 set -ex
 
+echo '@todo restore, blocked for now'
+exit 1 # blocked for now
+
 version=latest
 
 docker_versions=(
-    18.06.3
-    18.09.2
+    28.5.2
     latest
 )
 
