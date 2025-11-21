@@ -28,7 +28,7 @@ RUN apk add --update --no-cache \
 
 COPY --from=docker /usr/local/bin/docker /usr/local/bin/docker
 
-COPY ./.docker/dev/default.conf /etc/nginx/conf.d/default.conf
+COPY ./.docker/dev/default.conf /etc/nginx/http.d/default.conf
 
 COPY ./.docker/dev/command.sh /command.sh
 
@@ -37,9 +37,9 @@ RUN \
     yarn global add nodemon \
     # Fix for Nginx pid.
     && mkdir -p /run/nginx \
-    && (cd /etc/nginx/conf.d && ln -s /data/proxy) \
+    && (cd /etc/nginx/http.d && ln -s /data/proxy) \
     && chmod +x /command.sh \
-    && (mkdir /data && cd /data && mkdir asset build identity mongo proxy)
+    && (mkdir /data && cd /data && mkdir asset build identity mongodb proxy)
 
 EXPOSE 9010 9011 27017
 
